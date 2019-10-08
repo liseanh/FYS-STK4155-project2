@@ -11,6 +11,8 @@ numpy = "*"
 matplotlib = "*"
 scikit-learn = "*"
 tensorflow = "*"
+pandas = "*"
+jupyter = "*"
 
 [requires]
 python_version = "3.6"
