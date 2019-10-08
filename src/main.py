@@ -4,9 +4,10 @@ import sklearn.preprocessing as sklpre
 
 
 class RegressionClass:
-    def __init__(self, batches=1, penalty=None):
-        self.penalty = penalty
+    def __init__(self, learning_rate=0.1, batches=1, penalty=None):
+        self.learning_rate = learning_rate
         self.batches = batches
+        self.penalty = penalty
 
     def fit(self, X=None, y=None):
         raise RuntimeError("Please do not use this class directly.")
