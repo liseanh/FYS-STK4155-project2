@@ -25,7 +25,7 @@ class RegressionClass:
     def preprocessing(X, y, test_ratio=0.33):
         X = sklpre.scale(X, copy=False)
         X_train, X_test, y_train, y_test = sklms.train_test_split(
-            X, y, test_size=test_ratio
+            X, y, test_size=test_ratio, stratify=y
         )
         return X_train, X_test, y_train, y_test
 
