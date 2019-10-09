@@ -5,18 +5,19 @@ import sklearn.model_selection as sklms
 
 
 class RegressionClass:
-    def __init__(self, learning_rate=0.1, batches=1, penalty=None):
+    def __init__(self, learning_rate=0.1, n_iterations=2000, batches=1, penalty=None):
         self.learning_rate = learning_rate
+        self.n_iterations = n_iterations
         self.batches = batches
         self.penalty = penalty
 
     def fit(self, X=None, y=None):
         raise RuntimeError("Please do not use this class directly.")
 
-    def gradient_descent(self, beta, X, y, N_iterations=2000):
-        for i in range(N_iterations):
-            beta -= self.learning_rate * self.grad_cost_function(beta, X, y)
-            # print(beta)
+    def gradient_descent(self, beta, X, y):
+        for i in range(self.n_iterations):
+            grad = self.learning_rate * self.grad_cost_function(beta, X, y)
+            beta -= grad
 
     def accuracy_score(self, X, y):
         return np.mean(self.predict(X) == y)
