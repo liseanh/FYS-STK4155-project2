@@ -5,10 +5,10 @@ import sklearn.model_selection as sklms
 
 
 class RegressionClass:
-    def __init__(self, learning_rate=0.1, n_iterations=2000, rtol=0.01, batches=1, penalty=None):
+    def __init__(self, learning_rate=0.1, n_epochs=2000, rtol=0.01, batch_size=None, penalty=None):
         self.learning_rate = learning_rate
-        self.n_iterations = n_iterations
-        self.batches = batches
+        self.batch_size = batch_size
+        self.n_epochs = n_epochs
         self.penalty = penalty
         self.rtol = rtol
 
@@ -16,7 +16,9 @@ class RegressionClass:
         raise RuntimeError("Please do not use this class directly.")
 
     def gradient_descent(self, beta, X, y):
-        for i in range(self.n_iterations):
+        n_iterations = len(y)/self.batch_size
+        if self.batch_size == None
+        for i in range(self.n_epochs):
             grad = self.learning_rate * self.grad_cost_function(beta, X, y)
 
             rdiff = np.max(np.abs(grad/beta))
