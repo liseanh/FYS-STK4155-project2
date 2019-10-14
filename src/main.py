@@ -22,14 +22,6 @@ class RegressionClass:
     def accuracy_score(self, X, y):
         return np.mean(self.predict(X) == y)
 
-    @staticmethod
-    def preprocessing(X, y, test_ratio=0.33):
-        X[:,1:] = sklpre.scale(X[:,1:], copy=False)
-        X_train, X_test, y_train, y_test = sklms.train_test_split(
-            X, y, test_size=test_ratio, stratify=y
-        )
-        return X_train, X_test, y_train, y_test
-
 
 class LogisticRegression(RegressionClass):
     def fit(self, X, y):
