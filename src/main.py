@@ -71,55 +71,60 @@ class LogisticRegression(RegressionClass):
 
 
 class NeuralNetwork(RegressionClass):
-    def __init__(self, hidden_layer_size=(30, 10, 10)):
-        super.__init__(
-            self,
-            learning_rate=0.1,
-            n_epochs=2000,
-            rtol=0.01,
-            batch_size="auto",
-            penalty=None,
-        )
+    def __init__(
+        self,
+        hidden_layer_size=(20, 10, 5),
+        learning_rate=0.1,
+        n_epochs=2000,
+        rtol=0.01,
+        batch_size="auto",
+        penalty=None,
+    ):
+        super().__init__(learning_rate, n_epochs, rtol, batch_size, penalty)
         self.hidden_layer_size = hidden_layer_size
         self.n_hidden_layers = len(hidden_layer_size)
 
-    def fit(X, y):
+    def fit(self, X, y):
         self.n_features = len(X[0, :])
         self.n_inputs = len(X[:, 0])
         if len(y.shape) == 1:
             self.n_outputs = 1
         else:
             self.n_outputs = y.shape[1]
+        
+        self.init_biases_weights()
 
-    def init_biases_weights():
-        self.weights_biases_hidden = []
+    def init_biases_weights(self):
+        std_weight_init = np.sqrt(2 / self.n_features)
+
+        self.weights_hidden = []
+        self.biases_hidden = []
+
         for i in range(self.n_hidden_layers):
             if i == 0:
-                weights_and_biases = np.zeros(
-                    (self.n_inputs + 1, self.hidden_layer_size[i])
+                hidden_weights = np.random.normal(
+                    loc=0,
+                    scale=std_weight_init,
+                    size=(self.n_features, self.hidden_layer_size[i]),
                 )
-
             else:
-                weights_and_biases = np.zeros(
-                    (self.hidden_layer_size[i - 1], self.hidden_layer_size[i])
+                hidden_weights = np.random.normal(
+                    loc=0,
+                    scale=std_weight_init,
+                    size=(self.hidden_layer_size[i - 1], self.hidden_layer_size[i]),
                 )
-            weights_and_biases[:, 0] = 0.01
-            weights_and_biases[:, 1:] = np.random.normal(
-                0,
-                scale=np.sqrt(2 / self.n_features),
-                size=weights_and_biases[:, 1:].shape,
-            )
-            self.weights_biases_hidden.append(weights_and_biases)
 
-        self.weights_biases_output = np.zeros(
-            (self.hidden_layer_size[-1], self.n_outputs)
+            hidden_biases = np.zeros(self.hidden_layer_size[i]) + 0.01
+
+            self.weights_hidden.append(hidden_weights)
+            self.biases_hidden.append(hidden_biases)
+
+        self.weights_out = np.random.normal(
+            loc=0,
+            scale=std_weight_init,
+            size=(self.hidden_layer_size[-1], self.n_outputs),
         )
-        self.weights_and_biases_output[:, 0] = 0.01
-        self.weights_and_biases_output[:, 1:] = np.random.normal(
-            0,
-            scale=np.sqrt(2 / self.n_features),
-            size=self.weights_and_biases_output[:, 1:].shape,
-        )
+        self.biases_out = np.zeros(self.n_outputs) + 0.01
 
 
 if __name__ == "__main__":
