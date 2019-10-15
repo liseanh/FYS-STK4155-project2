@@ -14,7 +14,7 @@ class RegressionClass:
         penalty=None,
     ):
         if batch_size == "auto":
-            self.batch_size = lambda n_inputs: np.min(200, n_inputs)
+            self.batch_size = lambda n_inputs: min(200, n_inputs)
         elif batch_size == "none":
             self.batch_size = lambda n_inputs: n_inputs
         elif isinstance(batch_size, int):
@@ -32,7 +32,7 @@ class RegressionClass:
     def gradient_descent(self, beta, X, y):
         n_iterations = len(y) // self.batch_size(len(y))
         y_batches = np.array_split(y, n_iterations)
-        X_batches = np.array_split(X, n_iterations, axis=1)
+        X_batches = np.array_split(X, n_iterations, axis=0)
         for i in range(self.n_epochs):
             for j in range(n_iterations):
                 random_batch = np.random.randint(n_iterations)
@@ -41,6 +41,7 @@ class RegressionClass:
                 )
                 rdiff = np.max(np.abs(grad / beta))
                 if rdiff < self.rtol:
+                    print("Tolerance reached")
                     return
 
                 beta -= grad
