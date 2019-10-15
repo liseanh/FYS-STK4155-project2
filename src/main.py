@@ -5,9 +5,21 @@ import sklearn.model_selection as sklms
 
 
 class RegressionClass:
-    def __init__(self, learning_rate=0.1, n_epochs=2000, rtol=0.01, batch_size=None, penalty=None):
+    def __init__(
+        self,
+        learning_rate=0.1,
+        n_epochs=2000,
+        rtol=0.01,
+        batch_size="auto",
+        penalty=None,
+    ):
+        if batch_size == "auto":
+            self.batch_size = lambda n_inputs: np.min(200, n_inputs)
+        elif isinstance(batch_size, int):
+            self.batch_size = lambda n_inputs: batch_size
+        else:
+            raise ValueError("Only 'auto' or integer supported right now.")
         self.learning_rate = learning_rate
-        self.batch_size = batch_size
         self.n_epochs = n_epochs
         self.penalty = penalty
         self.rtol = rtol
@@ -16,17 +28,20 @@ class RegressionClass:
         raise RuntimeError("Please do not use this class directly.")
 
     def gradient_descent(self, beta, X, y):
-        n_iterations = len(y)/self.batch_size
-        if self.batch_size == None
+        n_iterations = len(y) // self.batch_size(len(y))
+        y_batches = np.array_split(y, n_iterations)
+        X_batches = np.array_split(X, n_iterations, axis=1)
         for i in range(self.n_epochs):
-            grad = self.learning_rate * self.grad_cost_function(beta, X, y)
+            for j in range(n_iterations):
+                random_batch = np.random.randint(n_iterations)
+                grad = self.learning_rate * self.grad_cost_function(
+                    beta, X_batches[random_batch], y_batches[random_batch]
+                )
+                rdiff = np.max(np.abs(grad / beta))
+                if rdiff < self.rtol:
+                    return
 
-            rdiff = np.max(np.abs(grad/beta))
-            if rdiff < self.rtol:
-                print(f"machine broke XD {rdiff}")
-                break
-
-            beta -= grad
+                beta -= grad
 
     def accuracy_score(self, X, y):
         return np.mean(self.predict(X) == y)
