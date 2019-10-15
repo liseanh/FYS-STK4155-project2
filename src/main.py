@@ -15,6 +15,8 @@ class RegressionClass:
     ):
         if batch_size == "auto":
             self.batch_size = lambda n_inputs: np.min(200, n_inputs)
+        elif batch_size == "none":
+            self.batch_size = lambda n_inputs: n_inputs
         elif isinstance(batch_size, int):
             self.batch_size = lambda n_inputs: batch_size
         else:
