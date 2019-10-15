@@ -125,18 +125,19 @@ class NeuralNetwork(RegressionClass):
         )
         self.biases_out = np.zeros(self.n_outputs) + 0.01
 
-    def activation(self, X):
+    @staticmethod
+    def sigmoid( X):
         expo = np.exp(X)
         return expo / (1 + expo)
 
     def feed_forward(self, X):
         step = X  # self.activation(X)
         for i in range(self.n_hidden_layers):
-            step = self.activation(
+            step = self.sigmoid(
                 step @ self.weights_hidden[i] + self.biases_hidden[i]
             )
         step = step @ self.weights_out + self.biases_out
-        step = self.activation(step)
+        step = self.sigmoid(step)
         print(step.shape)
         return step
 
