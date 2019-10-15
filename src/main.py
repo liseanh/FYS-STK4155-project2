@@ -70,5 +70,44 @@ class LogisticRegression(RegressionClass):
         return prediction
 
 
+class NeuralNetwork(RegressionClass):
+    def __init__(self, hidden_layer_size=(30, 10, 10)):
+        super.__init__(
+            self,
+            learning_rate=0.1,
+            n_epochs=2000,
+            rtol=0.01,
+            batch_size="auto",
+            penalty=None,
+        )
+        self.hidden_layer_size = hidden_layer_size
+        self.n_hidden_layers = len(hidden_layer_size)
+
+    def fit(X, y):
+        self.n_features = len(X[0, :])
+        self.n_inputs = len(X[:, 0])
+
+    def init_biases_weights():
+        self.weights_biases_hidden = []
+        for i in range(self.n_hidden_layers):
+            if i == 0:
+                weights_and_biases = np.zeros(
+                    (self.n_inputs + 1, self.hidden_layer_size[i])
+                )
+
+            else:
+                weights_and_biases = np.zeros(
+                    (self.hidden_layer_size[i - 1], self.hidden_layer_size[i])
+                )
+            weights_and_biases[:, 0] = 0.01
+            weights_and_biases[:, 1:] = np.random.normal(
+                0,
+                scale=np.sqrt(2 / self.n_features),
+                size=weights_and_biases[:, 1:].shape,
+            )
+            self.weights_biases_hidden.append(weights_and_biases)
+            
+
 if __name__ == "__main__":
     pass
+
