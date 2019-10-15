@@ -20,7 +20,7 @@ class RegressionClass:
         elif isinstance(batch_size, int):
             self.batch_size = lambda n_inputs: batch_size
         else:
-            raise ValueError("Only 'auto' or integer supported right now.")
+            raise ValueError("Only 'auto', 'none' or integer supported right now.")
         self.learning_rate = learning_rate
         self.n_epochs = n_epochs
         self.penalty = penalty
