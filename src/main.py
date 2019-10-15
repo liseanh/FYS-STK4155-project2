@@ -1,7 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import sklearn.preprocessing as sklpre
-import sklearn.model_selection as sklms
 
 
 class RegressionClass:
@@ -91,8 +89,9 @@ class NeuralNetwork(RegressionClass):
             self.n_outputs = 1
         else:
             self.n_outputs = y.shape[1]
-        
+
         self.init_biases_weights()
+        self.feed_forward(X)
 
     def init_biases_weights(self):
         std_weight_init = np.sqrt(2 / self.n_features)
@@ -125,6 +124,21 @@ class NeuralNetwork(RegressionClass):
             size=(self.hidden_layer_size[-1], self.n_outputs),
         )
         self.biases_out = np.zeros(self.n_outputs) + 0.01
+
+    def activation(self, X):
+        expo = np.exp(X)
+        return expo / (1 + expo)
+
+    def feed_forward(self, X):
+        step = X  # self.activation(X)
+        for i in range(self.n_hidden_layers):
+            step = self.activation(
+                step @ self.weights_hidden[i] + self.biases_hidden[i]
+            )
+        step = step @ self.weights_out + self.biases_out
+        step = self.activation(step)
+        print(step.shape)
+        return step
 
 
 if __name__ == "__main__":
