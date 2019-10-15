@@ -86,6 +86,10 @@ class NeuralNetwork(RegressionClass):
     def fit(X, y):
         self.n_features = len(X[0, :])
         self.n_inputs = len(X[:, 0])
+        if len(y.shape) == 1:
+            self.n_outputs = 1
+        else:
+            self.n_outputs = y.shape[1]
 
     def init_biases_weights():
         self.weights_biases_hidden = []
@@ -106,8 +110,17 @@ class NeuralNetwork(RegressionClass):
                 size=weights_and_biases[:, 1:].shape,
             )
             self.weights_biases_hidden.append(weights_and_biases)
-            
+
+        self.weights_biases_output = np.zeros(
+            (self.hidden_layer_size[-1], self.n_outputs)
+        )
+        self.weights_and_biases_output[:, 0] = 0.01
+        self.weights_and_biases_output[:, 1:] = np.random.normal(
+            0,
+            scale=np.sqrt(2 / self.n_features),
+            size=self.weights_and_biases_output[:, 1:].shape,
+        )
+
 
 if __name__ == "__main__":
     pass
-
