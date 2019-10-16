@@ -128,9 +128,15 @@ class NeuralNetwork(RegressionClass):
         self.biases_out = np.zeros(self.n_outputs) + 0.01
 
     @staticmethod
-    def sigmoid(X):
-        expo = np.exp(X)
+    def sigmoid(z):
+        expo = np.exp(z)
         return expo / (1 + expo)
+
+    @staticmethod
+    def softmax(z):
+        expo = np.exp(z)
+        return expo/np.sum(expo, axis=1, keepdims=True)
+
 
     def feed_forward(self, X):
         a_i = [X]  # self.activation(X)
@@ -138,7 +144,7 @@ class NeuralNetwork(RegressionClass):
             a_i.append(
                 self.sigmoid(a_i[i] @ self.weights_hidden[i] + self.biases_hidden[i])
             )
-        a_i.append(self.sigmoid(a_i[-1] @ self.weights_out + self.biases_out))
+        a_i.append(self.softmax(a_i[-1] @ self.weights_out + self.biases_out))
         # a_i.pop(0)
         return a_i
 
@@ -147,7 +153,7 @@ class NeuralNetwork(RegressionClass):
 
     def backpropagation(self, X, y):
         a_i = self.feed_forward(X)
-        errors = [(y.reshape(-1, 1) - a_i[-1])]
+        errors = [-y.reshape(-1, 1) + a_i[-1]]
         gradients_weight = [a_i[-2].T @ errors[0]]
         gradients_bias = [np.sum(errors[0], axis=0)]
         # print(gradients_bias[0].shape)
