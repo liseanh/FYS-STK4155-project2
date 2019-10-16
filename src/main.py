@@ -91,7 +91,8 @@ class NeuralNetwork(RegressionClass):
             self.n_outputs = y.shape[1]
 
         self.init_biases_weights()
-        self.feed_forward(X)
+        self.backpropagation(X, y)
+        # self.feed_forward(X)
 
     def init_biases_weights(self):
         std_weight_init = np.sqrt(2 / self.n_features)
@@ -126,20 +127,26 @@ class NeuralNetwork(RegressionClass):
         self.biases_out = np.zeros(self.n_outputs) + 0.01
 
     @staticmethod
-    def sigmoid( X):
+    def sigmoid(X):
         expo = np.exp(X)
         return expo / (1 + expo)
 
     def feed_forward(self, X):
-        step = X  # self.activation(X)
+        step = [X]  # self.activation(X)
         for i in range(self.n_hidden_layers):
-            step = self.sigmoid(
-                step @ self.weights_hidden[i] + self.biases_hidden[i]
+            step.append(
+                self.sigmoid(step[i] @ self.weights_hidden[i] + self.biases_hidden[i])
             )
-        step = step @ self.weights_out + self.biases_out
-        step = self.sigmoid(step)
-        print(step.shape)
+        step.append(self.sigmoid(step[-1] @ self.weights_out + self.biases_out))
+        print(step[-1].shape)
         return step
+
+    def grad_cost_function(self, model, target):
+        return (model - target) / (model * (1 - model))
+
+    def backpropagation(self, X, y):
+        forward_steps = self.feed_forward(X)
+        return gradients
 
 
 if __name__ == "__main__":
