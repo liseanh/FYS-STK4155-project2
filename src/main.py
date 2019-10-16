@@ -152,15 +152,18 @@ class NeuralNetwork(RegressionClass):
         return (model - target) / (model * (1 - model))
 
     def backpropagation(self, X, y):
+        # output layer
         a_i = self.feed_forward(X)
-        errors = [-y.reshape(-1, 1) + a_i[-1]]
+        errors = [-y + a_i[-1]]
         gradients_weight = [a_i[-2].T @ errors[0]]
         gradients_bias = [np.sum(errors[0], axis=0)]
         # print(gradients_bias[0].shape)
+        # second last hidden layer, l = L-1
         errors.append(errors[0] @ self.weights_out.T * a_i[-2] * (1 - a_i[-2]))
         gradients_weight.append(a_i[-3].T @ errors[1])
         gradients_bias.append(np.sum(errors[1], axis=0))
         # print(gradients_bias[1].shape)
+        # remaining hidden layers
         for i in range(2, self.n_hidden_layers + 1):
             errors.append(
                 errors[i - 1]
@@ -175,9 +178,6 @@ class NeuralNetwork(RegressionClass):
         return gradients_weight, gradients_bias
 
     def gradient_descent(self, X, y):
-        """
-        Needs major rework for neural network!
-        """
         n_iterations = len(y) // self.batch_size(len(y))
         y_batches = np.array_split(y, n_iterations)
         X_batches = np.array_split(X, n_iterations, axis=0)
@@ -187,8 +187,10 @@ class NeuralNetwork(RegressionClass):
                 gradients_weight, gradients_bias = self.backpropagation(
                     X_batches[random_batch], y_batches[random_batch]
                 )
+                # output layer
                 self.weights_out -= self.learning_rate * gradients_weight[0]
                 self.biases_out -= self.learning_rate * gradients_bias[0]
+                # hidden layer
                 for layer in range(1, len(gradients_weight)):
                     # print(f"Grad layer   {layer}", gradients_weight[layer].shape)
                     # print(f"Weight layer {layer}", self.weights_hidden[-layer].shape)
@@ -210,9 +212,10 @@ class NeuralNetwork(RegressionClass):
 
     def predict(self, X):
         prediction = self.feed_forward(X)[-1]
+        print(prediction)
         prediction[prediction >= 0.5] = 1
         prediction[prediction != 1] = 0
-        return prediction.ravel()  # .astype(np.int)
+        return prediction  # .astype(np.int)
 
 
 if __name__ == "__main__":
