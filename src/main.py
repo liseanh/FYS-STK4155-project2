@@ -71,7 +71,7 @@ class LogisticRegression(RegressionClass):
 class NeuralNetwork(RegressionClass):
     def __init__(
         self,
-        hidden_layer_size=(20, 10, 5),
+        hidden_layer_size=(20, 10, 5, 3),
         learning_rate=0.1,
         n_epochs=2000,
         rtol=0.01,
@@ -91,8 +91,9 @@ class NeuralNetwork(RegressionClass):
             self.n_outputs = y.shape[1]
 
         self.init_biases_weights()
-        self.backpropagation(X, y)
+        # self.backpropagation(X, y)
         # self.feed_forward(X)
+        self.gradient_descent(X, y)
 
     def init_biases_weights(self):
         std_weight_init = np.sqrt(2 / self.n_features)
@@ -149,11 +150,11 @@ class NeuralNetwork(RegressionClass):
         errors = [(y.reshape(-1, 1) - a_i[-1])]
         gradients_weight = [a_i[-2].T @ errors[0]]
         gradients_bias = [np.sum(errors[0], axis=0)]
-        print(gradients_bias[0].shape)
-        errors.append(errors[0] @ self.weights_out.T * a_i[-2] * (1 - a_i[-1]))
+        # print(gradients_bias[0].shape)
+        errors.append(errors[0] @ self.weights_out.T * a_i[-2] * (1 - a_i[-2]))
         gradients_weight.append(a_i[-3].T @ errors[1])
         gradients_bias.append(np.sum(errors[1], axis=0))
-        print(gradients_bias[1].shape)
+        # print(gradients_bias[1].shape)
         for i in range(2, self.n_hidden_layers + 1):
             errors.append(
                 errors[i - 1]
@@ -161,9 +162,9 @@ class NeuralNetwork(RegressionClass):
                 * a_i[-i - 1]
                 * (1 - a_i[-i - 1])
             )
-            gradients_weight.append(a_i[i - 1].T @ errors[i])
+            gradients_weight.append(a_i[-i - 2].T @ errors[i])
             gradients_bias.append(np.sum(errors[i], axis=0))
-            print(gradients_bias[i].shape)
+            # print(gradients_bias[i].shape)
         # exit()
         return gradients_weight, gradients_bias
 
@@ -177,15 +178,35 @@ class NeuralNetwork(RegressionClass):
         for i in range(self.n_epochs):
             for j in range(n_iterations):
                 random_batch = np.random.randint(n_iterations)
-                grads = self.learning_rate * self.backpropagation(
+                gradients_weight, gradients_bias = self.backpropagation(
                     X_batches[random_batch], y_batches[random_batch]
                 )
-                rdiff = np.max(np.abs(grads[-1] / beta[-1]))
+                self.weights_out -= self.learning_rate * gradients_weight[0]
+                self.biases_out -= self.learning_rate * gradients_bias[0]
+                for layer in range(1, len(gradients_weight)):
+                    # print(f"Grad layer   {layer}", gradients_weight[layer].shape)
+                    # print(f"Weight layer {layer}", self.weights_hidden[-layer].shape)
+                    # continue
+                    self.weights_hidden[-layer] -= (
+                        self.learning_rate * gradients_weight[layer]
+                    )
+                    self.biases_hidden[-layer] -= (
+                        self.learning_rate * gradients_bias[layer]
+                    )
+
+                # exit()
+                """rdiff = np.max(np.abs(grads[-1] / beta[-1]))
                 if rdiff < self.rtol:
                     print("Tolerance reached")
                     return
 
-                beta -= grads
+                beta -= grads"""
+
+    def predict(self, X):
+        prediction = self.feed_forward(X)[-1]
+        prediction[prediction >= 0.5] = 1
+        prediction[prediction != 1] = 0
+        return prediction.ravel()  # .astype(np.int)
 
 
 if __name__ == "__main__":
