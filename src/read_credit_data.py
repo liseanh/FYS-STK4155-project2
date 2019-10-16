@@ -47,6 +47,8 @@ X_trimmed = np.concatenate([encoded_cols, scaled_cols], axis=1)
 
 # Add on intercept column
 X_final = np.append(np.ones_like(X_trimmed[:, 1]).reshape(-1, 1), X_trimmed, axis=1)
+y_final = onehot.fit_transform(y.reshape(-1,1))
+
 
 np.save("data/design_matrix_credit.npy", X_final)
-np.save("data/targets_credit.npy", y)
+np.save("data/targets_credit.npy", y_final)
