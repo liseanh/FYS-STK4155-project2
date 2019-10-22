@@ -46,13 +46,14 @@ scaled_cols = scaler.fit_transform(X_trim[col_scale])
 X_trimmed = np.concatenate([encoded_cols, scaled_cols], axis=1)
 
 # Add on intercept column
-X_final = np.append(np.ones_like(X_trimmed[:, 1]).reshape(-1, 1), X_trimmed, axis=1)
-y_final = y
+X_ = np.append(np.ones_like(X_trimmed[:, 1]).reshape(-1, 1), X_trimmed, axis=1)
+y_ = y
 
-ros = imblearn.over_sampling.RandomOverSampler(sampling_strategy=0.5,random_state=None)
-X_resample, y_resample = ros.fit_resample(X_final,y_final)
+ros = imblearn.over_sampling.RandomOverSampler(sampling_strategy=1)
+X_resample, y_resample = ros.fit_resample(X_,y_)
 
 
-
-#np.save("data/design_matrix_credit.npy", X_final)
-#np.save("data/targets_credit.npy", y_final)
+# from collections import Counter
+# print(sorted(Counter(y_resample).items()))
+np.save("data/design_matrix_credit.npy", X_resample)
+np.save("data/targets_credit.npy", y_resample)
