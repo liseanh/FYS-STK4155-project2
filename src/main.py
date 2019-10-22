@@ -172,7 +172,7 @@ class NeuralNetwork(RegressionClass):
 
         delta[-1] = self.grad_cost(y, a_i[-1]) * self.grad_activation(z_i[-1])
         gradient_bias[-1] = np.sum(delta[-1], axis=0)
-        gradient_weight[-1] = delta[-1].T @ a_i[-2]
+        gradient_weight[-1] = (delta[-1].T @ a_i[-2]).T
 
         delta[-2] = self.weights_out @ delta[-1].T * self.grad_activation(z_i[-2]).T
         gradient_bias[-2] = np.sum(delta[-2], axis=1)
@@ -206,19 +206,12 @@ class NeuralNetwork(RegressionClass):
                     X_batches[random_batch], y_batches[random_batch]
                 )
                 # output layer
-                self.weights_out -= self.learning_rate * gradients_weight[0]
-                self.biases_out -= self.learning_rate * gradients_bias[0]
+                self.weights_out -= self.learning_rate * gradients_weight[-1]
+                self.biases_out -= self.learning_rate * gradients_bias[-1]
                 # hidden layer
-                for layer in range(1, len(gradients_weight)):
-                    # print(f"Grad layer   {layer}", gradients_weight[layer].shape)
-                    # print(f"Weight layer {layer}", self.weights_hidden[-layer].shape)
-                    # continue
-                    self.weights_hidden[-layer] -= (
-                        self.learning_rate * gradients_weight[layer]
-                    )
-                    self.biases_hidden[-layer] -= (
-                        self.learning_rate * gradients_bias[layer]
-                    )
+                for l in range(-2, self.n_hidden_layers - 2, -1):
+                    self.weights_hidden[l] -= self.learning_rate * gradients_weight[l]
+                    self.biases_hidden[l] -= self.learning_rate * gradients_bias[l]
 
                 # exit()
                 """rdiff = np.max(np.abs(grads[-1] / beta[-1]))
@@ -229,11 +222,11 @@ class NeuralNetwork(RegressionClass):
                 beta -= grads"""
 
     def predict(self, X):
-        prediction = self.feed_forward(X)[-1]
-        print(prediction)
+        prediction = self.feed_forward(X)[0][-1]
+        # print(prediction)
         prediction[prediction >= 0.5] = 1
         prediction[prediction != 1] = 0
-        print(prediction)
+        # print(prediction)
         return prediction  # .astype(np.int)
 
 
