@@ -201,12 +201,12 @@ class NeuralNetwork(RegressionClass):
         gradient_weight = []
 
         # output layer
-        delta.append(self.grad_cost(a_i[-1]) * self.grad_sigmoid(z_i[-1]))
+        delta.append(self.grad_cost(a_i[-1]) * self.grad_activation(z_i[-1]))
         gradient_bias.append(delta[0])
         gradient_weight.append(delta[0] @ a_i[-2])
 
         # outer hidden layer
-        delta.append(self.weights_out.T @ delta[0] * self.grad_sigmoid(z_i[-2]))
+        delta.append(self.weights_out.T @ delta[0] * self.grad_activation(z_i[-2]))
         gradient_bias.append(np.sum(delta[1], axis=0))
         gradient_weight.append(delta[1] * a_i[-3])
 
@@ -214,7 +214,7 @@ class NeuralNetwork(RegressionClass):
             delta.append(
                 self.weights_hidden[-l + 1].T
                 @ delta[l - 1]
-                * self.grad_sigmoid(z_i[-(l + 1)])
+                * self.grad_activation(z_i[-(l + 1)])
             )
             gradient_bias.append(delta[l])
             gradient_weight.append(delta[l] @ a_i[-(l + 2)])
