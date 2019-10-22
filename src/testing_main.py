@@ -7,11 +7,13 @@ import sklearn.neural_network as sknn
 X = np.load("data/design_matrix_credit.npy")
 y = np.load("data/targets_credit.npy")
 
-X_train, X_test, y_train, y_test = sklms.train_test_split(X, y, test_size=0.33, stratify=y)
+X_train, X_test, y_train, y_test = sklms.train_test_split(
+    X, y, test_size=0.33, stratify=y
+)
 
 rate = 1e-5
 M = 200
-n = 3000
+n = 400
 
 layer_size = (18, 12, 6)
 
