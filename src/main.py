@@ -193,10 +193,13 @@ class NeuralNetwork(RegressionClass):
         return exp_expression / ((1 + exp_expression) ** 2)
 
     def grad_cost(self, y, y_pred):
-        if len(y.shape)==1:
-            return y.reshape(-1,1) - y_pred
+        if len(y.shape) == 1:
+            return y.reshape(-1, 1) - y_pred
         else:
             return y - y_pred
+
+    def cost(self, y, y_pred):
+        return -np.sum(y * np.log(y_pred))
 
     def gradient_descent(self, X, y):
         n_iterations = len(y) // self.batch_size(len(y))
@@ -216,14 +219,12 @@ class NeuralNetwork(RegressionClass):
                     self.weights_hidden[l] -= self.learning_rate * gradients_weight[l]
                     self.biases_hidden[l] -= self.learning_rate * gradients_bias[l]
 
-                # exit()
-                """rdiff = np.max(np.abs(grads[-1] / beta[-1]))
-                if rdiff < self.rtol:
-                    print("Tolerance reached")
-                    return
-
-                beta -= grads"""
-            print(i)
+            y_pred = self.feed_forward(X)[0][-1]
+            # y_pred = self.predict(X)
+            print("L0L")
+            cost = self.cost(y, y_pred)
+            print("pls")
+            print(f"Epochs {i / self.n_epochs * 100}% done. Cost func: {cost}")
 
     def predict(self, X):
         prediction = self.feed_forward(X)[0][-1]

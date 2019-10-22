@@ -13,7 +13,7 @@ X_train, X_test, y_train, y_test = sklms.train_test_split(
 
 rate = 1e-5
 M = 200
-n = 2000
+n = 200
 
 layer_size = (18, 12, 6)
 
@@ -24,6 +24,7 @@ test = NeuralNetwork(
 test.fit(X_train, y_train)
 test.predict(X_train)
 print(test.accuracy_score(X_train, y_train))
+exit()
 # print(layer_size)
 
 reg = sknn.MLPClassifier(
