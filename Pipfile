@@ -16,6 +16,7 @@ jupyter = "*"
 ipykernel = "*"
 xlrd = "*"
 autograd = "*"
+imblearn = "*"
 
 [requires]
 python_version = "3.6"
