@@ -127,34 +127,50 @@ class NeuralNetwork(RegressionClass):
         )
         self.biases_out = np.zeros(self.n_outputs) + 0.01
 
+    def p(self, beta, X):
+        exp_expression = np.exp(X @ beta)
+        return exp_expression / (1 + exp_expression)
+
+    def grad_cost_function(self, beta, X, y):
+        return -X.T @ (y - self.p(beta, X))
+
     @staticmethod
     def sigmoid(z):
+        """
+        The sigmoid function. Use as activation function
+        """
         expo = np.exp(z)
         return expo / (1 + expo)
 
     @staticmethod
     def softmax(z):
+        """
+        The softmax function. Can be used as activation function.
+        """
         expo = np.exp(z)
-        return expo/np.sum(expo, axis=1, keepdims=True)
-
+        return expo / np.sum(expo, axis=1, keepdims=True)
 
     def feed_forward(self, X):
         a_i = [X]  # self.activation(X)
+        z_i = [0]
+
         for i in range(self.n_hidden_layers):
-            a_i.append(
-                self.sigmoid(a_i[i] @ self.weights_hidden[i] + self.biases_hidden[i])
-            )
-        a_i.append(self.softmax(a_i[-1] @ self.weights_out + self.biases_out))
+            z_i.append(a_i[i] @ self.weights_hidden[i] + self.biases_hidden[i])
+            a_i.append(self.sigmoid(z_i[i + 1]))
+        z_i.append(a_i[-1] @ self.weights_out + self.biases_out)
+        a_i.append(self.sigmoid(z_i[-1]))
         # a_i.pop(0)
-        return a_i
+        return a_i, z_i
 
     def grad_cost_function(self, model, target):
         return (model - target) / (model * (1 - model))
 
+    """
     def backpropagation(self, X, y):
         # output layer
         a_i = self.feed_forward(X)
-        errors = [-y + a_i[-1]]
+        # seems like we need to use y.reshape(-1,1) if we don't encode y
+        errors = [-y.reshape(-1, 1) + a_i[-1]]
         gradients_weight = [a_i[-2].T @ errors[0]]
         gradients_bias = [np.sum(errors[0], axis=0)]
         # print(gradients_bias[0].shape)
@@ -176,6 +192,34 @@ class NeuralNetwork(RegressionClass):
             # print(gradients_bias[i].shape)
         # exit()
         return gradients_weight, gradients_bias
+        """
+
+    def backpropagation(self, X, y):
+        a_i, z_i = self.feed_forward(X)
+        delta = []
+        gradient_bias = []
+        gradient_weight = []
+
+        # output layer
+        delta.append(self.grad_cost(a_i[-1]) * self.grad_sigmoid(z_i[-1]))
+        gradient_bias.append(delta[0])
+        gradient_weight.append(delta[0] @ a_i[-2])
+
+        # outer hidden layer
+        delta.append(self.weights_out.T @ delta[0] * self.grad_sigmoid(z_i[-2]))
+        gradient_bias.append(np.sum(delta[1], axis=0))
+        gradient_weight.append(delta[1] * a_i[-3])
+
+        for l in range(2, self.n_hidden_layers):
+            delta.append(
+                self.weights_hidden[-l + 1].T
+                @ delta[l - 1]
+                * self.grad_sigmoid(z_i[-(l + 1)])
+            )
+            gradient_bias.append(delta[l])
+            gradient_weight.append(delta[l] @ a_i[-(l + 2)])
+
+        return gradient_weight, gradient_bias
 
     def gradient_descent(self, X, y):
         n_iterations = len(y) // self.batch_size(len(y))
@@ -215,6 +259,7 @@ class NeuralNetwork(RegressionClass):
         print(prediction)
         prediction[prediction >= 0.5] = 1
         prediction[prediction != 1] = 0
+        print(prediction)
         return prediction  # .astype(np.int)
 
 
