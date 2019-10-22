@@ -131,9 +131,6 @@ class NeuralNetwork(RegressionClass):
         exp_expression = np.exp(X @ beta)
         return exp_expression / (1 + exp_expression)
 
-    def grad_cost_function(self, beta, X, y):
-        return -X.T @ (y - self.p(beta, X))
-
     @staticmethod
     def sigmoid(z):
         """
@@ -141,6 +138,11 @@ class NeuralNetwork(RegressionClass):
         """
         expo = np.exp(z)
         return expo / (1 + expo)
+
+    def activation_function(self, z, layer):
+        activation = self.activation_function_list[layer]
+        if activation == "sigmoid":
+            return self.sigmoid(z)
 
     @staticmethod
     def softmax(z):
@@ -161,9 +163,6 @@ class NeuralNetwork(RegressionClass):
         a_i.append(self.sigmoid(z_i[-1]))
         # a_i.pop(0)
         return a_i, z_i
-
-    def grad_cost_function(self, model, target):
-        return (model - target) / (model * (1 - model))
 
     """
     def backpropagation(self, X, y):
@@ -196,14 +195,18 @@ class NeuralNetwork(RegressionClass):
 
     def backpropagation(self, X, y):
         a_i, z_i = self.feed_forward(X)
-        delta = []
-        gradient_bias = []
-        gradient_weight = []
+        delta = np.zeros(self.n_hidden_layers + 2, dtype=np.ndarray)
+        gradient_bias = np.zeros_like(delta)
+        gradient_weight = np.zeros_like(delta)
+        # delta = []
+        # gradient_bias = []
+        # gradient_weight = []
 
         # output layer
-        delta.append(self.grad_cost(a_i[-1]) * self.grad_activation(z_i[-1]))
+        delta.append(self.grad_cost(y, a_i[-1]) * self.grad_activation(z_i[-1]))
         gradient_bias.append(delta[0])
         gradient_weight.append(delta[0] @ a_i[-2])
+        # gradient_weight.append(np.einsum("ij", delta[0], a_i[-2]))
 
         # outer hidden layer
         delta.append(self.weights_out.T @ delta[0] * self.grad_activation(z_i[-2]))
@@ -220,6 +223,13 @@ class NeuralNetwork(RegressionClass):
             gradient_weight.append(delta[l] @ a_i[-(l + 2)])
 
         return gradient_weight, gradient_bias
+
+    def grad_activation(self, z_i):
+        exp_expression = np.exp(-z_i)
+        return exp_expression / ((1 + exp_expression) ** 2)
+
+    def grad_cost(self, y, y_pred):
+        return y - y_pred
 
     def gradient_descent(self, X, y):
         n_iterations = len(y) // self.batch_size(len(y))
