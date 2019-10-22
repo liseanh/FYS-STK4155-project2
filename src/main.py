@@ -195,7 +195,7 @@ class NeuralNetwork(RegressionClass):
 
     def backpropagation(self, X, y):
         a_i, z_i = self.feed_forward(X)
-        delta = np.zeros(self.n_hidden_layers + 2, dtype=np.ndarray)
+        delta = np.zeros(self.n_hidden_layers + 1, dtype=np.ndarray)
         gradient_bias = np.zeros_like(delta)
         gradient_weight = np.zeros_like(delta)
         # delta = []
@@ -203,25 +203,49 @@ class NeuralNetwork(RegressionClass):
         # gradient_weight = []
 
         # output layer
-        delta.append(self.grad_cost(y, a_i[-1]) * self.grad_activation(z_i[-1]))
-        gradient_bias.append(delta[0])
-        gradient_weight.append(delta[0] @ a_i[-2])
-        # gradient_weight.append(np.einsum("ij", delta[0], a_i[-2]))
+        # delta.append(self.grad_cost(y, a_i[-1]) * self.grad_activation(z_i[-1]))
+        delta[-1] = self.grad_cost(y, a_i[-1]) * self.grad_activation(z_i[-1])
+        # print(delta[-1].shape)
+        # gradient_bias.append(delta[0])
+        gradient_bias[-1] = np.sum(delta[-1], axis=0)
+        # print(gradient_bias[-1].shape)
+        # gradient_weight.append(delta[0] @ a_i[-2])
+        gradient_weight[-1] = delta[-1].T @ a_i[-2]
+        # print(gradient_weight[-1].shape)
 
         # outer hidden layer
-        delta.append(self.weights_out.T @ delta[0] * self.grad_activation(z_i[-2]))
-        gradient_bias.append(np.sum(delta[1], axis=0))
-        gradient_weight.append(delta[1] * a_i[-3])
-
-        for l in range(2, self.n_hidden_layers):
-            delta.append(
-                self.weights_hidden[-l + 1].T
-                @ delta[l - 1]
+        # delta.append(self.weights_out.T @ delta[0] * self.grad_activation(z_i[-2]))
+        delta[-2] = self.weights_out @ delta[-1].T * self.grad_activation(z_i[-2]).T
+        # print(delta[-2].shape)
+        # gradient_bias.append(np.sum(delta[1], axis=0))
+        gradient_bias[-2] = np.sum(delta[-2], axis=1)
+        # print(gradient_bias[-2].shape)
+        # gradient_weight.append(delta[1] * a_i[-3])
+        gradient_weight[-2] = delta[-2] @ a_i[-3]
+        # print(gradient_weight[-2].shape)
+        # print(gradient_bias[-1].shape)
+        # print(gradient_bias[-2].shape)
+        for l in range(-3, -self.n_hidden_layers - 2, -1):
+            """delta.append(
+                self.weights_hidden[l + 1].T
+                @ delta[l + 1]
                 * self.grad_activation(z_i[-(l + 1)])
+            )"""
+            # print(self.weights_hidden[l + 2].shape)
+            # print(self.weights_hidden[l + 2].shape)
+            # print(delta[l + 1].shape)
+            # print(delta[l + 2].shape)
+            delta[l] = (
+                self.weights_hidden[l + 2]
+                @ delta[l + 1]
+                * self.grad_activation(z_i[l]).T
             )
-            gradient_bias.append(delta[l])
-            gradient_weight.append(delta[l] @ a_i[-(l + 2)])
-
+            gradient_bias[l] = np.sum(delta[l], axis=1)
+            # gradient_bias.append(delta[l])
+            gradient_weight[l] = delta[l] @ a_i[l - 1]
+            # gradient_weight.append(delta[l] @ a_i[-(l + 2)])
+            # gradient_weight.append(delta[l] @ a_i[l - 1])
+            # print(gradient_bias[l].shape)
         return gradient_weight, gradient_bias
 
     def grad_activation(self, z_i):
