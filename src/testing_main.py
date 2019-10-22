@@ -33,14 +33,22 @@ reg = sknn.MLPClassifier(
     max_iter=n,
     solver="sgd",
     batch_size=M,
-    tol=0,
     alpha=0,
     validation_fraction=0,
     momentum=0,
-    nesterovs_momentum=False,
+    tol=0,
     shuffle=False,
+    verbose=True,
 )
 
 reg = reg.fit(X_train, y_train)
 pred = reg.predict(X_test)
 print(reg.score(X_test, y_test), pred)
+
+reg_test = sknn.MLPClassifier(
+    hidden_layer_sizes=layer_size, activation="relu", max_iter=10000, verbose=True
+)
+reg_test = reg_test.fit(X_train, y_train)
+pred = reg_test.predict(X_test)
+print(reg_test.score(X_test, y_test))
+print(reg_test.score(X_train, y_train))
