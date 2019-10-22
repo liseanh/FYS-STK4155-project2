@@ -96,7 +96,7 @@ class NeuralNetwork(RegressionClass):
         self.gradient_descent(X, y)
 
     def init_biases_weights(self):
-        std_weight_init = np.sqrt(2 / self.n_features)
+        std_weight_init = np.sqrt(1 / self.n_features)
 
         self.weights_hidden = []
         self.biases_hidden = []
@@ -199,6 +199,8 @@ class NeuralNetwork(RegressionClass):
             return y - y_pred
 
     def cost(self, y, y_pred):
+        if len(y.shape) == 1:
+            return -np.sum(y.reshape(-1, 1) * np.log(y_pred))
         return -np.sum(y * np.log(y_pred))
 
     def gradient_descent(self, X, y):
@@ -218,13 +220,9 @@ class NeuralNetwork(RegressionClass):
                 for l in range(-2, self.n_hidden_layers - 2, -1):
                     self.weights_hidden[l] -= self.learning_rate * gradients_weight[l]
                     self.biases_hidden[l] -= self.learning_rate * gradients_bias[l]
-
             y_pred = self.feed_forward(X)[0][-1]
-            # y_pred = self.predict(X)
-            print("L0L")
             cost = self.cost(y, y_pred)
-            print("pls")
-            print(f"Epochs {i / self.n_epochs * 100}% done. Cost func: {cost}")
+            print(f"Epochs {i / self.n_epochs * 100:.2f}% done. Cost func: {cost:g}")
 
     def predict(self, X):
         prediction = self.feed_forward(X)[0][-1]
