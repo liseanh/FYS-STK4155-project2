@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import sklearn.preprocessing as sklpre
 import sklearn.compose as sklco
-
+import imblearn
 
 # Retrieve credit card data
 cwd = os.getcwd()
@@ -49,6 +49,10 @@ X_trimmed = np.concatenate([encoded_cols, scaled_cols], axis=1)
 X_final = np.append(np.ones_like(X_trimmed[:, 1]).reshape(-1, 1), X_trimmed, axis=1)
 y_final = y
 
+ros = imblearn.over_sampling.RandomOverSampler(sampling_strategy=0.5,random_state=None)
+X_resample, y_resample = ros.fit_resample(X_final,y_final)
 
-np.save("data/design_matrix_credit.npy", X_final)
-np.save("data/targets_credit.npy", y_final)
+
+
+#np.save("data/design_matrix_credit.npy", X_final)
+#np.save("data/targets_credit.npy", y_final)
