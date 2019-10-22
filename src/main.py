@@ -193,7 +193,10 @@ class NeuralNetwork(RegressionClass):
         return exp_expression / ((1 + exp_expression) ** 2)
 
     def grad_cost(self, y, y_pred):
-        return y - y_pred
+        if len(y.shape)==1:
+            return y.reshape(-1,1) - y_pred
+        else:
+            return y - y_pred
 
     def gradient_descent(self, X, y):
         n_iterations = len(y) // self.batch_size(len(y))
@@ -220,10 +223,11 @@ class NeuralNetwork(RegressionClass):
                     return
 
                 beta -= grads"""
+            print(i)
 
     def predict(self, X):
         prediction = self.feed_forward(X)[0][-1]
-        # print(prediction)
+        print(prediction)
         prediction[prediction >= 0.5] = 1
         prediction[prediction != 1] = 0
         # print(prediction)
