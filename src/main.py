@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-
+from scipy.special import xlogy
 
 class RegressionClass:
     def __init__(
@@ -193,16 +193,18 @@ class NeuralNetwork(RegressionClass):
         return exp_expression / ((1 + exp_expression) ** 2)
 
     def grad_cost(self, y, y_pred):
-        if len(y.shape) == 1:
-            return y.reshape(-1, 1) - y_pred
-        else:
-            return y - y_pred
+        y_ = y.copy()
+        if len(y_.shape) == 1:
+            y_ = y_.reshape(-1, 1) - y_pred
+        return y_ - y_pred
 
     def cost(self, y, y_pred):
-        if len(y.shape) == 1:
-            return -np.sum(y.reshape(-1, 1) * np.log(y_pred))
-        else:
-            return -np.sum(y * np.log(y_pred))
+        y_ = y.copy()
+        if len(y_.shape)==1:
+            y_ = y_.reshape(-1,1)
+        return -np.sum(xlogy(y_, y_pred) + xlogy(1 - y_, 1 - y_pred)) / y_pred.shape[0]
+
+
 
     def gradient_descent(self, X, y):
         n_iterations = len(y) // self.batch_size(len(y))
