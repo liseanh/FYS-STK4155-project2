@@ -74,7 +74,7 @@ class NeuralNetwork(RegressionClass):
         hidden_layer_size=(20, 10, 5, 3),
         learning_rate=0.1,
         n_epochs=2000,
-        rtol=0.01,
+        rtol=0.001,
         batch_size="auto",
         penalty=None,
     ):
@@ -207,6 +207,7 @@ class NeuralNetwork(RegressionClass):
         n_iterations = len(y) // self.batch_size(len(y))
         y_batches = np.array_split(y, n_iterations)
         X_batches = np.array_split(X, n_iterations, axis=0)
+        cost = np.zeros(self.n_epochs)
         for i in range(self.n_epochs):
             for j in range(n_iterations):
                 random_batch = np.random.randint(n_iterations)
@@ -221,8 +222,19 @@ class NeuralNetwork(RegressionClass):
                     self.weights_hidden[l] -= self.learning_rate * gradients_weight[l]
                     self.biases_hidden[l] -= self.learning_rate * gradients_bias[l]
             y_pred = self.feed_forward(X)[0][-1]
-            cost = self.cost(y, y_pred)
-            print(f"Epochs {i / self.n_epochs * 100:.2f}% done. Cost func: {cost:g}")
+            cost[i] = self.cost(y, y_pred)
+            print(f"Epochs {i / self.n_epochs * 100:.2f}% done. Cost func: {cost[i]:g}")
+            if i > 10:
+                cost_diff = (cost[i - 10 : i + 1] - cost[i - 11 : i]) / cost[
+                    i - 10 : i + 1
+                ]
+                if np.max(cost_diff) < self.rtol:
+                    print(
+                        f"Loss function did not improve more than given relative tolerance "
+                        + f"{self.rtol:g} for 10 consecutive epochs. Stopping at epoch {i:g}"
+                    )
+                    print(np.max(cost_diff))
+                    break
 
     def predict(self, X):
         prediction = self.feed_forward(X)[0][-1]
