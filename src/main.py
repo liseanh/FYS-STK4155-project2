@@ -201,13 +201,17 @@ class NeuralNetwork(RegressionClass):
     def cost(self, y, y_pred):
         if len(y.shape) == 1:
             return -np.sum(y.reshape(-1, 1) * np.log(y_pred))
-        return -np.sum(y * np.log(y_pred))
+        else:
+            return -np.sum(y * np.log(y_pred))
 
     def gradient_descent(self, X, y):
         n_iterations = len(y) // self.batch_size(len(y))
         y_batches = np.array_split(y, n_iterations)
         X_batches = np.array_split(X, n_iterations, axis=0)
         cost = np.zeros(self.n_epochs)
+        y_pred = self.feed_forward(X)[0][-1]
+        print(f"INITIAL. Cost func: {self.cost(y,y_pred):g}")
+
         for i in range(self.n_epochs):
             for j in range(n_iterations):
                 random_batch = np.random.randint(n_iterations)
