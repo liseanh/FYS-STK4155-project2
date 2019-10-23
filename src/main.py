@@ -236,7 +236,7 @@ class NeuralNetwork(RegressionClass):
     def grad_cost(y, y_pred):
         y_ = y.copy()
         if len(y_.shape) == 1:
-            y_ = y_.reshape(-1, 1) - y_pred
+            y_ = y_.reshape(-1, 1)
         return y_pred - y_
 
     @staticmethod
