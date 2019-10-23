@@ -103,15 +103,15 @@ class NeuralNetwork(RegressionClass):
 
         for i in range(self.n_hidden_layers):
             if i == 0:
-                hidden_weights = np.random.normal(
-                    loc=0,
-                    scale=std_weight_init,
+                hidden_weights = np.random.uniform(
+                    -std_weight_init,
+                    std_weight_init,
                     size=(self.n_features, self.hidden_layer_size[i]),
                 )
             else:
-                hidden_weights = np.random.normal(
-                    loc=0,
-                    scale=std_weight_init,
+                hidden_weights = np.random.uniform(
+                    -std_weight_init,
+                    std_weight_init,
                     size=(self.hidden_layer_size[i - 1], self.hidden_layer_size[i]),
                 )
 
@@ -225,9 +225,7 @@ class NeuralNetwork(RegressionClass):
             cost[i] = self.cost(y, y_pred)
             print(f"Epochs {i / self.n_epochs * 100:.2f}% done. Cost func: {cost[i]:g}")
             if i > 10:
-                cost_diff = (cost[i - 10 : i + 1] - cost[i - 11 : i]) / cost[
-                    i - 10 : i + 1
-                ]
+                cost_diff = (cost[i - 11 : i] - cost[i - 10 : i + 1]) / cost[i - 11 : i]
                 if np.max(cost_diff) < self.rtol:
                     print(
                         f"Loss function did not improve more than given relative tolerance "
