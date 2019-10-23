@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.special import xlogy
 
+
 class RegressionClass:
     def __init__(
         self,
@@ -91,9 +92,15 @@ class NeuralNetwork(RegressionClass):
             self.n_outputs = y.shape[1]
 
         self.init_biases_weights()
-        # self.backpropagation(X, y)
-        # self.feed_forward(X)
+
         self.gradient_descent(X, y)
+
+    def predict(self, X):
+        prediction = self.feed_forward(X)[0][-1]
+        print(prediction)
+        prediction[prediction >= 0.5] = 1
+        prediction[prediction != 1] = 0
+        return prediction  
 
     def init_biases_weights(self):
         std_weight_init = np.sqrt(1 / self.n_features)
@@ -127,33 +134,8 @@ class NeuralNetwork(RegressionClass):
         )
         self.biases_out = np.zeros(self.n_outputs) + 0.01
 
-    def p(self, beta, X):
-        exp_expression = np.exp(X @ beta)
-        return exp_expression / (1 + exp_expression)
-
-    @staticmethod
-    def sigmoid(z):
-        """
-        The sigmoid function. Use as activation function
-        """
-        expo = np.exp(z)
-        return expo / (1 + expo)
-
-    def activation_function(self, z, layer):
-        activation = self.activation_function_list[layer]
-        if activation == "sigmoid":
-            return self.sigmoid(z)
-
-    @staticmethod
-    def softmax(z):
-        """
-        The softmax function. Can be used as activation function.
-        """
-        expo = np.exp(z)
-        return expo / np.sum(expo, axis=1, keepdims=True)
-
     def feed_forward(self, X):
-        a_i = [X]  # self.activation(X)
+        a_i = [X]
         z_i = [0]
 
         for i in range(self.n_hidden_layers):
@@ -161,7 +143,6 @@ class NeuralNetwork(RegressionClass):
             a_i.append(self.sigmoid(z_i[i + 1]))
         z_i.append(a_i[-1] @ self.weights_out + self.biases_out)
         a_i.append(self.sigmoid(z_i[-1]))
-        # a_i.pop(0)
         return a_i, z_i
 
     def backpropagation(self, X, y):
@@ -187,24 +168,6 @@ class NeuralNetwork(RegressionClass):
             gradient_bias[l] = np.sum(delta[l], axis=1)
             gradient_weight[l] = delta[l] @ a_i[l - 1]
         return gradient_weight, gradient_bias
-
-    def grad_activation(self, z_i):
-        exp_expression = np.exp(-z_i)
-        return exp_expression / ((1 + exp_expression) ** 2)
-
-    def grad_cost(self, y, y_pred):
-        y_ = y.copy()
-        if len(y_.shape) == 1:
-            y_ = y_.reshape(-1, 1) - y_pred
-        return y_ - y_pred
-
-    def cost(self, y, y_pred):
-        y_ = y.copy()
-        if len(y_.shape)==1:
-            y_ = y_.reshape(-1,1)
-        return -np.sum(xlogy(y_, y_pred) + xlogy(1 - y_, 1 - y_pred)) / y_pred.shape[0]
-
-
 
     def gradient_descent(self, X, y):
         n_iterations = len(y) // self.batch_size(len(y))
@@ -240,13 +203,49 @@ class NeuralNetwork(RegressionClass):
                     print(np.max(cost_diff))
                     break
 
-    def predict(self, X):
-        prediction = self.feed_forward(X)[0][-1]
-        print(prediction)
-        prediction[prediction >= 0.5] = 1
-        prediction[prediction != 1] = 0
-        # print(prediction)
-        return prediction  # .astype(np.int)
+    def activation_function(self, z, layer):
+        """
+        Not used yet. If we get time, we will modify the class to be able to use
+        several different activation functions using this method
+        """
+        activation = self.activation_function_list[layer]
+        if activation == "sigmoid":
+            return self.sigmoid(z)
+
+    @staticmethod
+    def sigmoid(z):
+        """
+        The sigmoid function. Use as activation function
+        """
+        expo = np.exp(z)
+        return expo / (1 + expo)
+
+    @staticmethod
+    def softmax(z):
+        """
+        The softmax function. Can be used as activation function.
+        """
+        expo = np.exp(z)
+        return expo / np.sum(expo, axis=1, keepdims=True)
+
+    @staticmethod
+    def grad_activation(z_i):
+        exp_expression = np.exp(-z_i)
+        return exp_expression / ((1 + exp_expression) ** 2)
+
+    @staticmethod
+    def grad_cost(y, y_pred):
+        y_ = y.copy()
+        if len(y_.shape) == 1:
+            y_ = y_.reshape(-1, 1) - y_pred
+        return y_ - y_pred
+
+    @staticmethod
+    def cost(y, y_pred):
+        y_ = y.copy()
+        if len(y_.shape) == 1:
+            y_ = y_.reshape(-1, 1)
+        return -np.sum(xlogy(y_, y_pred) + xlogy(1 - y_, 1 - y_pred)) / y_pred.shape[0]
 
 
 if __name__ == "__main__":
