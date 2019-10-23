@@ -46,7 +46,8 @@ scaled_cols = scaler.fit_transform(X_trim[col_scale])
 X_trimmed = np.concatenate([encoded_cols, scaled_cols], axis=1)
 
 # Add on intercept column
-X_ = np.append(np.ones_like(X_trimmed[:, 1]).reshape(-1, 1), X_trimmed, axis=1)
+#X_ = np.append(np.ones_like(X_trimmed[:, 1]).reshape(-1, 1), X_trimmed, axis=1)
+X_ = X_trimmed
 y_ = y
 
 ros = imblearn.over_sampling.RandomOverSampler(sampling_strategy=1)
