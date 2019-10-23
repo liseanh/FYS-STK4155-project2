@@ -237,7 +237,7 @@ class NeuralNetwork(RegressionClass):
         y_ = y.copy()
         if len(y_.shape) == 1:
             y_ = y_.reshape(-1, 1) - y_pred
-        return y_ - y_pred
+        return y_pred - y_
 
     @staticmethod
     def cost(y, y_pred):
