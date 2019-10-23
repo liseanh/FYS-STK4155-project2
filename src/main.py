@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.special import xlogy
-
+import scipy.special as sps
 
 class RegressionClass:
     def __init__(
@@ -245,7 +244,7 @@ class NeuralNetwork(RegressionClass):
         y_ = y.copy()
         if len(y_.shape) == 1:
             y_ = y_.reshape(-1, 1)
-        return -np.sum(xlogy(y_, y_pred) + xlogy(1 - y_, 1 - y_pred)) / y_pred.shape[0]
+        return -np.sum(sps.xlogy(y_, y_pred) + sps.xlogy(1 - y_, 1 - y_pred)) / y_pred.shape[0]
 
 
 if __name__ == "__main__":
