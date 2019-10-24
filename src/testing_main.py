@@ -4,30 +4,30 @@ import sklearn.preprocessing as sklpre
 import sklearn.model_selection as sklms
 import sklearn.neural_network as sknn
 
-X = np.load("data/design_matrix_credit.npy")
-y = np.load("data/targets_credit.npy")
-X_train, X_test, y_train, y_test = sklms.train_test_split(
-    X, y, test_size=0.33, stratify=y
-)
+training_set = np.load("data/credit_data_train.npz")
+test_set = np.load("data/credit_data_test.npz")
 
-rate = 1
-M = 200
-n = 2000
+X_train, y_train = training_set["X_train"], training_set["y_train"]
+X_test, y_test = test_set["X_train"], test_set["y_train"]
 
-layer_size = (18, 12, 6)
+rate = 0.1
+M = 80
+n = 500
+
+layer_size = (50,50,50,50)
+
 
 test = NeuralNetwork(
-    n_epochs=n, batch_size=M, learning_rate=rate, hidden_layer_size=layer_size
+    n_epochs=n, batch_size=M, learning_rate=rate, hidden_layer_size=layer_size, rtol=1e-5
 )
 
 test.fit(X_train, y_train)
-test.predict(X_train)
+#test.predict(X_train)
 print(test.accuracy_score(X_train, y_train))
-exit()
 
+exit()
 reg = sknn.MLPClassifier(
     hidden_layer_sizes=layer_size,
-    activation="logistic",
     learning_rate="constant",
     learning_rate_init=rate,
     max_iter=n,
@@ -45,6 +45,7 @@ reg = reg.fit(X_train, y_train)
 pred = reg.predict(X_test)
 print(reg.score(X_test, y_test), pred)
 
+exit()
 reg_test = sknn.MLPClassifier(
     hidden_layer_sizes=layer_size, activation="relu", max_iter=10000, verbose=True
 )
