@@ -8,7 +8,7 @@ training_set = np.load("data/credit_data_train.npz")
 test_set = np.load("data/credit_data_test.npz")
 
 X_train, y_train = training_set["X_train"], training_set["y_train"]
-X_test, y_test = test_set["X_train"], test_set["y_train"]
+X_test, y_test = test_set["X_test"], test_set["y_test"]
 
 rate = 0.1
 M = 80
