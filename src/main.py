@@ -170,17 +170,16 @@ class NeuralNetwork(RegressionClass):
 
     def gradient_descent(self, X, y):
         n_iterations = len(y) // self.batch_size(len(y))
-        y_batches = np.array_split(y, n_iterations)
-        X_batches = np.array_split(X, n_iterations, axis=0)
         cost = np.zeros(self.n_epochs)
         y_pred = self.feed_forward(X)[0][-1]
         print(f"INITIAL. Cost func: {self.cost(y,y_pred):g}")
 
         for i in range(self.n_epochs):
+            batch_indices = np.array_split(np.random.permutation(len(y)), n_iterations)
             for j in range(n_iterations):
                 random_batch = np.random.randint(n_iterations)
                 gradients_weight, gradients_bias = self.backpropagation(
-                    X_batches[random_batch], y_batches[random_batch]
+                    X[batch_indices[random_batch]], y[batch_indices[random_batch]]
                 )
                 # output layer
                 self.weights_out -= self.learning_rate * gradients_weight[-1]
@@ -189,8 +188,6 @@ class NeuralNetwork(RegressionClass):
                 for l in range(-1, -self.n_hidden_layers-1, -1):
                     self.weights_hidden[l] -= self.learning_rate * gradients_weight[l-1].T
                     self.biases_hidden[l] -= self.learning_rate * gradients_bias[l-1].T
-                    #print(l, len(gradients_weight), len(self.weights_hidden))
-                #exit()
             y_pred = self.feed_forward(X)[0][-1]
             cost[i] = self.cost(y, y_pred)
             print(f"Epochs {i / self.n_epochs * 100:.2f}% done. Cost func: {cost[i]:g}")
