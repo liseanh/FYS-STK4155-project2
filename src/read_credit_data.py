@@ -13,7 +13,9 @@ df = pd.read_excel(filename, header=1)
 
 
 # Define design matrix X and targets y
-features = df.loc[:, (df.columns != "default payment next month") & (df.columns != "ID")]
+features = df.loc[
+    :, (df.columns != "default payment next month") & (df.columns != "ID")
+]
 X = features.values
 y = df["default payment next month"].values
 
@@ -38,7 +40,7 @@ X_resample, y_resample = ros.fit_resample(X, y)
 
 # Split the data into training and test set
 X_train_, X_test_, y_train, y_test = sklms.train_test_split(
-    X_resample, y_resample, test_size=0.33,
+    X_resample, y_resample, test_size=0.33
 )
 
 # Make dataframes of scaled features
@@ -70,4 +72,4 @@ X_test = np.concatenate([encoded_cols_test, scaled_cols_test], axis=1)
 
 # Export the preprocessed data
 np.savez("data/credit_data_train.npz", X_train=X_train, y_train=y_train)
-np.savez("data/credit_data_test.npz", X_train=X_train, y_train=y_train)
+np.savez("data/credit_data_test.npz", X_test=X_test, y_test=y_test)
