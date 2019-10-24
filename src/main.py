@@ -28,7 +28,7 @@ class RegressionClass:
         raise RuntimeError("Please do not use this class directly.")
 
     def accuracy_score(self, X, y):
-        return np.mean(self.predict(X) == y)
+        return np.mean(self.predict(X) == np.array(y, dtype=np.int))
 
 
 class LogisticRegression(RegressionClass):
@@ -96,10 +96,10 @@ class NeuralNetwork(RegressionClass):
 
     def predict(self, X):
         prediction = self.feed_forward(X)[0][-1]
-        print(prediction)
+        #print(prediction)
         prediction[prediction >= 0.5] = 1
         prediction[prediction != 1] = 0
-        return prediction  
+        return np.array(prediction, dtype=np.int).ravel()
 
     def init_biases_weights(self):
         std_weight_init = np.sqrt(1 / self.n_features)
@@ -190,7 +190,7 @@ class NeuralNetwork(RegressionClass):
                     self.weights_hidden[l] -= self.learning_rate * gradients_weight[l-1].T
                     self.biases_hidden[l] -= self.learning_rate * gradients_bias[l-1].T
                     #print(l, len(gradients_weight), len(self.weights_hidden))
-                #exit()    
+                #exit()
             y_pred = self.feed_forward(X)[0][-1]
             cost[i] = self.cost(y, y_pred)
             print(f"Epochs {i / self.n_epochs * 100:.2f}% done. Cost func: {cost[i]:g}")
