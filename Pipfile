@@ -17,6 +17,7 @@ ipykernel = "*"
 xlrd = "*"
 autograd = "*"
 imblearn = "*"
+numba = "*"
 
 [requires]
 python_version = "3.6"

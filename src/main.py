@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.special as sps
+import numba
 
 class RegressionClass:
     def __init__(
@@ -28,6 +29,8 @@ class RegressionClass:
         raise RuntimeError("Please do not use this class directly.")
 
     def accuracy_score(self, X, y):
+        if len(y.shape) == 1:
+            raise ValueError("y-array must have shape (n, 1) Use numpy.reshape(-1, 1)")
         return np.mean(self.predict(X) == np.array(y, dtype=np.int))
 
 
@@ -86,7 +89,7 @@ class NeuralNetwork(RegressionClass):
         self.n_features = len(X[0, :])
         self.n_inputs = len(X[:, 0])
         if len(y.shape) == 1:
-            self.n_outputs = 1
+            raise ValueError("y-array must have shape (n, 1) Use numpy.reshape(-1, 1)")
         else:
             self.n_outputs = y.shape[1]
 
@@ -99,7 +102,7 @@ class NeuralNetwork(RegressionClass):
         #print(prediction)
         prediction[prediction >= 0.5] = 1
         prediction[prediction != 1] = 0
-        return np.array(prediction, dtype=np.int).ravel()
+        return np.array(prediction, dtype=np.int)
 
     def init_biases_weights(self):
         std_weight_init = np.sqrt(1 / self.n_features)
@@ -210,7 +213,9 @@ class NeuralNetwork(RegressionClass):
         if activation == "sigmoid":
             return self.sigmoid(z)
 
+
     @staticmethod
+    @numba.jit(nopython=True)
     def sigmoid(z):
         """
         The sigmoid function. Use as activation function
@@ -218,32 +223,22 @@ class NeuralNetwork(RegressionClass):
         expo = np.exp(z)
         return expo / (1 + expo)
 
-    @staticmethod
-    def softmax(z):
-        """
-        The softmax function. Can be used as activation function.
-        """
-        expo = np.exp(z)
-        return expo / np.sum(expo, axis=1, keepdims=True)
 
     @staticmethod
+    @numba.jit(nopython=True)
     def grad_activation(z_i):
         exp_expression = np.exp(-z_i)
         return exp_expression / ((1 + exp_expression) ** 2)
 
     @staticmethod
+    @numba.jit(nopython=True)
     def grad_cost(y, y_pred):
-        y_ = y.copy()
-        if len(y_.shape) == 1:
-            y_ = y_.reshape(-1, 1)
-        return y_pred - y_
+        return y_pred - y
+
 
     @staticmethod
     def cost(y, y_pred):
-        y_ = y.copy()
-        if len(y_.shape) == 1:
-            y_ = y_.reshape(-1, 1)
-        return -np.sum(sps.xlogy(y_, y_pred) + sps.xlogy(1 - y_, 1 - y_pred)) / y_pred.shape[0]
+        return -np.sum(sps.xlogy(y, y_pred) + sps.xlogy(1 - y, 1 - y_pred)) / y_pred.shape[0]
 
 
 if __name__ == "__main__":

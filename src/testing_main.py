@@ -7,15 +7,14 @@ import sklearn.neural_network as sknn
 training_set = np.load("data/credit_data_train.npz")
 test_set = np.load("data/credit_data_test.npz")
 
-X_train, y_train = training_set["X_train"], training_set["y_train"]
-X_test, y_test = test_set["X_test"], test_set["y_test"]
+X_train, y_train = training_set["X_train"], training_set["y_train"].reshape(-1, 1)
+X_test, y_test = test_set["X_test"], test_set["y_test"].reshape(-1, 1)
 
 rate = 1e-2
 M = 200
-n = 1000
+n = 100
 
-layer_size = [50, 25]
-
+layer_size = [50, 50, 50]
 
 test = NeuralNetwork(
     n_epochs=n, batch_size=M, learning_rate=rate, hidden_layer_size=layer_size, rtol=1e-5
@@ -23,7 +22,7 @@ test = NeuralNetwork(
 
 test.fit(X_train, y_train)
 print(f"Our: Train accuracy: {test.accuracy_score(X_train, y_train)}. Test accuracy: {test.accuracy_score(X_test, y_test)}")
-
+exit()
 
 reg = sknn.MLPClassifier(
     hidden_layer_sizes=layer_size,
