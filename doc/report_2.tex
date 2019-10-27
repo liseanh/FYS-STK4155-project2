@@ -1,4 +1,4 @@
-\documentclass[a4paper, 10pt]{article}
+\documentclass[a4paper, 11pt, twocolumn]{article}
 
 \usepackage[a4paper, total={6in, 8.5in}]{geometry}
 \usepackage[utf8]{inputenc}
@@ -41,11 +41,27 @@ fill
 
 
 \section{Theory}
-fill
+To evaluate the performance of our classification model, we consider the accuracy score, given by 
+\begin{equation}
+\label{eq:accuracy}
+\frac{\sum_{i=1}^nI(t_i=y_i)}{n},
+\end{equation}
+where $t_i$ is the target, $y_i$ is our model output and $I$ is the indicator function, 
+\[
+I = \begin{cases} 
+1 & t_i = y_i\\
+0 & t_i \neq y_i
+\end{cases} .
+\]
+\subsection{Stochastic Gradient Descent (SGD)}
 
+\subsection{Logistic Regression (LR)}
 
+\subsection{Neural Networks (NN)}
 \section{Method}
 fill
+
+
 
 \section{Results}
 
