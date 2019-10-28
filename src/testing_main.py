@@ -1,5 +1,5 @@
 import numpy as np
-from main import NeuralNetwork
+from main import MultilayerPerceptronClassifier
 import sklearn.preprocessing as sklpre
 import sklearn.model_selection as sklms
 import sklearn.neural_network as sknn
@@ -12,11 +12,11 @@ X_test, y_test = test_set["X_test"], test_set["y_test"].reshape(-1, 1)
 
 rate = 1e-2
 M = 200
-n = 100
+n = 10000
 
-layer_size = [50, 50, 50]
+layer_size = [50, 50, 50, 50]
 
-test = NeuralNetwork(
+test = MultilayerPerceptronClassifier(
     n_epochs=n, batch_size=M, learning_rate=rate, hidden_layer_size=layer_size, rtol=1e-5
 )
 
