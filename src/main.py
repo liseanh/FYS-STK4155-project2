@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import scipy.special as sps
 import numba
 
+
 class RegressionClass:
     def __init__(
         self,
@@ -99,7 +100,6 @@ class MultilayerPerceptronClassifier(RegressionClass):
 
     def predict(self, X):
         prediction = self.feed_forward(X)[0][-1]
-        #print(prediction)
         prediction[prediction >= 0.5] = 1
         prediction[prediction != 1] = 0
         return np.array(prediction, dtype=np.int)
@@ -143,6 +143,7 @@ class MultilayerPerceptronClassifier(RegressionClass):
         for i in range(self.n_hidden_layers):
             z_i.append(a_i[i] @ self.weights_hidden[i] + self.biases_hidden[i])
             a_i.append(self.sigmoid(z_i[i + 1]))
+
         z_i.append(a_i[-1] @ self.weights_out + self.biases_out)
         a_i.append(self.sigmoid(z_i[-1]))
         return a_i, z_i
@@ -188,9 +189,11 @@ class MultilayerPerceptronClassifier(RegressionClass):
                 self.weights_out -= self.learning_rate * gradients_weight[-1]
                 self.biases_out -= self.learning_rate * gradients_bias[-1]
                 # hidden layer
-                for l in range(-1, -self.n_hidden_layers-1, -1):
-                    self.weights_hidden[l] -= self.learning_rate * gradients_weight[l-1].T
-                    self.biases_hidden[l] -= self.learning_rate * gradients_bias[l-1].T
+                for l in range(-1, -self.n_hidden_layers - 1, -1):
+                    self.weights_hidden[l] -= (
+                        self.learning_rate * gradients_weight[l - 1].T
+                    )
+                    self.biases_hidden[l] -= self.learning_rate * gradients_bias[l - 1]
             y_pred = self.feed_forward(X)[0][-1]
             cost[i] = self.cost(y, y_pred)
             print(f"Epochs {i / self.n_epochs * 100:.2f}% done. Cost func: {cost[i]:g}")
@@ -213,7 +216,6 @@ class MultilayerPerceptronClassifier(RegressionClass):
         if activation == "sigmoid":
             return self.sigmoid(z)
 
-
     @staticmethod
     @numba.njit
     def sigmoid(z):
@@ -222,7 +224,6 @@ class MultilayerPerceptronClassifier(RegressionClass):
         """
         expo = np.exp(z)
         return expo / (1 + expo)
-
 
     @staticmethod
     @numba.njit
@@ -235,10 +236,12 @@ class MultilayerPerceptronClassifier(RegressionClass):
     def grad_cost(y, y_pred):
         return y_pred - y
 
-
     @staticmethod
     def cost(y, y_pred):
-        return -np.sum(sps.xlogy(y, y_pred) + sps.xlogy(1 - y, 1 - y_pred)) / y_pred.shape[0]
+        return (
+            -np.sum(sps.xlogy(y, y_pred) + sps.xlogy(1 - y, 1 - y_pred))
+            / y_pred.shape[0]
+        )
 
 
 class MultilayerPerceptronRegressor(MultilayerPerceptronClassifier):
@@ -249,15 +252,19 @@ class MultilayerPerceptronRegressor(MultilayerPerceptronClassifier):
     @staticmethod
     @numba.njit
     def cost(y, y_pred):
-        return np.sum((y_pred - y)**2) / 2
+        return np.sum((y_pred - y) ** 2) / 2
 
     @staticmethod
     @numba.njit
     def grad_cost(y, y_pred):
-        return np.sum(y_pred - y)
+        return y_pred - y
 
     def accuracy_score(self):
         raise TypeError("Accuracy score is not valid for regression")
+
+    def r2_score(self, X, y):
+        return 1 - np.sum((y - self.predict(X)) ** 2) / np.sum((y - np.mean(y)) ** 2)
+
 
 if __name__ == "__main__":
     pass
