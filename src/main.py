@@ -37,7 +37,7 @@ class RegressionClass:
 class LogisticRegression(RegressionClass):
     def fit(self, X, y):
         beta = np.random.normal(0, np.sqrt(2 / X.shape[1]), size=X.shape[1])
-        self.gradient_descent(beta, X, y)
+        self.stochastic_stochastic_gradient_descent(beta, X, y)
         self.beta = beta
 
     def p(self, beta, X):
@@ -47,7 +47,7 @@ class LogisticRegression(RegressionClass):
     def grad_cost_function(self, beta, X, y):
         return -X.T @ (y - self.p(beta, X))
 
-    def gradient_descent(self, beta, X, y):
+    def stochastic_stochastic_gradient_descent(self, beta, X, y):
         n_iterations = len(y) // self.batch_size(len(y))
         y_batches = np.array_split(y, n_iterations)
         X_batches = np.array_split(X, n_iterations, axis=0)
@@ -95,7 +95,7 @@ class NeuralNetwork(RegressionClass):
 
         self.init_biases_weights()
 
-        self.gradient_descent(X, y)
+        self.stochastic_stochastic_gradient_descent(X, y)
 
     def predict(self, X):
         prediction = self.feed_forward(X)[0][-1]
@@ -171,7 +171,7 @@ class NeuralNetwork(RegressionClass):
             gradient_weight[l] = delta[l] @ a_i[l - 1]
         return gradient_weight, gradient_bias
 
-    def gradient_descent(self, X, y):
+    def stochastic_stochastic_gradient_descent(self, X, y):
         n_iterations = len(y) // self.batch_size(len(y))
         cost = np.zeros(self.n_epochs)
         y_pred = self.feed_forward(X)[0][-1]
