@@ -24,24 +24,31 @@ x, y, z = generate_Franke_data(100, 100)
 
 x = x.ravel()
 y = y.ravel()
-z = z.ravel()
+z = z.ravel().reshape(-1, 1)
 
-X = np.array([x, y])
-print(X.shape)
-exit()
+X = np.array([x, y]).T
 
-rate = 1e-2
-M = 200
-n = 100
+X_train, X_test, z_train, z_test = sklms.train_test_split(X, z, test_size=0.33)
 
-layer_size = [50, 50, 50]
+scaler = sklpre.StandardScaler().fit(X_train)
+
+X_train = scaler.transform(X_train)
+X_test = scaler.transform(X_test)
+
+rate = 1e-3
+M = "auto" #len(z_train)
+n = 1000
+
+layer_size = [200, 100, 100]
 
 regressor = MultilayerPerceptronRegressor(
     n_epochs=n,
     batch_size=M,
     learning_rate=rate,
     hidden_layer_size=layer_size,
-    rtol=1e-5,
+    rtol=-np.inf,
 )
 
-regressor.fit()
+regressor.fit(X_train, z_train)
+print(f"Train R2 score: {regressor.r2_score(X_train, z_train)}")
+print(f"Test R2 score: {regressor.r2_score(X_test, z_test)}")

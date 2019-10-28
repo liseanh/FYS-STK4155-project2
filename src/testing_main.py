@@ -10,6 +10,7 @@ test_set = np.load("data/credit_data_test.npz")
 X_train, y_train = training_set["X_train"], training_set["y_train"].reshape(-1, 1)
 X_test, y_test = test_set["X_test"], test_set["y_test"].reshape(-1, 1)
 
+
 rate = 1e-2
 M = 200
 n = 10000
