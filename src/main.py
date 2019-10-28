@@ -215,7 +215,7 @@ class MultilayerPerceptronClassifier(RegressionClass):
 
 
     @staticmethod
-    @numba.jit(nopython=True)
+    @numba.njit
     def sigmoid(z):
         """
         The sigmoid function. Use as activation function
@@ -225,13 +225,13 @@ class MultilayerPerceptronClassifier(RegressionClass):
 
 
     @staticmethod
-    @numba.jit(nopython=True)
+    @numba.njit
     def grad_activation(z_i):
         exp_expression = np.exp(-z_i)
         return exp_expression / ((1 + exp_expression) ** 2)
 
     @staticmethod
-    @numba.jit(nopython=True)
+    @numba.njit
     def grad_cost(y, y_pred):
         return y_pred - y
 
@@ -245,6 +245,19 @@ class MultilayerPerceptronRegressor(MultilayerPerceptronClassifier):
     def predict(self, X):
         prediction = self.feed_forward(X)[0][-1]
         return prediction
+
+    @staticmethod
+    @numba.njit
+    def cost(y, y_pred):
+        return np.sum((y_pred - y)**2)
+
+    @staticmethod
+    @numba.njit
+    def grad_cost(y, y_pred):
+        return np.sum(2 * (y_pred - y))
+
+    def accuracy_score(self):
+        raise TypeError("Accuracy score is not valid for regression")
 
 if __name__ == "__main__":
     pass
