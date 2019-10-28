@@ -71,7 +71,7 @@ class LogisticRegression(RegressionClass):
         return prediction
 
 
-class NeuralNetwork(RegressionClass):
+class MultilayerPerceptronClassifier(RegressionClass):
     def __init__(
         self,
         hidden_layer_size=(20, 10, 5, 3),
@@ -240,6 +240,11 @@ class NeuralNetwork(RegressionClass):
     def cost(y, y_pred):
         return -np.sum(sps.xlogy(y, y_pred) + sps.xlogy(1 - y, 1 - y_pred)) / y_pred.shape[0]
 
+
+class MultilayerPerceptronRegressor(MultilayerPerceptronClassifier):
+    def predict(self, X):
+        prediction = self.feed_forward(X)[0][-1]
+        return prediction
 
 if __name__ == "__main__":
     pass
