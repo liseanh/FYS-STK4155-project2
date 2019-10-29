@@ -98,14 +98,43 @@ class MultilayerPerceptronClassifier(RegressionClass):
             self.n_outputs = y.shape[1]
 
         self.init_biases_weights()
-
         self.stochastic_gradient_descent(X, y)
 
     def predict(self, X):
+        if self.weights_hidden[0].shape[0] != X.shape[1]:
+            print(len(self.weights_hidden[0].shape[0]), X.shape[1])
+            raise ValueError(
+                "Model was fitted on different inputs than what was provided"
+            )
+
         prediction = self.feed_forward(X)[0][-1]
         prediction[prediction >= 0.5] = 1
         prediction[prediction != 1] = 0
         return np.array(prediction, dtype=np.int)
+
+    def accuracy_score(self, X, y):
+        if self.weights_out.shape[1] != y.shape[1]:
+            print(self.weights_out.shape[1], y.shape[1])
+            raise ValueError(
+                "Model was fitted on different outputs than what was provided"
+            )
+        return super().accuracy_score(X, y)
+
+    def save_model(self, filename):
+        np.savez(
+            f"models/{filename}.npz",
+            weights_out=self.weights_out,
+            weights_hidden=self.weights_hidden,
+            biases_out=self.biases_out,
+            biases_hidden=self.biases_hidden,
+        )
+
+    def load_model(self, filename):
+        model = np.load(f"models/{filename}.npz", allow_pickle=True)
+        self.weights_out = model["weights_out"]
+        self.weights_hidden = model["weights_hidden"]
+        self.biases_out = model["biases_out"]
+        self.biases_hidden = model["biases_hidden"]
 
     def init_biases_weights(self):
         std_weight_init = np.sqrt(1 / self.n_features)
@@ -260,6 +289,11 @@ class MultilayerPerceptronClassifier(RegressionClass):
 
 class MultilayerPerceptronRegressor(MultilayerPerceptronClassifier):
     def predict(self, X):
+        if self.weights_hidden[0].shape[0] != X.shape[1]:
+            print(len(self.weights_hidden[0].shape[0]), X.shape[1])
+            raise ValueError(
+                "Model was fitted on different inputs than what was provided"
+            )
         prediction = self.feed_forward(X)[0][-1]
         return prediction
 

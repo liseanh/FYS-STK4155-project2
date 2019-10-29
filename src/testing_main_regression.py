@@ -55,14 +55,13 @@ regressor = MultilayerPerceptronRegressor(
     learning_rate=rate,
     hidden_layer_size=layer_size,
     rtol=-np.inf,
-    verbose=True,
+    verbose=False,
 )
 
 regressor.fit(X_train, z_train)
 print(f"Train R2 score: {regressor.r2_score(X_train, z_train)}")
 print(f"Test R2 score: {regressor.r2_score(X_test, z_test)}")
 
-print(X_train[:, 0].shape)
 
 fig = plt.figure()
 ax = fig.gca(projection="3d")

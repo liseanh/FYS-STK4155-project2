@@ -13,9 +13,9 @@ X_test, y_test = test_set["X_test"], test_set["y_test"].reshape(-1, 1)
 
 rate = 1e-2
 M = 200
-n = 10000
+n = 2
 
-layer_size = [50, 50, 50, 50]
+layer_size = [50, 10]
 
 test = MultilayerPerceptronClassifier(
     n_epochs=n,
@@ -23,13 +23,19 @@ test = MultilayerPerceptronClassifier(
     learning_rate=rate,
     hidden_layer_size=layer_size,
     rtol=1e-5,
-    verbose=True,
+    verbose=False,
 )
 
 test.fit(X_train, y_train)
 print(
     f"Our: Train accuracy: {test.accuracy_score(X_train, y_train)}. Test accuracy: {test.accuracy_score(X_test, y_test)}"
 )
+test.save_model("testing")
+test.load_model("testing")
+print(
+    f"Our: Train accuracy: {test.accuracy_score(X_train, y_train)}. Test accuracy: {test.accuracy_score(X_test, y_test)}"
+)
+
 exit()
 
 reg = sknn.MLPClassifier(
