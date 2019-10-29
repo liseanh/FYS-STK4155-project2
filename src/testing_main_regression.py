@@ -24,7 +24,7 @@ def generate_Franke_data(x_points, y_points, sigma=0):
     return (x, y, z)
 
 
-x, y, z = generate_Franke_data(100, 100, 0.1)
+x, y, z = generate_Franke_data(200, 200, 0)
 
 x_meshgrid = x.copy()
 y_meshgrid = y.copy()
@@ -45,9 +45,9 @@ X_test = scaler.transform(X_test)
 
 rate = 1e-2
 M = "auto"  # len(z_train)
-n = 100
+n = 2000
 
-layer_size = [6, 4, 2]
+layer_size = [50, 25, 15]
 
 regressor = MultilayerPerceptronRegressor(
     n_epochs=n,
@@ -55,7 +55,7 @@ regressor = MultilayerPerceptronRegressor(
     learning_rate=rate,
     hidden_layer_size=layer_size,
     rtol=-np.inf,
-    verbose=False,
+    verbose=True,
 )
 
 regressor.fit(X_train, z_train)

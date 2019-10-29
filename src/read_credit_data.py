@@ -33,15 +33,15 @@ y = y[np.logical_and(X[:, 1] >= 1, X[:, 1] <= 2)]
 X = X[np.logical_and(X[:, 1] >= 1, X[:, 1] <= 2)]
 
 
-# Oversampling to get equal ratio of targets 0 and 1
-ros = imblearn.over_sampling.RandomOverSampler(sampling_strategy=1)
-X_resample, y_resample = ros.fit_resample(X, y)
-
-
 # Split the data into training and test set
 X_train_, X_test_, y_train, y_test = sklms.train_test_split(
-    X_resample, y_resample, test_size=0.33
+    X, y, test_size=0.33, stratify=y
 )
+
+
+# Oversampling to get equal ratio of targets 0 and 1
+ros = imblearn.over_sampling.RandomOverSampler(sampling_strategy=1)
+X_train_, y_train = ros.fit_resample(X_train_, y_train)
 
 # Make dataframes of scaled features
 X_train_df = pd.DataFrame(X_train_, columns=features.columns.values)
