@@ -12,6 +12,7 @@ class RegressionClass:
         rtol=0.01,
         batch_size="auto",
         penalty=None,
+        verbose=False
     ):
         if batch_size == "auto":
             self.batch_size = lambda n_inputs: min(200, n_inputs)
@@ -25,6 +26,7 @@ class RegressionClass:
         self.n_epochs = n_epochs
         self.penalty = penalty
         self.rtol = rtol
+        self.verbose = verbose
 
     def fit(self, X=None, y=None):
         raise RuntimeError("Please do not use this class directly.")
@@ -81,8 +83,9 @@ class MultilayerPerceptronClassifier(RegressionClass):
         rtol=0.001,
         batch_size="auto",
         penalty=None,
+        verbose=False
     ):
-        super().__init__(learning_rate, n_epochs, rtol, batch_size, penalty)
+        super().__init__(learning_rate, n_epochs, rtol, batch_size, penalty, verbose)
         self.hidden_layer_size = hidden_layer_size
         self.n_hidden_layers = len(hidden_layer_size)
 
@@ -183,7 +186,8 @@ class MultilayerPerceptronClassifier(RegressionClass):
         n_iterations = len(y) // self.batch_size(len(y))
         cost = np.zeros(self.n_epochs)
         y_pred = self.feed_forward(X)[0][-1]
-        print(f"INITIAL. Cost func: {self.cost(y,y_pred):g}")
+        if self.verbose:
+            print(f"INITIAL. Cost func: {self.cost(y,y_pred):g}")
 
         for i in range(self.n_epochs):
             if False and not i==0 and i % 500 == 0:
@@ -206,7 +210,8 @@ class MultilayerPerceptronClassifier(RegressionClass):
                     self.biases_hidden[l] -= self.learning_rate * gradients_bias[l - 1]
             y_pred = self.feed_forward(X)[0][-1]
             cost[i] = self.cost(y, y_pred)
-            print(f"Epochs {i / self.n_epochs * 100:.2f}% done. Cost func: {cost[i]:g}")
+            if self.verbose:
+                print(f"Epochs {i / self.n_epochs * 100:.2f}% done. Cost func: {cost[i]:g}")
             if i > 10:
                 cost_diff = (cost[i - 11 : i] - cost[i - 10 : i + 1]) / cost[i - 11 : i]
                 if np.max(cost_diff) < self.rtol:
