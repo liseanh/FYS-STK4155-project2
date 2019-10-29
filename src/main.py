@@ -137,15 +137,19 @@ class MultilayerPerceptronClassifier(RegressionClass):
         self.biases_out = np.zeros(self.n_outputs) + 0.01
 
     def feed_forward(self, X):
-        a_i = [X]
-        z_i = [0]
+        a_i = np.zeros(self.n_hidden_layers + 2, dtype=np.ndarray)
+        z_i = np.zeros(self.n_hidden_layers + 2, dtype=np.ndarray)
+
+        a_i[0] = X
+        z_i[0] = np.array([0])
 
         for i in range(self.n_hidden_layers):
-            z_i.append(a_i[i] @ self.weights_hidden[i] + self.biases_hidden[i])
-            a_i.append(self.sigmoid(z_i[i + 1]))
 
-        z_i.append(a_i[-1] @ self.weights_out + self.biases_out)
-        a_i.append(self.sigmoid(z_i[-1]))
+            z_i[i + 1] = a_i[i] @ self.weights_hidden[i] + self.biases_hidden[i]
+            a_i[i + 1] = self.sigmoid(z_i[i + 1])
+
+        z_i[-1] = a_i[-2] @ self.weights_out + self.biases_out
+        a_i[-1] = self.sigmoid(z_i[-1])
         return a_i, z_i
 
     def backpropagation(self, X, y):
@@ -158,9 +162,12 @@ class MultilayerPerceptronClassifier(RegressionClass):
         gradient_bias[-1] = np.sum(delta[-1], axis=0)
         gradient_weight[-1] = (delta[-1].T @ a_i[-2]).T
 
+
         delta[-2] = self.weights_out @ delta[-1].T * self.grad_activation(z_i[-2]).T
         gradient_bias[-2] = np.sum(delta[-2], axis=1)
         gradient_weight[-2] = delta[-2] @ a_i[-3]
+
+
 
         for l in range(-3, -self.n_hidden_layers - 2, -1):
             delta[l] = (
@@ -179,6 +186,9 @@ class MultilayerPerceptronClassifier(RegressionClass):
         print(f"INITIAL. Cost func: {self.cost(y,y_pred):g}")
 
         for i in range(self.n_epochs):
+            if False and not i==0 and i % 500 == 0:
+                self.learning_rate /= 2
+                print(f"Learning rate reduced to {self.learning_rate}")
             batch_indices = np.array_split(np.random.permutation(len(y)), n_iterations)
             for j in range(n_iterations):
                 random_batch = np.random.randint(n_iterations)
