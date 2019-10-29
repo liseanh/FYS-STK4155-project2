@@ -19,6 +19,7 @@ autograd = "*"
 imblearn = "*"
 numba = "*"
 line-profiler = "*"
+tk = "*"
 
 [requires]
 python_version = "3.6"

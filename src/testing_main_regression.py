@@ -62,8 +62,6 @@ regressor.fit(X_train, z_train)
 print(f"Train R2 score: {regressor.r2_score(X_train, z_train)}")
 print(f"Test R2 score: {regressor.r2_score(X_test, z_test)}")
 
-
-matplotlib.use("TkAgg")
 fig = plt.figure()
 ax = fig.gca(projection="3d")
 
