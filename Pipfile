@@ -18,6 +18,7 @@ xlrd = "*"
 autograd = "*"
 imblearn = "*"
 numba = "*"
+line-profiler = "*"
 
 [requires]
 python_version = "3.6"
