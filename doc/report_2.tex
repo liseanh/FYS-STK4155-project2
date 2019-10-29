@@ -15,6 +15,7 @@
 \usepackage{multicol}
 \usepackage{sectsty,textcase}
 \usepackage{wrapfig,lipsum,booktabs}
+\usepackage{enumitem}
 \usepackage{hyperref}
 \bibliographystyle{plain}
 % \renewcommand{\thesubsection}{\alph{subsection})}
@@ -63,7 +64,7 @@ I = \begin{cases}
 
 \section{Data}
 In this paper we are using credit card payment data from a Taiwanese bank downloaded from the \href{https://archive.ics.uci.edu/ml/datasets/default+of+credit+card+clients}{UCI Machine Learning Repository}. The response variable is a binary variable of default payment with Yes = 1, No = 0.  The data set consists of 30 000 observations, with X amount of observations with default payments. There are 23 explanatory variables, which the original paper describes as:
-\begin{itemize}
+\begin{itemize}[leftmargin=5mm]
 \item X1: Amount of the given credit (NT dollar): it includes both the individual consumer credit and his/her family (supplementary) credit.
 \item X2: Gender (1 = male; 2 = female).
 \item X3: Education (1 = graduate school; 2 = university; 3 = high school; 4 = others).
