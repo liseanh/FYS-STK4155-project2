@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib import cm
+import matplotlib
 from main import MultilayerPerceptronRegressor
 import sklearn.preprocessing as sklpre
 import sklearn.model_selection as sklms
@@ -63,6 +63,7 @@ print(f"Train R2 score: {regressor.r2_score(X_train, z_train)}")
 print(f"Test R2 score: {regressor.r2_score(X_test, z_test)}")
 
 
+matplotlib.use("TkAgg")
 fig = plt.figure()
 ax = fig.gca(projection="3d")
 
@@ -71,7 +72,7 @@ surf = ax.plot_surface(
     x_meshgrid,
     y_meshgrid,
     z_meshgrid,
-    cmap=cm.coolwarm,
+    cmap=matplotlib.cm.coolwarm,
     linewidth=0,
     antialiased=False,
     alpha=0.2,
