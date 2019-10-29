@@ -55,7 +55,7 @@ regressor = MultilayerPerceptronRegressor(
     learning_rate=rate,
     hidden_layer_size=layer_size,
     rtol=-np.inf,
-    verbose=True
+    verbose=True,
 )
 
 regressor.fit(X_train, z_train)

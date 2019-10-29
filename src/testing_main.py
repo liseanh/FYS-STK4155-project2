@@ -18,11 +18,18 @@ n = 10000
 layer_size = [50, 50, 50, 50]
 
 test = MultilayerPerceptronClassifier(
-    n_epochs=n, batch_size=M, learning_rate=rate, hidden_layer_size=layer_size, rtol=1e-5, verbose=True
+    n_epochs=n,
+    batch_size=M,
+    learning_rate=rate,
+    hidden_layer_size=layer_size,
+    rtol=1e-5,
+    verbose=True,
 )
 
 test.fit(X_train, y_train)
-print(f"Our: Train accuracy: {test.accuracy_score(X_train, y_train)}. Test accuracy: {test.accuracy_score(X_test, y_test)}")
+print(
+    f"Our: Train accuracy: {test.accuracy_score(X_train, y_train)}. Test accuracy: {test.accuracy_score(X_test, y_test)}"
+)
 exit()
 
 reg = sknn.MLPClassifier(
@@ -41,10 +48,14 @@ reg = sknn.MLPClassifier(
 )
 
 reg.fit(X_train, y_train)
-print(f"Scikit: Train accuracy: {reg.score(X_train, y_train)}. Test accuracy: {reg.score(X_test, y_test)}")
+print(
+    f"Scikit: Train accuracy: {reg.score(X_train, y_train)}. Test accuracy: {reg.score(X_test, y_test)}"
+)
 
 reg_test = sknn.MLPClassifier(
     hidden_layer_sizes=layer_size, max_iter=n, verbose=True, tol=-np.inf
 )
 reg_test.fit(X_train, y_train)
-print(f"Scikit: Train accuracy: {reg_test.score(X_train, y_train)}. Test accuracy: {reg_test.score(X_test, y_test)}")
+print(
+    f"Scikit: Train accuracy: {reg_test.score(X_train, y_train)}. Test accuracy: {reg_test.score(X_test, y_test)}"
+)

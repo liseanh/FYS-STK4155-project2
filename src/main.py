@@ -12,7 +12,7 @@ class RegressionClass:
         rtol=0.01,
         batch_size="auto",
         penalty=None,
-        verbose=False
+        verbose=False,
     ):
         if batch_size == "auto":
             self.batch_size = lambda n_inputs: min(200, n_inputs)
@@ -83,7 +83,7 @@ class MultilayerPerceptronClassifier(RegressionClass):
         rtol=0.001,
         batch_size="auto",
         penalty=None,
-        verbose=False
+        verbose=False,
     ):
         super().__init__(learning_rate, n_epochs, rtol, batch_size, penalty, verbose)
         self.hidden_layer_size = hidden_layer_size
@@ -165,12 +165,9 @@ class MultilayerPerceptronClassifier(RegressionClass):
         gradient_bias[-1] = np.sum(delta[-1], axis=0)
         gradient_weight[-1] = (delta[-1].T @ a_i[-2]).T
 
-
         delta[-2] = self.weights_out @ delta[-1].T * self.grad_activation(z_i[-2]).T
         gradient_bias[-2] = np.sum(delta[-2], axis=1)
         gradient_weight[-2] = delta[-2] @ a_i[-3]
-
-
 
         for l in range(-3, -self.n_hidden_layers - 2, -1):
             delta[l] = (
@@ -190,7 +187,7 @@ class MultilayerPerceptronClassifier(RegressionClass):
             print(f"INITIAL. Cost func: {self.cost(y,y_pred):g}")
 
         for i in range(self.n_epochs):
-            if False and not i==0 and i % 500 == 0:
+            if False and not i == 0 and i % 500 == 0:
                 self.learning_rate /= 2
                 print(f"Learning rate reduced to {self.learning_rate}")
             batch_indices = np.array_split(np.random.permutation(len(y)), n_iterations)
@@ -211,7 +208,9 @@ class MultilayerPerceptronClassifier(RegressionClass):
             y_pred = self.feed_forward(X)[0][-1]
             cost[i] = self.cost(y, y_pred)
             if self.verbose:
-                print(f"Epochs {i / self.n_epochs * 100:.2f}% done. Cost func: {cost[i]:g}")
+                print(
+                    f"Epochs {i / self.n_epochs * 100:.2f}% done. Cost func: {cost[i]:g}"
+                )
             if i > 10:
                 cost_diff = (cost[i - 11 : i] - cost[i - 10 : i + 1]) / cost[i - 11 : i]
                 if np.max(cost_diff) < self.rtol:
