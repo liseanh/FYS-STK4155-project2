@@ -18,7 +18,7 @@ n = 10000
 layer_size = [50, 50, 50, 50]
 
 test = MultilayerPerceptronClassifier(
-    n_epochs=n, batch_size=M, learning_rate=rate, hidden_layer_size=layer_size, rtol=1e-5
+    n_epochs=n, batch_size=M, learning_rate=rate, hidden_layer_size=layer_size, rtol=1e-5, verbose=True
 )
 
 test.fit(X_train, y_train)

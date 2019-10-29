@@ -1,7 +1,11 @@
 import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib import cm
 from main import MultilayerPerceptronRegressor
 import sklearn.preprocessing as sklpre
 import sklearn.model_selection as sklms
+from mpl_toolkits.mplot3d import Axes3D
+
 
 def generate_Franke_data(x_points, y_points, sigma=0):
     """
@@ -20,7 +24,11 @@ def generate_Franke_data(x_points, y_points, sigma=0):
     return (x, y, z)
 
 
-x, y, z = generate_Franke_data(100, 100)
+x, y, z = generate_Franke_data(100, 100, 0.1)
+
+x_meshgrid = x.copy()
+y_meshgrid = y.copy()
+z_meshgrid = z.copy()
 
 x = x.ravel()
 y = y.ravel()
@@ -35,11 +43,11 @@ scaler = sklpre.StandardScaler().fit(X_train)
 X_train = scaler.transform(X_train)
 X_test = scaler.transform(X_test)
 
-rate = 1e-3
-M = "auto" #len(z_train)
-n = 1000
+rate = 1e-2
+M = "auto"  # len(z_train)
+n = 100
 
-layer_size = [200, 100, 100]
+layer_size = [6, 4, 2]
 
 regressor = MultilayerPerceptronRegressor(
     n_epochs=n,
@@ -47,8 +55,43 @@ regressor = MultilayerPerceptronRegressor(
     learning_rate=rate,
     hidden_layer_size=layer_size,
     rtol=-np.inf,
+    verbose=True
 )
 
 regressor.fit(X_train, z_train)
 print(f"Train R2 score: {regressor.r2_score(X_train, z_train)}")
 print(f"Test R2 score: {regressor.r2_score(X_test, z_test)}")
+
+print(X_train[:, 0].shape)
+
+fig = plt.figure()
+ax = fig.gca(projection="3d")
+
+
+surf = ax.plot_surface(
+    x_meshgrid,
+    y_meshgrid,
+    z_meshgrid,
+    cmap=cm.coolwarm,
+    linewidth=0,
+    antialiased=False,
+    alpha=0.2,
+)
+fig.colorbar(surf, shrink=0.5, aspect=5)
+
+ax.scatter(
+    scaler.inverse_transform(X_train)[:, 0],
+    scaler.inverse_transform(X_train)[:, 1],
+    regressor.predict(X_train),
+    marker=".",
+    label="train",
+)
+ax.scatter(
+    scaler.inverse_transform(X_test)[:, 0],
+    scaler.inverse_transform(X_test)[:, 1],
+    regressor.predict(X_test),
+    marker=".",
+    label="test",
+)
+ax.legend()
+plt.show()
