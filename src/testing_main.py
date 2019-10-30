@@ -30,12 +30,12 @@ test.fit(X_train, y_train)
 print(
     f"Our: Train accuracy: {test.accuracy_score(X_train, y_train)}. Test accuracy: {test.accuracy_score(X_test, y_test)}"
 )
-"""test.save_model("testing")
-test.load_model("testing")
+test.save_model("testing.npz")
+test.load_model("testing.npz")
 print(
     f"Our: Train accuracy: {test.accuracy_score(X_train, y_train)}. Test accuracy: {test.accuracy_score(X_test, y_test)}"
-)"""
-
+)
+exit()
 
 reg = sknn.MLPClassifier(
     hidden_layer_sizes=layer_size,

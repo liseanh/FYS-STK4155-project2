@@ -68,11 +68,13 @@ class LogisticRegression(RegressionClass):
                 beta -= grad
 
     def predict(self, X):
-        prediction = X @ self.beta
+        prediction = self.predict_proba(X)
         prediction[prediction >= 0.5] = 1
         prediction[prediction != 1] = 0
         return prediction
 
+    def predict_proba(self, X):
+        return X @ self.beta
 
 class MultilayerPerceptronClassifier(RegressionClass):
     def __init__(
@@ -107,10 +109,19 @@ class MultilayerPerceptronClassifier(RegressionClass):
                 "Model was fitted on different inputs than what was provided"
             )
 
-        prediction = self.feed_forward(X)[0][-1]
+        prediction = self.predict_proba(X)
         prediction[prediction >= 0.5] = 1
         prediction[prediction != 1] = 0
         return np.array(prediction, dtype=np.int)
+
+
+    def predict_proba(self, X):
+        if self.weights_hidden[0].shape[0] != X.shape[1]:
+            print(len(self.weights_hidden[0].shape[0]), X.shape[1])
+            raise ValueError(
+                "Model was fitted on different inputs than what was provided"
+            )
+        return self.feed_forward(X)[0][-1]
 
     def accuracy_score(self, X, y):
         if self.weights_out.shape[1] != y.shape[1]:
@@ -122,7 +133,7 @@ class MultilayerPerceptronClassifier(RegressionClass):
 
     def save_model(self, filename):
         np.savez(
-            f"models/{filename}.npz",
+            f"models/{filename}",
             weights_out=self.weights_out,
             weights_hidden=self.weights_hidden,
             biases_out=self.biases_out,
@@ -130,11 +141,14 @@ class MultilayerPerceptronClassifier(RegressionClass):
         )
 
     def load_model(self, filename):
-        model = np.load(f"models/{filename}.npz", allow_pickle=True)
+        model = np.load(f"models/{filename}", allow_pickle=True)
         self.weights_out = model["weights_out"]
         self.weights_hidden = model["weights_hidden"]
         self.biases_out = model["biases_out"]
         self.biases_hidden = model["biases_hidden"]
+        self.n_features = self.weights_hidden[0].shape[0]
+        self.n_hidden_layers = len(self.weights_hidden)
+
 
     def init_biases_weights(self):
         std_weight_init = np.sqrt(1 / self.n_features)
@@ -216,7 +230,7 @@ class MultilayerPerceptronClassifier(RegressionClass):
             print(f"INITIAL. Cost func: {self.cost(y,y_pred):g}")
 
         for i in range(self.n_epochs):
-            if False and not i == 0 and i % 500 == 0:
+            if not i == 0 and i % 50 == 0:
                 self.learning_rate /= 2
                 print(f"Learning rate reduced to {self.learning_rate}")
             batch_indices = np.array_split(np.random.permutation(len(y)), n_iterations)
@@ -300,7 +314,7 @@ class MultilayerPerceptronRegressor(MultilayerPerceptronClassifier):
     @staticmethod
     @numba.njit
     def cost(y, y_pred):
-        return np.sum((y_pred - y) ** 2) / 2
+        return np.mean((y_pred - y) ** 2) / 2
 
     @staticmethod
     @numba.njit
