@@ -39,9 +39,7 @@
 ]
 
 \section{Introduction}
-%\the\columnsep
-
-fill
+The aim of this project is to implement and use  logistic regression and a multilayer perceptron (MLP) to classify data \textbf{PLEASE SPECIFY WHAT KIND OF DATA}  and to further use the MLP to perform regression analysis on Franke's function. 
 
 
 \section{Theory}
@@ -58,7 +56,7 @@ The activation of the $j$th neuron of layer $l$ is defined as
 \begin{equation}
 z_j^l = \sum_{i=1}^{M_{l-1}} w_{ij}^la_j^{l-1} + b_j^l,
 \end{equation}
-where $b_j^l$ are the biases, $w_{ij}$ are the weights,  $a_j^l=f(z_j^l) $
+where $b_j^l$ and $w_{ij}^l$ are the biases and weights at layer $l$, and $a_j^l=f(z_j^l) $.
 
 To calculate the optimal biases and weights for the problem, we initialize the gradients of the cost function $\mathcal{C}$ with respect to the  weights $W$ and biases $b$ at the output  layer $l=L$ 	and the output error $\delta_L$ as
 \begin{flalign}
