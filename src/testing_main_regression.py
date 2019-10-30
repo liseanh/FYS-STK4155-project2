@@ -24,7 +24,7 @@ def generate_Franke_data(x_points, y_points, sigma=0):
     return (x, y, z)
 
 
-x, y, z = generate_Franke_data(200, 200, 0)
+x, y, z = generate_Franke_data(200, 200, 0.1)
 
 x_meshgrid = x.copy()
 y_meshgrid = y.copy()
@@ -38,6 +38,12 @@ X = np.array([x, y]).T
 
 X_train, X_test, z_train, z_test = sklms.train_test_split(X, z, test_size=0.33)
 
+scaler_output = sklpre.MinMaxScaler().fit(z_train)
+
+z_train = scaler_output.transform(z_train)
+z_test = scaler_output.transform(z_test)
+
+
 scaler = sklpre.StandardScaler().fit(X_train)
 
 X_train = scaler.transform(X_train)
@@ -45,9 +51,9 @@ X_test = scaler.transform(X_test)
 
 rate = 1e-2
 M = "auto"  # len(z_train)
-n = 2000
+n = 1000
 
-layer_size = [50, 25, 15]
+layer_size = [200, 100, 50, 25, 10]
 
 regressor = MultilayerPerceptronRegressor(
     n_epochs=n,
@@ -77,17 +83,24 @@ surf = ax.plot_surface(
 )
 fig.colorbar(surf, shrink=0.5, aspect=5)
 
+
+y_pred_train = regressor.predict(X_train)
+y_pred_test = regressor.predict(X_test)
+
+y_pred_train = scaler_output.inverse_transform(y_pred_train)
+y_pred_test = scaler_output.inverse_transform(y_pred_test)
+
 ax.scatter(
     scaler.inverse_transform(X_train)[:, 0],
     scaler.inverse_transform(X_train)[:, 1],
-    regressor.predict(X_train),
+    y_pred_train,
     marker=".",
     label="train",
 )
 ax.scatter(
     scaler.inverse_transform(X_test)[:, 0],
     scaler.inverse_transform(X_test)[:, 1],
-    regressor.predict(X_test),
+    y_pred_test,
     marker=".",
     label="test",
 )
