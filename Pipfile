@@ -20,6 +20,7 @@ imblearn = "*"
 numba = "*"
 line-profiler = "*"
 pyqt5 = "*"
+scikit-plot = "*"
 
 [requires]
 python_version = "3.6"
