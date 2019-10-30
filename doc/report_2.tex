@@ -63,18 +63,23 @@ I = \begin{cases}
 \subsection{Artificial Neural Networks (ANN)}
 \subsubsection{Multilayer perceptron}
 The multilayer perceptron is a feedforward neural network. 
-To calculate the optimal biases and weights for the problem, we start with the gradients of the cost function $\mathcal{C}$ with respect to the  weights $W$ and biases $b$ at the final hidden layer $l=L$ 	and the output error $\delta_L$, given by 
+To calculate the optimal biases and weights for the problem, we initialize the gradients of the cost function $\mathcal{C}$ with respect to the  weights $W$ and biases $b$ at the output  layer $l=L$ 	and the output error $\delta_L$ as
 \begin{flalign}
-&\frac{\partial  \mathcal{C}}{\partial w^L_{jk}} = \delta^L_j a_k^{L-1} \\
-&\frac{\partial  \mathcal{C}}{\partial b^L_j} = \delta^L_j\\
-&\delta_j^L= f'(z_j^L)\frac{\partial \mathcal{C}}{\partial a_j^L}
+&\frac{\partial  \mathcal{C}}{\partial w^L_{jk}} = \delta^L_j a_k^{L-1}, \\
+&\frac{\partial  \mathcal{C}}{\partial b^L_j} = \delta^L_j,\\
+&\delta_j^L= f'(z_j^L)\frac{\partial \mathcal{C}}{\partial a_j^L},
+\end{flalign}
+before propagating backwards through the hidden layers using the general equations
+\begin{flalign}
+&\frac{\partial  \mathcal{C}}{\partial w^l_{jk}} = \delta^l_j a_k^{l-1}, \\
+&\frac{\partial  \mathcal{C}}{\partial b^l_j} = \delta^l_j,\\
+&\delta_j^l= \sum_k \delta_k^{l+1}w_{kj}^{l+1}f'(z_j^l).
 \end{flalign}
 
-
 \section{Data}
-In this paper we are using credit card payment data from a Taiwanese bank downloaded from the \href{https://archive.ics.uci.edu/ml/datasets/default+of+credit+card+clients}{UCI Machine Learning Repository}. The response variable is a binary variable of default payment with Yes = 1, No = 0.  The data set consists of 30 000 observations, with X amount of observations with default payments. There are 23 explanatory variables, which the original paper describes as:
-\begin{itemize}[leftmargin=5mm]
-\item X1: Amount of the given credit (NT dollar): it includes both the individual consumer credit and his/her family (supplementary) credit.
+In this paper we are using credit card payment data from a Taiwanese bank downloaded from the \href{https://archive.ics.uci.edu/ml/datasets/default+of+credit+card+clients}{UCI Machine Learning Repository}. The response variable is a binary variable of default payment with Yes = 1, No = 0.  The data set consists of 30 000 observations, with X amount of observations with default payments. There are 23 explanatory variables, cited from the original paper they are described as:
+\begin{itemize}[leftmargin=5mm, itemsep=0pt,  parsep=1pt]
+ \item X1: Amount of the given credit (NT dollar): it includes both the individual consumer credit and his/her family (supplementary) credit.
 \item X2: Gender (1 = male; 2 = female).
 \item X3: Education (1 = graduate school; 2 = university; 3 = high school; 4 = others).
 \item X4: Marital status (1 = married; 2 = single; 3 = others).
