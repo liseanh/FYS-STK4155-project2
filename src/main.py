@@ -76,6 +76,7 @@ class LogisticRegression(RegressionClass):
     def predict_proba(self, X):
         return X @ self.beta
 
+
 class MultilayerPerceptronClassifier(RegressionClass):
     def __init__(
         self,
@@ -114,7 +115,6 @@ class MultilayerPerceptronClassifier(RegressionClass):
         prediction[prediction != 1] = 0
         return np.array(prediction, dtype=np.int)
 
-
     def predict_proba(self, X):
         if self.weights_hidden[0].shape[0] != X.shape[1]:
             print(len(self.weights_hidden[0].shape[0]), X.shape[1])
@@ -148,7 +148,6 @@ class MultilayerPerceptronClassifier(RegressionClass):
         self.biases_hidden = model["biases_hidden"]
         self.n_features = self.weights_hidden[0].shape[0]
         self.n_hidden_layers = len(self.weights_hidden)
-
 
     def init_biases_weights(self):
         std_weight_init = np.sqrt(1 / self.n_features)
