@@ -42,19 +42,21 @@ plt.plot(x, gains_perfect)
 plt.legend(["Not default", "Default", "Baseline", "Perfect model"])
 plt.axis([x[0], x[-1], 0, 1.01])
 plt.savefig("../doc/figures/cumulative_gain_NN.pdf", dpi=1000)
+plt.close()
 
-x, gains_0 = skplt.helpers.cumulative_gain_curve(y_test.ravel(), proba_split[:, 0])
-area_0 = scipy.integrate.simps(gains_0, x)
-print(area_0)
+area_baseline = 0.5
 
-x, gains_1 = skplt.helpers.cumulative_gain_curve(y_test.ravel(), proba_split[:, 1])
-area_1 = scipy.integrate.simps(gains_1, x)
-print(area_1)
+area_perfect = scipy.integrate.simps(gains_perfect, x) - area_baseline
+
+x, gains_0 = skplt.helpers.cumulative_gain_curve(y_test.ravel(), proba_split[:, 0], 0)
+area_0 = scipy.integrate.simps(gains_0, x) - area_baseline
+
+x, gains_1 = skplt.helpers.cumulative_gain_curve(y_test.ravel(), proba_split[:, 1], 1)
+area_1 = scipy.integrate.simps(gains_1, x) - area_baseline
 
 
-print(gains_perfect.shape, x.shape)
-area_perfect = scipy.integrate.simps(gains_perfect, x[:-1])
-print(area_perfect)
+
+
 
 ratio_not_default = area_0 / area_perfect
 ratio_default = area_1 / area_perfect
