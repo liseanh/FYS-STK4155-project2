@@ -1,6 +1,6 @@
 \documentclass[a4paper, 11pt, twocolumn]{article}
 
-\usepackage[a4paper, total={6in, 8.5in}]{geometry}
+\usepackage[a4paper, total={6.2in, 8.5in}]{geometry}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
 \usepackage{verbatim}
@@ -23,7 +23,7 @@
 %\renewcommand{\baselinestretch}{1.02}
 
 %\setlength\parindent{0pt}
-
+\setlength{\columnsep}{15pt}
 \title{FYS-STK3155/4155 Applied Data Analysis and Machine Learning - Project 2: Classification and Regression }
 
 \author{Lotsberg, Bernhard Nornes \\ Nguyen, Anh-Nguyet Lise \and \url{https://github.com/liseanh/FYS-STK4155-project2/}}
@@ -39,30 +39,25 @@
 ]
 
 \section{Introduction}
-
-fill
+The aim of this project is to implement and use  logistic regression and a multilayer perceptron (MLP) to classify data \textbf{PLEASE SPECIFY WHAT KIND OF DATA}  and to further use the MLP to perform regression analysis on Franke's function. 
 
 
 \section{Theory}
-To evaluate the performance of our classification model, we consider the accuracy score, given by
-\begin{equation}
-\label{eq:accuracy}
-\frac{\sum_{i=1}^nI(t_i=y_i)}{n},
-\end{equation}
-where $t_i$ is the target, $y_i$ is our model output and $I$ is the indicator function,
-\[
-I = \begin{cases}
-1 & t_i = y_i\\
-0 & t_i \neq y_i
-\end{cases} .
-\]
 \subsection{Stochastic Gradient Descent (SGD)}
 
 \subsection{Logistic Regression (LR)}
 
 \subsection{Artificial Neural Networks (ANN)}
+In an artificial neural network, something something nodes. The output of the nodes in each layer is given by the value of a chosen activation function $f(z)$. 	
 \subsubsection{Multilayer perceptron}
 The multilayer perceptron is a feedforward neural network. 
+
+The activation of the $j$th neuron of layer $l$ is defined as 
+\begin{equation}
+z_j^l = \sum_{i=1}^{M_{l-1}} w_{ij}^la_j^{l-1} + b_j^l,
+\end{equation}
+where $b_j^l$ and $w_{ij}^l$ are the biases and weights at layer $l$, and $a_j^l=f(z_j^l) $.
+
 To calculate the optimal biases and weights for the problem, we initialize the gradients of the cost function $\mathcal{C}$ with respect to the  weights $W$ and biases $b$ at the output  layer $l=L$ 	and the output error $\delta_L$ as
 \begin{flalign}
 &\frac{\partial  \mathcal{C}}{\partial w^L_{jk}} = \delta^L_j a_k^{L-1}, \\
@@ -75,9 +70,9 @@ before propagating backwards through the hidden layers using the general equatio
 &\frac{\partial  \mathcal{C}}{\partial b^l_j} = \delta^l_j,\\
 &\delta_j^l= \sum_k \delta_k^{l+1}w_{kj}^{l+1}f'(z_j^l).
 \end{flalign}
-
+Looking at these equations, it is clear that the chosen cost function $\mathcal{C}$ should be differentiable. 
 \section{Data}
-In this paper we are using credit card payment data from a Taiwanese bank downloaded from the \href{https://archive.ics.uci.edu/ml/datasets/default+of+credit+card+clients}{UCI Machine Learning Repository}. The response variable is a binary variable of default payment with Yes = 1, No = 0.  The data set consists of 30 000 observations, with X amount of observations with default payments. There are 23 explanatory variables, cited from the original paper they are described as:
+In this paper we are using credit card payment data from a Taiwanese bank downloaded from the \href{https://archive.ics.uci.edu/ml/datasets/default+of+credit+card+clients}{UCI Machine Learning Repository}. The response variable is a binary variable of default payment with Yes = 1, No = 0.  The original data set consists of 30 000 observations, with X amount of observations with default payments. There are 23 explanatory variables, cited from the original paper they are described as \cite{origarticle}:
 \begin{itemize}[leftmargin=5mm, itemsep=0pt,  parsep=1pt]
  \item X1: Amount of the given credit (NT dollar): it includes both the individual consumer credit and his/her family (supplementary) credit.
 \item X2: Gender (1 = male; 2 = female).
@@ -89,10 +84,29 @@ In this paper we are using credit card payment data from a Taiwanese bank downlo
 \item X18-X23: Amount of previous payment (NT dollar). X18 = amount paid in September, 2005; X19 = amount paid in August, 2005; . . .;X23 = amount paid in April, 2005.
 \end{itemize}
 
-
+\section{Model evaluation}
+\subsection{Regression}
+To evaluate the performance of our regression model, we consider the $R^2$ score, given by 
+\begin{equation}
+    R^2(\bm{y}, \bm{\hat{y}}) = 1 - \frac{\sum_{i=0}^{n - 1} (y_i - \hat{y}_i)^2}{\sum_{i=0}^{n - 1} (y_i - \bar{y})^2},
+    \label{eq:R2}
+\end{equation}
+where $\bm{y}$ is the given data, $\bm{\hat{y}}$ is the model and ${\bar{y}}$ is the mean value of $\bm{y}$.
+\subsection{Classification}
+To evaluate the performance of our classification model, we consider the accuracy score, given by 
+\begin{equation}
+\label{eq:accuracy}
+\text{accuracy}=\frac{\sum_{i=1}^nI(t_i=y_i)}{n},
+\end{equation}
+where $t_i$ is the target, $y_i$ is the model output, $n$ is the number of samples and $I$ is the indicator function, 
+\[
+I = \begin{cases} 
+1, & t_i = y_i\\
+0, & t_i \neq y_i
+\end{cases} .
+\]
 
 \section{Method}
-fill
 
 
 
