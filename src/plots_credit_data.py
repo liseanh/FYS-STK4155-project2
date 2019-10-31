@@ -1,3 +1,4 @@
+import scipy.integrate
 import matplotlib.pyplot as plt
 import scikitplot as skplt
 import numpy as np
@@ -30,13 +31,32 @@ def bestCurve(y):
 	y3 = np.concatenate([y1,y2])
 	return x, y3
 
-x, y_arrays = bestCurve(y_test)
-print(x, y_arrays)
+x, gains_perfect = bestCurve(y_test)
+print(x, gains_perfect)
+
 
 skplt.metrics.plot_cumulative_gain(y_test.ravel(), proba_split)
-plt.plot(x, y_arrays)
+plt.plot(x, gains_perfect)
 #skplt.metrics.plot_cumulative_gain(y_test.ravel(), np.random.choice([0, 1], size=[len(y_test.ravel()), 2]))
 #skplt.metrics.plot_cumulative_gain(y_test.ravel(), proba_split)
 plt.legend(["Not default", "Default", "Baseline", "Perfect model"])
 plt.axis([x[0], x[-1], 0, 1.01])
-plt.show()
+plt.savefig("../doc/figures/cumulative_gain_NN.pdf", dpi=1000)
+
+x, gains_0 = skplt.helpers.cumulative_gain_curve(y_test.ravel(), proba_split[:, 0])
+area_0 = scipy.integrate.simps(gains_0, x)
+print(area_0)
+
+x, gains_1 = skplt.helpers.cumulative_gain_curve(y_test.ravel(), proba_split[:, 1])
+area_1 = scipy.integrate.simps(gains_1, x)
+print(area_1)
+
+
+print(gains_perfect.shape, x.shape)
+area_perfect = scipy.integrate.simps(gains_perfect, x[:-1])
+print(area_perfect)
+
+ratio_not_default = area_0 / area_perfect
+ratio_default = area_1 / area_perfect
+
+print(f"Area ratio for predicting not default: {ratio_not_default}.\nArea ratio for predicting default: {ratio_default}")
