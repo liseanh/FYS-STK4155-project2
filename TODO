@@ -1,0 +1,7 @@
+List of things to get done:
+ - Randomized grid search to find optimal parameters for LR (batch_size=200, find n_epochs and learning_rate)
+ - Cumulative gains curve for LR 
+ - Make regression plot 
+ - Beautify figures (dimensions, titles etc.)
+ - Somehow find optimal parameters for MLP
+ - Write report 
