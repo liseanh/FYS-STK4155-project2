@@ -1,6 +1,6 @@
 \documentclass[a4paper, 11pt, twocolumn]{article}
 
-\usepackage[a4paper, total={6.2in, 8.5in}]{geometry}
+\usepackage[a4paper, total={6.24in, 8.5in}]{geometry}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
 \usepackage{verbatim}
@@ -39,11 +39,19 @@
 ]
 
 \section{Introduction}
-The aim of this project is to implement and use  logistic regression and a multilayer perceptron (MLP) to classify data \textbf{PLEASE SPECIFY WHAT KIND OF DATA}  and to further use the MLP to perform regression analysis on Franke's function. 
+Classification in statistical analysis is a useful tool, e.g. for predicting outcomes of various situations or classifying and sorting large amounts of data. 
+\begin{figure}[H]
+	\includegraphics[width=\columnwidth]{figures/regtest.pdf}
+	\caption{TEST FIGURE AS PLACEHOLDER, PLEASE REMOVE FROM FINAL VERSION}
+\end{figure}
+
+The aim of this project is  to study classification and regression problems through our own implementation of logistic regression and a multilayer perceptron (MLP) in Python. This particular data set has been used in a prior research paper by Yeh, I. C. et al about data mining techniques \cite{origarticle}, and can be downloaded from the \href{https://archive.ics.uci.edu/ml/datasets/default+of+credit+card+clients}{UCI Machine Learning Repository} \cite{UCI}.
+We will use these methods to classify data of credit card clients' default payment from a Taiwanese bank. Additionally, we will use the MLP to solve a regression problem on the Franke function and compare the result with prior regression analysis results of the function using standard least squares.  
 
 
 \section{Theory}
 \subsection{Stochastic Gradient Descent (SGD)}
+\the \columnwidth
 
 \subsection{Logistic Regression (LR)}
 
