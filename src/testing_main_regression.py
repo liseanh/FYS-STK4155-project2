@@ -1,11 +1,5 @@
 import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib
 from main import MultilayerPerceptronRegressor
-import sklearn.preprocessing as sklpre
-import sklearn.model_selection as sklms
-from mpl_toolkits.mplot3d import Axes3D
-
 
 training_set = np.load("data/franke_data_train.npz")
 test_set = np.load("data/franke_data_test.npz")

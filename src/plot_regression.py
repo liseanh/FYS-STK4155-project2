@@ -1,33 +1,32 @@
 import numpy as np
-import matplotlib.pyplot as plt
 import matplotlib
 from main import MultilayerPerceptronRegressor
+from mpl_toolkits.mplot3d import Axes3D
 import sklearn.preprocessing as sklpre
 import sklearn.model_selection as sklms
-from mpl_toolkits.mplot3d import Axes3D
+from main import MultilayerPerceptronRegressor
 
-training_set = np.load("data/franke_data_train.npz")
-test_set = np.load("data/franke_data_test.npz")
 meshgrid = np.load("data/franke_data_meshgrid.npz")
 
 x_meshgrid, y_meshgrid, z_meshgrid = meshgrid["x"], meshgrid["y"], meshgrid["z"]
 
 
+training_set = np.load("data/franke_data_train.npz")
+test_set = np.load("data/franke_data_test.npz")
+
 X_train, z_train = training_set["X_train"], training_set["z_train"]
 X_test, z_test = test_set["X_test"], test_set["z_test"]
+
+scaler = sklpre.StandardScaler().fit(X_train)
+scaler_output = sklpre.MinMaxScaler().fit(z_train)
 
 
 model = MultilayerPerceptronRegressor() 
 model.load_model("reg_test.npz")
 
-
 y_pred_train = model.predict(X_train)
 y_pred_test = model.predict(X_test)
 
-
-scaler = sklpre.StandardScaler().fit(X_train)
-
-scaler_output = sklpre.MinMaxScaler().fit(z_train)
 y_pred_train = scaler_output.inverse_transform(y_pred_train)
 y_pred_test = scaler_output.inverse_transform(y_pred_test)
 
@@ -35,7 +34,6 @@ y_pred_test = scaler_output.inverse_transform(y_pred_test)
 fig = plt.figure()
 fig.set_size_inches(3.03, 1.8)
 ax = fig.gca(projection="3d")
-
 
 surf = ax.plot_surface(
     x_meshgrid,
@@ -46,7 +44,6 @@ surf = ax.plot_surface(
     antialiased=False,
     alpha=0.2,
 )
-
 
 ax.scatter(
     scaler.inverse_transform(X_train)[:, 0],
@@ -62,7 +59,7 @@ ax.scatter(
     marker=".",
     label="test",
 )
-# ax.legend()
+
 ax.axis("off")
 ax.grid(False)
 ax.set_frame_on(False)

@@ -2,7 +2,6 @@ import numpy as np
 import sklearn.model_selection as sklms
 import sklearn.preprocessing as sklpre
 
-
 def generate_Franke_data(x_points, y_points, sigma=0):
     """
     Generates data using Franke's function.
