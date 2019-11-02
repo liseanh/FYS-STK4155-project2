@@ -53,7 +53,7 @@ rate = 1e-2
 M = "auto"  # len(z_train)
 n = 1000
 
-layer_size = [200, 100, 50, 25, 10]
+layer_size = [18, 12, 6]
 
 regressor = MultilayerPerceptronRegressor(
     n_epochs=n,
@@ -68,7 +68,12 @@ regressor.fit(X_train, z_train)
 print(f"Train R2 score: {regressor.r2_score(X_train, z_train)}")
 print(f"Test R2 score: {regressor.r2_score(X_test, z_test)}")
 
+regressor.save_model("reg_test.npz")
+
+exit()
+
 fig = plt.figure()
+fig.set_size_inches(3.03, 1.8)
 ax = fig.gca(projection="3d")
 
 
@@ -81,7 +86,6 @@ surf = ax.plot_surface(
     antialiased=False,
     alpha=0.2,
 )
-fig.colorbar(surf, shrink=0.5, aspect=5)
 
 
 y_pred_train = regressor.predict(X_train)
@@ -104,5 +108,11 @@ ax.scatter(
     marker=".",
     label="test",
 )
-ax.legend()
-plt.show()
+# ax.legend()
+ax.axis("off")
+ax.grid(False)
+ax.set_frame_on(False)
+plt.savefig(
+    "../doc/figures/regtest.pdf", bbox_inches="tight", pad_inches=0, dpi=1000
+)
+# plt.show()
