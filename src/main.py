@@ -13,6 +13,7 @@ class RegressionClass:
         batch_size="auto",
         penalty=None,
         verbose=False,
+        learning_schedule = None,
     ):
         if batch_size == "auto":
             self.batch_size = lambda n_inputs: min(200, n_inputs)
@@ -27,6 +28,7 @@ class RegressionClass:
         self.penalty = penalty
         self.rtol = rtol
         self.verbose = verbose
+        self.learning_rate = learning_rate
 
     def fit(self, X=None, y=None):
         raise RuntimeError("Please do not use this class directly.")
@@ -90,11 +92,11 @@ class MultilayerPerceptronClassifier(RegressionClass):
         activation_function_output="sigmoid",
         learning_schedule=None,
     ):
-        super().__init__(learning_rate, n_epochs, rtol, batch_size, penalty, verbose)
+        super().__init__(learning_rate, n_epochs, rtol, batch_size, penalty, verbose, learning_schedule)
         self.hidden_layer_size = hidden_layer_size
         self.n_hidden_layers = len(hidden_layer_size)
         self.activation_function_output = activation_function_output
-        self.learning_schedule = learning_schedule
+
 
     def fit(self, X, y):
         self.n_features = len(X[0, :])
