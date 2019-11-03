@@ -112,7 +112,6 @@ class LogisticRegression(RegressionClass):
     @numba.njit
     def grad_cost_function(beta, X, y):
         exp_expression = np.exp(X @ beta)
-        print(np.max(exp_expression))
         exp_expression = exp_expression / (1 + exp_expression)
         return (-X.T @ (y - exp_expression)).sum(axis=1)
 
