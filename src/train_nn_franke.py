@@ -1,14 +1,29 @@
+import sys
 import numpy as np
 from main import MultilayerPerceptronRegressor
 
-training_set = np.load("data/franke_data_train.npz")
-test_set = np.load("data/franke_data_test.npz")
+try:
+    n_x = int(sys.argv[1])
+    n_y = int(sys.argv[2])
+    sigma = float(sys.argv[3])
+except IndexError:
+    raise IndexError(
+        f"Please input the number of points in x direction, y direction"
+        + f" and the standard deviation of the generated data you wish to model"
+    )
+except ValueError:
+    raise TypeError("Input must be integer, integer and float")
+
+
+
+training_set = np.load(f"data/franke_data_train_{n_x}_{n_y}_{sigma}.npz")
+test_set = np.load(f"data/franke_data_test_{n_x}_{n_y}_{sigma}.npz")
 
 X_train, z_train = training_set["X_train"], training_set["z_train"]
 X_test, z_test = test_set["X_test"], test_set["z_test"]
 
 rate = 1e-3 * 2
-M = "auto"  # len(z_train)
+M = "auto"  
 n = 500
 
 layer_size = [100, 50, 25]
