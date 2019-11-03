@@ -21,16 +21,12 @@ X_test, z_test = test_set["X_test"], test_set["z_test"]
 
 
 scaler = joblib.load("models/franke_data_scaler_features.pkl")
-scaler_output = joblib.load("models/franke_data_scaler_output.pkl")
 
 model = MultilayerPerceptronRegressor()
 model.load_model("reg_test.npz")
 
 y_pred_train = model.predict(X_train)
 y_pred_test = model.predict(X_test)
-
-y_pred_train = scaler_output.inverse_transform(y_pred_train)
-y_pred_test = scaler_output.inverse_transform(y_pred_test)
 
 
 fig = plt.figure()

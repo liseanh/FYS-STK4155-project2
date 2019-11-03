@@ -87,10 +87,12 @@ class MultilayerPerceptronClassifier(RegressionClass):
         batch_size="auto",
         penalty=None,
         verbose=False,
+        activation_function_output = "sigmoid",
     ):
         super().__init__(learning_rate, n_epochs, rtol, batch_size, penalty, verbose)
         self.hidden_layer_size = hidden_layer_size
         self.n_hidden_layers = len(hidden_layer_size)
+        self.activation_function_output = activation_function_output
 
     def fit(self, X, y):
         self.n_features = len(X[0, :])
@@ -194,7 +196,7 @@ class MultilayerPerceptronClassifier(RegressionClass):
             a_i[i + 1] = self.sigmoid(z_i[i + 1])
 
         z_i[-1] = a_i[-2] @ self.weights_out + self.biases_out
-        a_i[-1] = self.sigmoid(z_i[-1])
+        a_i[-1] = self.activation_function_out(z_i[-1], self.activation_function_output)
         return a_i, z_i
 
     def backpropagation(self, X, y):
@@ -203,7 +205,7 @@ class MultilayerPerceptronClassifier(RegressionClass):
         gradient_bias = np.zeros_like(delta)
         gradient_weight = np.zeros_like(delta)
 
-        delta[-1] = self.grad_cost(y, a_i[-1]) * self.grad_activation(z_i[-1])
+        delta[-1] = self.grad_cost(y, a_i[-1]) * self.grad_activation_out(z_i[-1], self.activation_function_output)
         gradient_bias[-1] = np.sum(delta[-1], axis=0)
         gradient_weight[-1] = (delta[-1].T @ a_i[-2]).T
 
@@ -229,7 +231,7 @@ class MultilayerPerceptronClassifier(RegressionClass):
             print(f"INITIAL. Cost func: {self.cost(y,y_pred):g}")
 
         for i in range(self.n_epochs):
-            if not i == 0 and i % 50 == 0:
+            if not i == 0 and i % 200 == 0:
                 self.learning_rate /= 2
                 print(f"Learning rate reduced to {self.learning_rate}")
             batch_indices = np.array_split(np.random.permutation(len(y)), n_iterations)
@@ -263,14 +265,32 @@ class MultilayerPerceptronClassifier(RegressionClass):
                     print(np.max(cost_diff))
                     break
 
-    def activation_function(self, z, layer):
+
+    @staticmethod
+    @numba.njit
+    def activation_function_out(z, activation_function_output):
         """
         Not used yet. If we get time, we will modify the class to be able to use
         several different activation functions using this method
         """
-        activation = self.activation_function_list[layer]
-        if activation == "sigmoid":
-            return self.sigmoid(z)
+        if activation_function_output == "linear":
+            return z
+        elif activation_function_output == "sigmoid":
+            expo = np.exp(z)
+            return expo / (1 + expo)
+
+    @staticmethod
+    @numba.njit
+    def grad_activation_out(z_i, activation_function_output):
+        """
+        Not used yet. If we get time, we will modify the class to be able to use
+        several different activation functions using this method
+        """
+        if activation_function_output == "linear":
+            return np.ones_like(z_i)
+        elif activation_function_output == "sigmoid":
+            exp_expression = np.exp(-z_i)
+            return exp_expression / ((1 + exp_expression) ** 2)
 
     @staticmethod
     @numba.njit
