@@ -13,7 +13,7 @@ class RegressionClass:
         batch_size="auto",
         penalty=None,
         verbose=False,
-        learning_schedule = None,
+        learning_schedule=None,
     ):
         if batch_size == "auto":
             self.batch_size = lambda n_inputs: min(200, n_inputs)
@@ -28,7 +28,7 @@ class RegressionClass:
         self.penalty = penalty
         self.rtol = rtol
         self.verbose = verbose
-        self.learning_rate = learning_rate
+        self.learning_schedule = learning_schedule
 
     def fit(self, X=None, y=None):
         raise RuntimeError("Please do not use this class directly.")
@@ -41,33 +41,57 @@ class RegressionClass:
 
 class LogisticRegression(RegressionClass):
     def fit(self, X, y):
-        beta = np.random.normal(0, np.sqrt(2 / X.shape[1]), size=X.shape[1])
-        self.stochastic_gradient_descent(beta, X, y)
-        self.beta = beta
+        if len(y.shape) == 1:
+            raise ValueError("y-array must have shape (n, 1) Use numpy.reshape(-1, 1)")
+        self.beta = np.random.normal(0, np.sqrt(2 / X.shape[1]), size=X.shape[1])
+        self.stochastic_gradient_descent(X, y)
 
-    def p(self, beta, X):
-        exp_expression = np.exp(X @ beta)
-        return exp_expression / (1 + exp_expression)
-
-    def grad_cost_function(self, beta, X, y):
-        return -X.T @ (y - self.p(beta, X))
-
-    def stochastic_gradient_descent(self, beta, X, y):
+    def stochastic_gradient_descent(self, X, y):
+        if self.learning_schedule == None:
+            reduce_i = len(y) + 1
+        else:
+            reduce_i = self.learning_schedule
         n_iterations = len(y) // self.batch_size(len(y))
-        y_batches = np.array_split(y, n_iterations)
-        X_batches = np.array_split(X, n_iterations, axis=0)
+        cost = np.zeros(self.n_epochs)
+        y_pred = self.predict_proba(X)
+        if self.verbose:
+            if np.all(y_pred > 0):
+                print(f"Initial cost func: {self.cost(y, y_pred):g}")
+            else:
+                print(f"Initial cost func cannot be computed")
+
         for i in range(self.n_epochs):
+            if i % reduce_i == 0 and not i == 0:
+                self.learning_rate /= 2
+                if self.verbose:
+                    print(f"Learning rate reduced to {self.learning_rate}")
+            batch_indices = np.array_split(np.random.permutation(len(y)), n_iterations)
             for j in range(n_iterations):
                 random_batch = np.random.randint(n_iterations)
-                grad = self.learning_rate * self.grad_cost_function(
-                    beta, X_batches[random_batch], y_batches[random_batch]
+                gradient = self.grad_cost_function(
+                    self.beta,
+                    X[batch_indices[random_batch]],
+                    y[batch_indices[random_batch]],
+                ).sum(axis=1)
+                self.beta -= self.learning_rate * gradient
+            y_pred = self.predict_proba(X)
+            if np.any(y_pred < 0):
+                cost[i] = np.inf
+            else:
+                cost[i] = self.cost(y, y_pred)
+            if self.verbose:
+                print(
+                    f"Epochs {i / self.n_epochs * 100:.2f}% done. Cost func: {cost[i]:g}"
                 )
-                rdiff = np.max(np.abs(grad / beta))
-                if rdiff < self.rtol:
-                    print("Tolerance reached")
-                    return
-
-                beta -= grad
+            if i > 10:
+                cost_diff = (cost[i - 11 : i] - cost[i - 10 : i + 1]) / cost[i - 11 : i]
+                if np.max(cost_diff) < self.rtol:
+                    print(
+                        f"Loss function did not improve more than given relative tolerance "
+                        + f"{self.rtol:g} for 10 consecutive epochs. Stopping at epoch {i:g}"
+                    )
+                    print(np.max(cost_diff))
+                    break
 
     def predict(self, X):
         prediction = self.predict_proba(X)
@@ -77,6 +101,20 @@ class LogisticRegression(RegressionClass):
 
     def predict_proba(self, X):
         return X @ self.beta
+
+    @staticmethod
+    def cost(y, y_pred):
+        return (
+            -np.sum(sps.xlogy(y, y_pred) + sps.xlogy(1 - y, 1 - y_pred))
+            / y_pred.shape[0]
+        )
+
+    @staticmethod
+    @numba.njit
+    def grad_cost_function(beta, X, y):
+        exp_expression = np.exp(X @ beta)
+        exp_expression = exp_expression / (1 + exp_expression)
+        return -X.T @ (y - exp_expression)
 
 
 class MultilayerPerceptronClassifier(RegressionClass):
@@ -92,11 +130,18 @@ class MultilayerPerceptronClassifier(RegressionClass):
         activation_function_output="sigmoid",
         learning_schedule=None,
     ):
-        super().__init__(learning_rate, n_epochs, rtol, batch_size, penalty, verbose, learning_schedule)
+        super().__init__(
+            learning_rate,
+            n_epochs,
+            rtol,
+            batch_size,
+            penalty,
+            verbose,
+            learning_schedule,
+        )
         self.hidden_layer_size = hidden_layer_size
         self.n_hidden_layers = len(hidden_layer_size)
         self.activation_function_output = activation_function_output
-
 
     def fit(self, X, y):
         self.n_features = len(X[0, :])
@@ -238,7 +283,7 @@ class MultilayerPerceptronClassifier(RegressionClass):
         cost = np.zeros(self.n_epochs)
         y_pred = self.feed_forward(X)[0][-1]
         if self.verbose:
-            print(f"INITIAL. Cost func: {self.cost(y,y_pred):g}")
+            print(f"Initial cost func: {self.cost(y,y_pred):g}")
 
         for i in range(self.n_epochs):
             if i % reduce_i == 0 and not i == 0:
