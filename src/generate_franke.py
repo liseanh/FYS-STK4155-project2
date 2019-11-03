@@ -21,7 +21,7 @@ def generate_Franke_data(x_points, y_points, std=0):
         Standard deviation of the added Gaussian noise
 
     """
-    
+
     x_ = np.linspace(0, 1, x_points, endpoint=True)
     y_ = np.linspace(0, 1, y_points, endpoint=True)
 
@@ -69,6 +69,13 @@ X_train = scaler.transform(X_train)
 X_test = scaler.transform(X_test)
 
 joblib.dump(scaler, f"models/franke_data_scaler_features_{n_x}_{n_y}_{sigma}.pkl")
-np.savez(f"data/franke_data_train_{n_x}_{n_y}_{sigma}.npz", X_train=X_train, z_train=z_train)
+np.savez(
+    f"data/franke_data_train_{n_x}_{n_y}_{sigma}.npz", X_train=X_train, z_train=z_train
+)
 np.savez(f"data/franke_data_test_{n_x}_{n_y}_{sigma}.npz", X_test=X_test, z_test=z_test)
-np.savez(f"data/franke_data_meshgrid_{n_x}_{n_y}_{sigma}.npz", x=x_meshgrid, y=y_meshgrid, z=z_meshgrid)
+np.savez(
+    f"data/franke_data_meshgrid_{n_x}_{n_y}_{sigma}.npz",
+    x=x_meshgrid,
+    y=y_meshgrid,
+    z=z_meshgrid,
+)
