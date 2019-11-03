@@ -32,7 +32,7 @@ x, gains_perfect = bestCurve(y_test)
 skplt.metrics.plot_cumulative_gain(y_test.ravel(), proba_split)
 plt.plot(x, gains_perfect)
 
-plt.legend(["Not default", "Default", "Baseline", "Perfect model"])
+plt.legend(["Not default", "Default", "Baseline", "Best model"])
 plt.axis([x[0], x[-1], 0, 1.01])
 plt.savefig("../doc/figures/cumulative_gain_NN.pdf", dpi=1000)
 plt.close()

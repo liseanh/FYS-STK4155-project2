@@ -48,7 +48,7 @@ class LogisticRegression(RegressionClass):
 
     def stochastic_gradient_descent(self, X, y):
         if self.learning_schedule == None:
-            reduce_i = len(y) + 1
+            reduce_i = self.n_epochs + 1
         else:
             reduce_i = self.learning_schedule
         n_iterations = len(y) // self.batch_size(len(y))
@@ -276,7 +276,7 @@ class MultilayerPerceptronClassifier(RegressionClass):
 
     def stochastic_gradient_descent(self, X, y):
         if self.learning_schedule == None:
-            reduce_i = len(y) + 1
+            reduce_i = self.n_epochs + 1
         else:
             reduce_i = self.learning_schedule
         n_iterations = len(y) // self.batch_size(len(y))
