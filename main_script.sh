@@ -8,7 +8,7 @@ then
 fi
 
 cd src
-echo "Generate Franke data? (y/n)"
+echo "Generate and preprocess Franke data? (y/n)"
 read yn_generate_franke
 if [ "$yn_generate_franke" == "y" ]
 then
@@ -22,27 +22,54 @@ then
   pipenv run python generate_franke.py 200 200 0.1
 fi
 
-echo "Preprocess credit card data? (y/n)"
-read yn_generate_credit
-if [ "$yn_generate_credit" == "y" ]
-then
-  echo "Creating scaled and one-hoted credit data design matrix"
-  pipenv run python read_credit_dats.py
-fi
 
 echo "Train Franke regression? (y/n)"
 read yn_train_Franke
 if [ "$yn_train_Franke" == "y" ]
 then
   echo "Training neural network model for n_x = 20, n_y = 20 data points, sigma 1"
-  pipenv run python read_credit_dats.py 20 20 1
+  pipenv run python train_nn_franke.py 20 20 1
 
   echo "Training neural network model for n_x = 20, n_y = 20 data points, sigma 0.1"
-  pipenv run python read_credit_dats.py 20 20 0.1
+  pipenv run python train_nn_franke.py 20 20 0.1
 
   echo "Training neural network model for n_x = 200, n_y = 200 data points, sigma 0.1"
-  pipenv run python read_credit_dats.py 200 200 1
+  pipenv run python train_nn_franke.py 200 200 1
 fi
+
+
+echo "Generate 3D Franke plots? (y/n)"
+read yn_plot_Franke
+if [ "$yn_plot_Franke" == "y" ]
+then
+  echo "Plotting neural network model for n_x = 20, n_y = 20 data points, sigma 1"
+  pipenv run python plot_regression.py 20 20 1
+
+  echo "Plotting neural network model for n_x = 20, n_y = 20 data points, sigma 0.1"
+  pipenv run python plot_regression.py 20 20 0.1
+
+  echo "Plotting neural network model for n_x = 200, n_y = 200 data points, sigma 0.1"
+  pipenv run python plot_regression.py 200 200 1
+fi
+
+
+
+
+echo "Preprocess credit card data? (y/n)"
+read yn_generate_credit
+if [ "$yn_generate_credit" == "y" ]
+then
+  echo "Creating scaled and one-hotted credit data design matrix"
+  pipenv run python read_credit_data.py
+fi
+
+echo "Train logistic regression model on credit data? (y/n)"
+read yn_train_logistic_credit
+if [ "$yn_train_logistic_credit" == "y" ]
+then
+  echo "Running logistic regression"
+  pipenv run python train_logreg_credit.py
+fi  
 
 
 echo "Build report? (y/n)"
