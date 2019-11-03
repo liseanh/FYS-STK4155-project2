@@ -45,8 +45,8 @@ Classification in statistical analysis is a useful tool, e.g. for predicting out
 	\caption{TEST FIGURE AS PLACEHOLDER, PLEASE REMOVE FROM FINAL VERSION}
 \end{figure}
 
-The aim of this project is  to study classification and regression problems through our own implementation of logistic regression and a multilayer perceptron (MLP) in Python. This particular data set has been used in a prior research paper by Yeh, I. C. et al about data mining techniques \cite{origarticle}, and can be downloaded from the \href{https://archive.ics.uci.edu/ml/datasets/default+of+credit+card+clients}{UCI Machine Learning Repository} \cite{UCI}.
-We will use these methods to classify data of credit card clients' default payment from a Taiwanese bank. Additionally, we will use the MLP to solve a regression problem on the Franke function and compare the result with prior regression analysis results of the function using standard least squares.  
+The aim of this project is  to study classification and regression problems through our own implementation of logistic regression and a multilayer perceptron (MLP) in Python. This particular data set has been used in a prior research paper by Yeh, I. C. and Che-hui Lien about data mining techniques \cite{origarticle}, and can be downloaded from the \href{https://archive.ics.uci.edu/ml/datasets/default+of+credit+card+clients}{UCI Machine Learning Repository} \cite{UCI}.
+We will use these methods to classify data of credit card clients' default payment from a Taiwanese bank. Additionally, we will use the MLP to solve a regression problem on Franke's function and compare the result from a prior project where we used standard least squares to solve the regression problem \cite{regpaper}.  
 
 
 \section{Theory}
@@ -79,8 +79,12 @@ before propagating backwards through the hidden layers using the general equatio
 &\delta_j^l= \sum_k \delta_k^{l+1}w_{kj}^{l+1}f'(z_j^l).
 \end{flalign}
 Looking at these equations, it is clear that the chosen cost function $\mathcal{C}$ should be differentiable. 
+
+The biases can be initialized to zero, but we have chosen an initial value of 0.01 to ensure that all of the neurons have some initial output. Initializing the weights to zero, however, will result in all neurons outputting the same value. Instead, the  weights are initialized with values from a uniform distribution with $w_{kj}\in (-1/\sqrt{n}, \ 1/\sqrt{n})$ to ensure uniform learning \cite{ML_algo}. 
+
 \section{Data}
-In this paper we are using credit card payment data from a Taiwanese bank downloaded from the \href{https://archive.ics.uci.edu/ml/datasets/default+of+credit+card+clients}{UCI Machine Learning Repository}. The response variable is a binary variable of default payment with Yes = 1, No = 0.  The original data set consists of 30 000 observations, with X amount of observations with default payments. There are 23 explanatory variables, cited from the original paper they are described as \cite{origarticle}:
+\subsection{Classification - Credit card client data}
+For the classification part of this project,  we are using credit card payment data from a Taiwanese bank downloaded from the \href{https://archive.ics.uci.edu/ml/datasets/default+of+credit+card+clients}{UCI Machine Learning Repository}. The response variable is a binary variable of default payment with Yes = 1, No = 0.  The original data set consists of 30 000 observations, with X amount of observations with default payments. There are 23 explanatory variables, cited from the original paper they are described as \cite{origarticle}:
 \begin{itemize}[leftmargin=5mm, itemsep=0pt,  parsep=1pt]
  \item X1: Amount of the given credit (NT dollar): it includes both the individual consumer credit and his/her family (supplementary) credit.
 \item X2: Gender (1 = male; 2 = female).
@@ -89,9 +93,18 @@ In this paper we are using credit card payment data from a Taiwanese bank downlo
 \item X5: Age (year).
 \item X6 - X11: History of past payment. We tracked the past monthly payment records (from April to September, 2005) as follows: X6 = the repayment status in September, 2005; X7 = the repayment status in August, 2005; . . .;X11 = the repayment status in April, 2005. The measurement scale for the repayment status is: -1 = pay duly; 1 = payment delay for one month; 2 = payment delay for two months; . . .; 8 = payment delay for eight months; 9 = payment delay for nine months and above.
 \item X12-X17: Amount of bill statement (NT dollar). X12 = amount of bill statement in September, 2005; X13 = amount of bill statement in August, 2005; . . .; X17 = amount of bill statement in April, 2005.
-\item X18-X23: Amount of previous payment (NT dollar). X18 = amount paid in September, 2005; X19 = amount paid in August, 2005; . . .;X23 = amount paid in April, 2005.
+\item X18-X23: Amount of previous payment (NT dollar). X18 = amount paid in September, 2005; X19 = amount paid in August, 2005; . . .; X23 = amount paid in April, 2005.
 \end{itemize}
 
+\subsection{Regression - Franke's function}
+For the regression part part of this project we will be performing regression analysis on Franke's function $g(x,y)$ with added Gaussian noise $\bm{\varepsilon} \sim N(0,\  \sigma^2) $. Franke's function is given by 
+\begin{align}
+g(x,y) &= \frac{3}{4}\exp{\left(-\frac{(9x-2)^2}{4}   - \frac{(9y-2)^2}{4}\right)} \nonumber\\
+ &+\frac{3}{4}\exp{\left(-\frac{(9x+1)^2}{49}- \frac{(9y+1)}{10}\right)} \nonumber\\
+ &+\frac{1}{2}\exp{\left(-\frac{(9x-7)^2}{4} - \frac{(9y-3)^2}{4}\right)} \nonumber\\
+ &-\frac{1}{5}\exp{\left(-(9x-4)^2 - (9y-7)^2\right) }  \label{eq:Franke}
+\end{align} and is defined on $x,\ y \in [0,1]$. The data we are fitting is given by 
+$$G(\bm{x}, \bm{y}) = g(\bm{x}, \bm{y}) + \bm{\varepsilon}.$$
 \section{Model evaluation}
 \subsection{Regression}
 To evaluate the performance of our regression model, we consider the $R^2$ score, given by 

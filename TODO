@@ -5,3 +5,5 @@ List of things to get done:
  - Beautify figures (dimensions, titles etc.)
  - Somehow find optimal parameters for MLP
  - Write report 
+ - generate Franke data for sigma=1 and with sigma=0.1 with x_points=y_points=20 for both
+ - IF regression of Franke with sigma=0.1, x_points=y_points=20 turns out horrible, try  with x_points=y_points=100 instead
