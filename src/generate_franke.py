@@ -35,10 +35,7 @@ X = np.array([x, y]).T
 
 X_train, X_test, z_train, z_test = sklms.train_test_split(X, z, test_size=0.33)
 
-scaler_output = sklpre.MinMaxScaler().fit(z_train)
 
-z_train = scaler_output.transform(z_train)
-z_test = scaler_output.transform(z_test)
 
 
 scaler = sklpre.StandardScaler().fit(X_train)
@@ -47,7 +44,6 @@ X_train = scaler.transform(X_train)
 X_test = scaler.transform(X_test)
 
 joblib.dump(scaler, "models/franke_data_scaler_features.pkl")
-joblib.dump(scaler_output, "models/franke_data_scaler_output.pkl")
 np.savez("data/franke_data_train.npz", X_train=X_train, z_train=z_train)
 np.savez("data/franke_data_test.npz", X_test=X_test, z_test=z_test)
 np.savez("data/franke_data_meshgrid.npz", x=x_meshgrid, y=y_meshgrid, z=z_meshgrid)
