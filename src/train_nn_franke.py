@@ -22,11 +22,11 @@ test_set = np.load(f"data/franke_data_test_{n_x}_{n_y}_{sigma}.npz")
 X_train, z_train = training_set["X_train"], training_set["z_train"]
 X_test, z_test = test_set["X_test"], test_set["z_test"]
 
-rate = 1e-3 * 2
+rate = 1e-3
 M = "auto"  
-n = 500
+n = 600
 
-layer_size = [100, 50, 25]
+layer_size = [800, 300, 10]
 
 regressor = MultilayerPerceptronRegressor(
     n_epochs=n,
@@ -42,4 +42,4 @@ regressor.fit(X_train, z_train)
 print(f"Train R2 score: {regressor.r2_score(X_train, z_train)}")
 print(f"Test R2 score: {regressor.r2_score(X_test, z_test)}")
 
-regressor.save_model("reg_test.npz")
+regressor.save_model(f"franke_model_{n_x}_{n_y}_{sigma}.npz")
