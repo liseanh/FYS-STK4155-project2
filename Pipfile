@@ -22,6 +22,7 @@ line-profiler = "*"
 pyqt5 = "*"
 scikit-plot = "*"
 joblib = "*"
+pytest = "*"
 
 [requires]
 python_version = "3.6"
