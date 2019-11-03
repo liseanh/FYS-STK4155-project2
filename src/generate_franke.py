@@ -36,8 +36,6 @@ X = np.array([x, y]).T
 X_train, X_test, z_train, z_test = sklms.train_test_split(X, z, test_size=0.33)
 
 
-
-
 scaler = sklpre.StandardScaler().fit(X_train)
 
 X_train = scaler.transform(X_train)

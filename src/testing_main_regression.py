@@ -11,7 +11,7 @@ rate = 1e-3 * 2
 M = "auto"  # len(z_train)
 n = 500
 
-layer_size = [50, 25, 5]
+layer_size = [100, 50, 25]
 
 regressor = MultilayerPerceptronRegressor(
     n_epochs=n,
@@ -20,7 +20,7 @@ regressor = MultilayerPerceptronRegressor(
     hidden_layer_size=layer_size,
     rtol=-np.inf,
     verbose=True,
-    activation_function_output="linear"
+    activation_function_output="linear",
 )
 
 regressor.fit(X_train, z_train)

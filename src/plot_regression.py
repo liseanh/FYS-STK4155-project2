@@ -60,8 +60,6 @@ fig.savefig(
 )
 
 
-
-
 fig = plt.figure()
 fig.set_size_inches(3.03, 1.8)
 ax = fig.gca(projection="3d")

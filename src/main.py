@@ -87,12 +87,14 @@ class MultilayerPerceptronClassifier(RegressionClass):
         batch_size="auto",
         penalty=None,
         verbose=False,
-        activation_function_output = "sigmoid",
+        activation_function_output="sigmoid",
+        learning_schedule=None,
     ):
         super().__init__(learning_rate, n_epochs, rtol, batch_size, penalty, verbose)
         self.hidden_layer_size = hidden_layer_size
         self.n_hidden_layers = len(hidden_layer_size)
         self.activation_function_output = activation_function_output
+        self.learning_schedule = learning_schedule
 
     def fit(self, X, y):
         self.n_features = len(X[0, :])
@@ -205,7 +207,9 @@ class MultilayerPerceptronClassifier(RegressionClass):
         gradient_bias = np.zeros_like(delta)
         gradient_weight = np.zeros_like(delta)
 
-        delta[-1] = self.grad_cost(y, a_i[-1]) * self.grad_activation_out(z_i[-1], self.activation_function_output)
+        delta[-1] = self.grad_cost(y, a_i[-1]) * self.grad_activation_out(
+            z_i[-1], self.activation_function_output
+        )
         gradient_bias[-1] = np.sum(delta[-1], axis=0)
         gradient_weight[-1] = (delta[-1].T @ a_i[-2]).T
 
@@ -224,6 +228,10 @@ class MultilayerPerceptronClassifier(RegressionClass):
         return gradient_weight, gradient_bias
 
     def stochastic_gradient_descent(self, X, y):
+        if self.learning_schedule == None:
+            reduce_i = len(y) + 1
+        else:
+            reduce_i = self.learning_schedule
         n_iterations = len(y) // self.batch_size(len(y))
         cost = np.zeros(self.n_epochs)
         y_pred = self.feed_forward(X)[0][-1]
@@ -231,9 +239,10 @@ class MultilayerPerceptronClassifier(RegressionClass):
             print(f"INITIAL. Cost func: {self.cost(y,y_pred):g}")
 
         for i in range(self.n_epochs):
-            if not i == 0 and i % 200 == 0:
+            if i % reduce_i == 0 and not i == 0:
                 self.learning_rate /= 2
-                print(f"Learning rate reduced to {self.learning_rate}")
+                if self.verbose:
+                    print(f"Learning rate reduced to {self.learning_rate}")
             batch_indices = np.array_split(np.random.permutation(len(y)), n_iterations)
             for j in range(n_iterations):
                 random_batch = np.random.randint(n_iterations)
@@ -265,13 +274,12 @@ class MultilayerPerceptronClassifier(RegressionClass):
                     print(np.max(cost_diff))
                     break
 
-
     @staticmethod
     @numba.njit
     def activation_function_out(z, activation_function_output):
         """
-        Not used yet. If we get time, we will modify the class to be able to use
-        several different activation functions using this method
+        Method for ensuring modifyable output activation function. Should expand
+        this functionality to all layers if we have the time.
         """
         if activation_function_output == "linear":
             return z
@@ -283,8 +291,8 @@ class MultilayerPerceptronClassifier(RegressionClass):
     @numba.njit
     def grad_activation_out(z_i, activation_function_output):
         """
-        Not used yet. If we get time, we will modify the class to be able to use
-        several different activation functions using this method
+        Method for ensuring modifyable output activation function. Should expand
+        this functionality to all layers if we have the time.
         """
         if activation_function_output == "linear":
             return np.ones_like(z_i)
@@ -321,6 +329,30 @@ class MultilayerPerceptronClassifier(RegressionClass):
 
 
 class MultilayerPerceptronRegressor(MultilayerPerceptronClassifier):
+    def __init__(
+        self,
+        hidden_layer_size=(20, 10, 5, 3),
+        learning_rate=0.1,
+        n_epochs=2000,
+        rtol=0.001,
+        batch_size="auto",
+        penalty=None,
+        verbose=False,
+        activation_function_output="linear",
+        learning_schedule=None,
+    ):
+        super().__init__(
+            hidden_layer_size,
+            learning_rate,
+            n_epochs,
+            rtol,
+            batch_size,
+            penalty,
+            verbose,
+            activation_function_output,
+            learning_schedule,
+        )
+
     def predict(self, X):
         if self.weights_hidden[0].shape[0] != X.shape[1]:
             print(len(self.weights_hidden[0].shape[0]), X.shape[1])
