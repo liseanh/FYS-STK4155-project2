@@ -21,6 +21,7 @@ numba = "*"
 line-profiler = "*"
 pyqt5 = "*"
 scikit-plot = "*"
+joblib = "*"
 
 [requires]
 python_version = "3.6"
