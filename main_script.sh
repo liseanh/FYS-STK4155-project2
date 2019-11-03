@@ -30,9 +30,19 @@ then
   pipenv run python read_credit_dats.py
 fi
 
-echo ""  
+echo "Train Franke regression? (y/n)"
+read yn_train_Franke
+if [ "$yn_train_Franke" == "y" ]
+then
+  echo "Training neural network model for n_x = 20, n_y = 20 data points, sigma 1"
+  pipenv run python read_credit_dats.py 20 20 1
 
+  echo "Training neural network model for n_x = 20, n_y = 20 data points, sigma 0.1"
+  pipenv run python read_credit_dats.py 20 20 0.1
 
+  echo "Training neural network model for n_x = 200, n_y = 200 data points, sigma 0.1"
+  pipenv run python read_credit_dats.py 200 200 1
+fi
 
 
 echo "Build report? (y/n)"
@@ -42,9 +52,9 @@ read ynreport
 if [ "$ynreport" == "y" ]
 then
   cd ../doc/
-  pdflatex -synctex=1 -interaction=nonstopmode ComphysProj3.tex
-  bibtex Comphysproj3.aux
-  pdflatex -synctex=1 -interaction=nonstopmode ComphysProj3.tex
-  bibtex ComphysProj3.aux
-  pdflatex -synctex=1 -interaction=nonstopmode ComphysProj3.tex
+  pdflatex -synctex=1 -interaction=nonstopmode report_2.tex
+  bibtex report_2.aux
+  pdflatex -synctex=1 -interaction=nonstopmode report_2.tex
+  bibtex report_2.aux
+  pdflatex -synctex=1 -interaction=nonstopmode report_2.tex
 fi
