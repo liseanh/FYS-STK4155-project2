@@ -55,11 +55,7 @@ class LogisticRegression(RegressionClass):
         cost = np.zeros(self.n_epochs)
         y_pred = self.predict_proba(X)
         if self.verbose:
-            if np.all(y_pred > 0):
-                print(f"Initial cost func: {self.cost(y, y_pred):g}")
-            else:
-                print(f"Initial cost func cannot be computed")
-
+            print(f"Initial cost func: {self.cost(y, y_pred):g}")
         for i in range(self.n_epochs):
             if i % reduce_i == 0 and not i == 0:
                 self.learning_rate /= 2
@@ -72,13 +68,14 @@ class LogisticRegression(RegressionClass):
                     self.beta,
                     X[batch_indices[random_batch]],
                     y[batch_indices[random_batch]],
-                ).sum(axis=1)
+                )
+                if np.any(np.isnan(gradient)):
+                    print(self.beta)
+                    print(i, j, n_iterations)
+                    exit()
                 self.beta -= self.learning_rate * gradient
             y_pred = self.predict_proba(X)
-            if np.any(y_pred < 0):
-                cost[i] = np.inf
-            else:
-                cost[i] = self.cost(y, y_pred)
+            cost[i] = self.cost(y, y_pred)
             if self.verbose:
                 print(
                     f"Epochs {i / self.n_epochs * 100:.2f}% done. Cost func: {cost[i]:g}"
@@ -100,7 +97,9 @@ class LogisticRegression(RegressionClass):
         return prediction
 
     def predict_proba(self, X):
-        return X @ self.beta
+        exp_expression = np.exp(X @ self.beta)
+        exp_expression = exp_expression / (1 + exp_expression)
+        return exp_expression.reshape(-1, 1)
 
     @staticmethod
     def cost(y, y_pred):
@@ -113,8 +112,9 @@ class LogisticRegression(RegressionClass):
     @numba.njit
     def grad_cost_function(beta, X, y):
         exp_expression = np.exp(X @ beta)
+        print(np.max(exp_expression))
         exp_expression = exp_expression / (1 + exp_expression)
-        return -X.T @ (y - exp_expression)
+        return (-X.T @ (y - exp_expression)).sum(axis=1)
 
 
 class MultilayerPerceptronClassifier(RegressionClass):
