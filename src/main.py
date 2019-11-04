@@ -43,7 +43,9 @@ class LogisticRegression(RegressionClass):
     def fit(self, X, y):
         if len(y.shape) == 1:
             raise ValueError("y-array must have shape (n, 1) Use numpy.reshape(-1, 1)")
-        self.beta = np.random.normal(0, np.sqrt(2 / X.shape[1]), size=X.shape[1]).reshape(-1, 1)
+        self.beta = np.random.normal(
+            0, np.sqrt(2 / X.shape[1]), size=X.shape[1]
+        ).reshape(-1, 1)
         self.stochastic_gradient_descent(X, y)
 
     def stochastic_gradient_descent(self, X, y):
@@ -97,14 +99,12 @@ class LogisticRegression(RegressionClass):
         exp_expression = exp_expression / (1 + exp_expression)
         return exp_expression.reshape(-1, 1)
 
-
     def save_model(self, filename):
         np.savez(f"models/{filename}", beta=self.beta)
 
     def load_model(self, filename):
         model = np.load(f"models/{filename}", allow_pickle=True)
         self.beta = model["beta"]
-
 
     @staticmethod
     def cost(y, y_pred):
@@ -126,6 +126,7 @@ class MultilayerPerceptronClassifier(RegressionClass):
         self,
         hidden_layer_size=(20, 10, 5, 3),
         learning_rate=0.1,
+        lambd=0,
         n_epochs=2000,
         rtol=0.001,
         batch_size="auto",
@@ -143,6 +144,7 @@ class MultilayerPerceptronClassifier(RegressionClass):
             verbose,
             learning_schedule,
         )
+        self.lambd = lambd
         self.hidden_layer_size = hidden_layer_size
         self.n_hidden_layers = len(hidden_layer_size)
         self.activation_function_output = activation_function_output
@@ -286,6 +288,7 @@ class MultilayerPerceptronClassifier(RegressionClass):
         n_iterations = len(y) // self.batch_size(len(y))
         cost = np.zeros(self.n_epochs)
         y_pred = self.feed_forward(X)[0][-1]
+        lambd_feat = self.lambd / self.n_features
         if self.verbose:
             print(f"Initial cost func: {self.cost(y,y_pred):g}")
 
@@ -301,12 +304,16 @@ class MultilayerPerceptronClassifier(RegressionClass):
                     X[batch_indices[random_batch]], y[batch_indices[random_batch]]
                 )
                 # output layer
-                self.weights_out -= self.learning_rate * gradients_weight[-1]
+                self.weights_out -= (
+                    self.learning_rate * gradients_weight[-1]
+                    + self.weights_out * lambd_feat
+                )
                 self.biases_out -= self.learning_rate * gradients_bias[-1]
                 # hidden layer
                 for l in range(-1, -self.n_hidden_layers - 1, -1):
                     self.weights_hidden[l] -= (
                         self.learning_rate * gradients_weight[l - 1].T
+                        + self.weights_hidden[l] * lambd_feat
                     )
                     self.biases_hidden[l] -= self.learning_rate * gradients_bias[l - 1]
             y_pred = self.feed_forward(X)[0][-1]
@@ -371,12 +378,17 @@ class MultilayerPerceptronClassifier(RegressionClass):
     def grad_cost(y, y_pred):
         return y_pred - y
 
-    @staticmethod
-    def cost(y, y_pred):
+    def cost(self, y, y_pred):
         return (
             -np.sum(sps.xlogy(y, y_pred) + sps.xlogy(1 - y, 1 - y_pred))
             / y_pred.shape[0]
-        )
+        ) + self.lambd * self.l2
+
+    @property
+    def l2(self):
+        return (
+            self.weights_out.sum() + np.concatenate(self.weights_hidden).sum()
+        ) ** 2 / (2 * self.n_features)
 
 
 class MultilayerPerceptronRegressor(MultilayerPerceptronClassifier):
@@ -384,6 +396,7 @@ class MultilayerPerceptronRegressor(MultilayerPerceptronClassifier):
         self,
         hidden_layer_size=(20, 10, 5, 3),
         learning_rate=0.1,
+        lambd=0,
         n_epochs=2000,
         rtol=0.001,
         batch_size="auto",
@@ -395,6 +408,7 @@ class MultilayerPerceptronRegressor(MultilayerPerceptronClassifier):
         super().__init__(
             hidden_layer_size,
             learning_rate,
+            lambd,
             n_epochs,
             rtol,
             batch_size,
@@ -413,10 +427,8 @@ class MultilayerPerceptronRegressor(MultilayerPerceptronClassifier):
         prediction = self.feed_forward(X)[0][-1]
         return prediction
 
-    @staticmethod
-    @numba.njit
-    def cost(y, y_pred):
-        return np.mean((y_pred - y) ** 2) / 2
+    def cost(self, y, y_pred):
+        return np.mean((y_pred - y) ** 2) / 2 + self.lambd * self.l2
 
     @staticmethod
     @numba.njit

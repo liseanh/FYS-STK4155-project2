@@ -15,7 +15,6 @@ except ValueError:
     raise TypeError("Input must be integer, integer and float")
 
 
-
 training_set = np.load(f"data/franke_data_train_{n_x}_{n_y}_{sigma}.npz")
 test_set = np.load(f"data/franke_data_test_{n_x}_{n_y}_{sigma}.npz")
 
@@ -23,7 +22,7 @@ X_train, z_train = training_set["X_train"], training_set["z_train"]
 X_test, z_test = test_set["X_test"], test_set["z_test"]
 
 rate = 1e-3
-M = "auto"  
+M = "auto"
 n = 600
 
 layer_size = [800, 300, 10]
