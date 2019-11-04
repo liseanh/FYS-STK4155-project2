@@ -97,6 +97,15 @@ class LogisticRegression(RegressionClass):
         exp_expression = exp_expression / (1 + exp_expression)
         return exp_expression.reshape(-1, 1)
 
+
+    def save_model(self, filename):
+        np.savez(f"models/{filename}", beta=self.beta)
+
+    def load_model(self, filename):
+        model = np.load(f"models/{filename}", allow_pickle=True)
+        self.beta = model["beta"]
+ 
+
     @staticmethod
     def cost(y, y_pred):
         return (
