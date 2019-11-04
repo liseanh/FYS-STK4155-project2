@@ -57,12 +57,12 @@ surf = ax.plot_surface(
     alpha=0.5,
 )
 
-
 ax.scatter(
     scaler.inverse_transform(X_test)[:, 0],
     scaler.inverse_transform(X_test)[:, 1],
     y_pred_test,
     marker=".",
+    s=7,
     label="test",
 )
 
@@ -95,6 +95,7 @@ ax.scatter(
     scaler.inverse_transform(X_train)[:, 1],
     y_pred_train,
     marker=".",
+    s=7,
     label="train",
 )
 
