@@ -26,7 +26,7 @@ class RegressionClass(sklbase.BaseEstimator, sklbase.ClassifierMixin):
 
     def get_batch_size(self, len_y):
         if self.batch_size == "auto":
-            return np.min(200, self.n_inputs)
+            return np.min([200, len_y])
         elif self.batch_size == None:
             return len_y
         elif isinstance(self.batch_size, int):

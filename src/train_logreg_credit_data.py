@@ -15,13 +15,12 @@ X_test, y_test = test_set["X_test"], test_set["y_test"].reshape(-1, 1)
 # reg.fit(np.append(np.ones(X_train.shape[0]).reshape(-1, 1), X_train, axis=1), y_train)
 # print(reg.accuracy_score(X_test, y_test))
 
-reg = LogisticRegression(n_epochs=1000, rtol=0.01)
+reg = LogisticRegression(n_epochs=1000, rtol=0.01, batch_size="auto")
 candidate_learning_rates = scipy.stats.uniform(1e-5, 1e-2)
-candidate_batch_sizes = scipy.stats.randint(1, len(y_test))
-param_dist = {"learning_rate": candidate_learning_rates, "batch_size": candidate_batch_sizes}
+param_dist = {"learning_rate": candidate_learning_rates}
 random_search = sklms.RandomizedSearchCV(
     reg,
-    n_iter=100,
+    n_iter=1,
     param_distributions=param_dist,
     cv=5,
     iid=False,
@@ -30,8 +29,6 @@ random_search = sklms.RandomizedSearchCV(
     return_train_score=True,
 )
 random_search.fit(X_train, y_train)
-print(random_search.cv_results_)
-print(random_search.best_score_)
-print(random_search.score(X_test, y_test))
+random_search.best_estimator_.save("logreg_credit_model.npz")
 df_results = pd.DataFrame.from_dict(random_search.cv_results_, orient="index")
 df_results.to_csv("cv_results/results_logreg.csv")
