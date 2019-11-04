@@ -69,10 +69,6 @@ class LogisticRegression(RegressionClass):
                     X[batch_indices[random_batch]],
                     y[batch_indices[random_batch]],
                 )
-                if np.any(np.isnan(gradient)):
-                    print(self.beta)
-                    print(i, j, n_iterations)
-                    exit()
                 self.beta -= self.learning_rate * gradient
             y_pred = self.predict_proba(X)
             cost[i] = self.cost(y, y_pred)
@@ -111,7 +107,7 @@ class LogisticRegression(RegressionClass):
     @staticmethod
     @numba.njit
     def grad_cost_function(beta, X, y):
-        exp_expression = np.exp(X @ beta)
+        exp_expression = np.exp(X @ beta).reshape(-1, 1)
         exp_expression = exp_expression / (1 + exp_expression)
         return (-X.T @ (y - exp_expression)).sum(axis=1)
 
