@@ -43,7 +43,7 @@ class LogisticRegression(RegressionClass):
     def fit(self, X, y):
         if len(y.shape) == 1:
             raise ValueError("y-array must have shape (n, 1) Use numpy.reshape(-1, 1)")
-        self.beta = np.random.normal(0, np.sqrt(2 / X.shape[1]), size=X.shape[1])
+        self.beta = np.random.normal(0, np.sqrt(2 / X.shape[1]), size=X.shape[1]).reshape(-1, 1)
         self.stochastic_gradient_descent(X, y)
 
     def stochastic_gradient_descent(self, X, y):
@@ -68,7 +68,7 @@ class LogisticRegression(RegressionClass):
                     self.beta,
                     X[batch_indices[random_batch]],
                     y[batch_indices[random_batch]],
-                )
+                ).reshape(-1, 1)
                 self.beta -= self.learning_rate * gradient
             y_pred = self.predict_proba(X)
             cost[i] = self.cost(y, y_pred)
@@ -104,7 +104,7 @@ class LogisticRegression(RegressionClass):
     def load_model(self, filename):
         model = np.load(f"models/{filename}", allow_pickle=True)
         self.beta = model["beta"]
- 
+
 
     @staticmethod
     def cost(y, y_pred):
@@ -116,7 +116,7 @@ class LogisticRegression(RegressionClass):
     @staticmethod
     @numba.njit
     def grad_cost_function(beta, X, y):
-        exp_expression = np.exp(X @ beta).reshape(-1, 1)
+        exp_expression = np.exp(X @ beta)
         exp_expression = exp_expression / (1 + exp_expression)
         return (-X.T @ (y - exp_expression)).sum(axis=1)
 
