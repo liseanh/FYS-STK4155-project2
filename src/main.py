@@ -2,9 +2,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.special as sps
 import numba
+import sklearn.base as sklbase
 
 
-class RegressionClass:
+class RegressionClass(sklbase.BaseEstimator, sklbase.ClassifierMixin):
     def __init__(
         self,
         learning_rate=0.1,
@@ -15,14 +16,7 @@ class RegressionClass:
         verbose=False,
         learning_schedule=None,
     ):
-        if batch_size == "auto":
-            self.batch_size = lambda n_inputs: min(200, n_inputs)
-        elif batch_size == "none":
-            self.batch_size = lambda n_inputs: n_inputs
-        elif isinstance(batch_size, int):
-            self.batch_size = lambda n_inputs: batch_size
-        else:
-            raise ValueError("Only 'auto', 'none' or integer supported right now.")
+        self.batch_size = batch_size
         self.learning_rate = learning_rate
         self.n_epochs = n_epochs
         self.penalty = penalty
@@ -30,6 +24,19 @@ class RegressionClass:
         self.verbose = verbose
         self.learning_schedule = learning_schedule
 
+    def get_batch_size(self, len_y):
+        if self.batch_size == "auto":
+            return np.min(200, self.n_inputs)
+        elif self.batch_size == None:
+            return len_y
+        elif isinstance(self.batch_size, int):
+            return self.batch_size
+        elif callable(self.batch_size):
+            return self.batch_size(len_y)
+        else:
+            raise ValueError(
+                f"Only batch size 'auto', 'none', function or integer supported. batch_size={batch_size}"
+            )
     def fit(self, X=None, y=None):
         raise RuntimeError("Please do not use this class directly.")
 
@@ -47,18 +54,21 @@ class LogisticRegression(RegressionClass):
             0, np.sqrt(2 / X.shape[1]), size=X.shape[1]
         ).reshape(-1, 1)
         self.stochastic_gradient_descent(X, y)
+        print("Fit finished!")
 
     def stochastic_gradient_descent(self, X, y):
         if self.learning_schedule == None:
             reduce_i = self.n_epochs + 1
         else:
             reduce_i = self.learning_schedule
-        n_iterations = len(y) // self.batch_size(len(y))
+        n_iterations = len(y) // self.get_batch_size(len(y))
         cost = np.zeros(self.n_epochs)
         y_pred = self.predict_proba(X)
         if self.verbose:
             print(f"Initial cost func: {self.cost(y, y_pred):g}")
         for i in range(self.n_epochs):
+            if np.any(np.isnan(self.beta)):
+                raise ValueError("Invalid value in beta")
             if i % reduce_i == 0 and not i == 0:
                 self.learning_rate /= 2
                 if self.verbose:
@@ -159,6 +169,7 @@ class MultilayerPerceptronClassifier(RegressionClass):
 
         self.init_biases_weights()
         self.stochastic_gradient_descent(X, y)
+        print("Fit finished")
 
     def predict(self, X):
         if self.weights_hidden[0].shape[0] != X.shape[1]:
@@ -285,7 +296,7 @@ class MultilayerPerceptronClassifier(RegressionClass):
             reduce_i = self.n_epochs + 1
         else:
             reduce_i = self.learning_schedule
-        n_iterations = len(y) // self.batch_size(len(y))
+        n_iterations = len(y) // self.get_batch_size(len(y))
         cost = np.zeros(self.n_epochs)
         y_pred = self.feed_forward(X)[0][-1]
         lambd_feat = self.lambd / self.n_features
