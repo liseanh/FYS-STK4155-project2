@@ -2,6 +2,7 @@ import scipy.integrate
 import matplotlib.pyplot as plt
 import scikitplot as skplt
 import numpy as np
+import pandas as pd
 from main import LogisticRegression
 
 
@@ -55,6 +56,28 @@ print(
     f"Area ratio for predicting not default: {ratio_not_default}.\n"
     + f"Area ratio for predicting default: {ratio_default}"
 )
+
+
+
+df = pd.read_csv("cv_results/results_logreg.csv", header=None, skiprows=1).T
+
+df.columns = df.iloc[0]
+df.drop(0, inplace=True)
+df["rank_test_score"] = pd.to_numeric(df["rank_test_score"])
+df = df.sort_values(by="param_learning_rate", ascending=True)
+
+train_score = df["mean_train_score"].values.astype(np.float)
+test_score = df["mean_test_score"].values.astype(np.float)
+learning_rates = df["param_learning_rate"].values.astype(np.float)
+
+fig, ax = plt.subplots()
+fig.set_size_inches(3.03, 3.03)
+ax.semilogx(learning_rates, train_score, label="train")
+ax.semilogx(learning_rates, test_score, label="test")
+ax.legend()
+fig.tight_layout()
+fig.savefig("../doc/figures/logreg_learning_rate_accuracy.pdf", dpi=1000)
+fig.clf()
 
 
 # logreg_credit_model

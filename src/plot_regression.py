@@ -44,7 +44,7 @@ y_pred_test = model.predict(X_test)
 
 
 fig = plt.figure()
-fig.set_size_inches(3.03, 1.8)
+fig.set_size_inches(3.03, 3.03)
 ax = fig.gca(projection="3d")
 
 surf = ax.plot_surface(
