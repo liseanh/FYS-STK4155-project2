@@ -13,28 +13,29 @@ model.load_model("logreg_credit_model.npz")
 
 y_pred = model.predict_proba(X_test)
 proba_0 = 1 - y_pred
-proba_1 = y_pred 
+proba_1 = y_pred
 
-proba_split = np.append(proba_0, proba_1, axis=1) 
+proba_split = np.append(proba_0, proba_1, axis=1)
+
 
 def bestCurve(y):
-    defaults = np.sum(y==1, dtype=int)
+    defaults = np.sum(y == 1, dtype=int)
     total = len(y)
     x = np.linspace(0, 1, total, endpoint=True)
     y1 = np.linspace(0, 1, defaults, endpoint=True)
     y2 = np.ones(total - defaults)
     y3 = np.concatenate([y1, y2])
-    return x, y3 
+    return x, y3
+
 
 x, gains_best = bestCurve(y_test)
 
-skplt.metrics.plot_cumulative_gain(y_test.ravel(), proba_split) 
+skplt.metrics.plot_cumulative_gain(y_test.ravel(), proba_split)
 plt.plot(x, gains_best)
 plt.legend(["Not default", "Default", "Baseline", "Best model"])
 plt.axis([x[0], x[-1], 0, 1.01])
 plt.savefig("../doc/figures/cumulative_gain_logreg.pdf", dpi=1000)
 plt.close()
-
 
 
 area_baseline = 0.5
@@ -56,5 +57,5 @@ print(
 )
 
 
-#logreg_credit_model 
-#nn_credit_model
+# logreg_credit_model
+# nn_credit_model
