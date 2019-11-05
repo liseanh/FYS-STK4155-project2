@@ -37,6 +37,7 @@ class RegressionClass(sklbase.BaseEstimator, sklbase.ClassifierMixin):
             raise ValueError(
                 f"Only batch size 'auto', 'none', function or integer supported. batch_size={batch_size}"
             )
+
     def fit(self, X=None, y=None):
         raise RuntimeError("Please do not use this class directly.")
 
@@ -399,9 +400,8 @@ class MultilayerPerceptronClassifier(RegressionClass):
     def l2(self):
         sum_weights = 0
         for weights in self.weights_hidden:
-            sum_weights += (weights**2).sum()
-        return (sum_weights + (self.weights_out**2).sum()) / (2 * self.n_features)
-
+            sum_weights += (weights ** 2).sum()
+        return (sum_weights + (self.weights_out ** 2).sum()) / (2 * self.n_features)
 
 
 class MultilayerPerceptronRegressor(MultilayerPerceptronClassifier):

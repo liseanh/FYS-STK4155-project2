@@ -4,6 +4,7 @@ from main import LogisticRegression
 import sklearn.preprocessing as sklpre
 import sklearn.model_selection as sklms
 import scipy.stats
+
 np.random.seed(len("nama jeff"))
 
 training_set = np.load("data/credit_data_train.npz")

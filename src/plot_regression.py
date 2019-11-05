@@ -2,8 +2,9 @@ import sys
 import numpy as np
 import joblib
 import matplotlib
+import matplotlib.cm as cm
+import pandas as pd
 import matplotlib.pyplot as plt
-from main import MultilayerPerceptronRegressor
 from mpl_toolkits.mplot3d import Axes3D
 import sklearn.preprocessing as sklpre
 import sklearn.model_selection as sklms
@@ -21,6 +22,16 @@ except IndexError:
 except ValueError:
     raise TypeError("Input must be integer, integer and float")
 
+fonts = {
+    "font.family": "serif",
+    "axes.labelsize": 8,
+    "font.size": 8,
+    "legend.fontsize": 8,
+    "xtick.labelsize": 8,
+    "ytick.labelsize": 8,
+}
+
+plt.rcParams.update(fonts)
 
 meshgrid = np.load(f"data/franke_data_meshgrid_{n_x}_{n_y}_{sigma}.npz")
 
@@ -30,8 +41,8 @@ x_meshgrid, y_meshgrid, z_meshgrid = meshgrid["x"], meshgrid["y"], meshgrid["z"]
 training_set = np.load(f"data/franke_data_train_{n_x}_{n_y}_{sigma}.npz")
 test_set = np.load(f"data/franke_data_test_{n_x}_{n_y}_{sigma}.npz")
 
-X_train, z_train = training_set["X_train"], training_set["z_train"]
-X_test, z_test = test_set["X_test"], test_set["z_test"]
+X_train, z_train = training_set["X_train"], training_set["z_train"].reshape(-1, 1)
+X_test, z_test = test_set["X_test"], test_set["z_test"].reshape(-1, 1)
 
 
 scaler = joblib.load(f"models/franke_data_scaler_features_{n_x}_{n_y}_{sigma}.pkl")
@@ -77,7 +88,7 @@ fig.savefig(
 )
 
 fig = plt.figure()
-fig.set_size_inches(3.03, 1.8)
+fig.set_size_inches(3.03, 3.03)
 ax = fig.gca(projection="3d")
 
 surf = ax.plot_surface(
@@ -107,4 +118,46 @@ fig.savefig(
     bbox_inches="tight",
     pad_inches=0,
     dpi=1000,
+)
+
+# Plotting hyperparameter search
+df = pd.read_csv(
+    f"cv_results/results_nn_franke_{n_x}_{n_y}_{sigma}.csv", header=None, skiprows=1
+).T
+
+df.columns = df.iloc[0]
+df.drop(0, inplace=True)
+df["rank_test_score"] = pd.to_numeric(df["rank_test_score"])
+df = df.sort_values(by="param_learning_rate", ascending=True)
+
+train_score = df["mean_train_score"].values.astype(np.float)
+validation_score = df["mean_test_score"].values.astype(np.float)
+learning_rates = df["param_learning_rate"].values.astype(np.float)
+lambdas = df["param_lambd"].values.astype(np.float)
+fig, ax = plt.subplots()
+fig.set_size_inches(3.03, 3.03)
+ax.scatter(learning_rates, lambdas, c=validation_score, s=20, cmap=cm.coolwarm)
+ax.set_xlabel("Learning rate")
+ax.set_ylabel(r"$\lambda$")
+cbar = fig.colorbar(
+    cm.ScalarMappable(
+        norm=cm.colors.Normalize(
+            vmin=validation_score.min(), vmax=validation_score.max()
+        ),
+        cmap=cm.coolwarm,
+    ),
+    ax=ax,
+)
+cbar.set_label("Validation accuracy")
+fig.tight_layout()
+fig.savefig(
+    f"../doc/figures/nn_learning_rate_lambda_r2_franke_{n_x}_{n_y}_{sigma}.pdf",
+    dpi=1000,
+)
+fig.clf()
+
+
+print(
+    f"R2 score test: {model.r2_score(X_test, z_test)}.\n"
+    + f"R2 score train: {model.r2_score(X_train, z_train)}"
 )

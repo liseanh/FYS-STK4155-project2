@@ -2,6 +2,8 @@ import scipy.integrate
 import matplotlib.pyplot as plt
 import scikitplot as skplt
 import numpy as np
+import pandas as pd
+import matplotlib.cm as cm
 from main import MultilayerPerceptronClassifier
 
 
@@ -17,7 +19,9 @@ fonts = {
 plt.rcParams.update(fonts)
 
 test_set = np.load("data/credit_data_test.npz")
+train_set = np.load("data/credit_data_train.npz")
 X_test, y_test = test_set["X_test"], test_set["y_test"].reshape(-1, 1)
+X_train, y_train = train_set["X_train"], train_set["y_train"].reshape(-1, 1)
 
 model = MultilayerPerceptronClassifier()
 model.load_model("nn_credit_model.npz")
@@ -41,13 +45,17 @@ def bestCurve(y):
 x, gains_best = bestCurve(y_test)
 
 
-skplt.metrics.plot_cumulative_gain(y_test.ravel(), proba_split)
-plt.plot(x, gains_best)
+x, gains_best = bestCurve(y_test)
+fig, ax = plt.subplots()
+skplt.metrics.plot_cumulative_gain(y_test.ravel(), proba_split, ax=ax, title=None)
+ax.plot(x, gains_best)
+ax.legend(["Not default", "Default", "Baseline", "Best model"])
+ax.axis([x[0], x[-1], 0, 1.01])
+fig.set_size_inches(3.03, 3.03)
+fig.tight_layout()
+fig.savefig("../doc/figures/cumulative_gain_NN.pdf", dpi=1000)
+fig.clf()
 
-plt.legend(["Not default", "Default", "Baseline", "Best model"])
-plt.axis([x[0], x[-1], 0, 1.01])
-plt.savefig("../doc/figures/cumulative_gain_NN.pdf", dpi=1000)
-plt.close()
 
 area_baseline = 0.5
 area_best = scipy.integrate.simps(gains_best, x) - area_baseline
@@ -62,7 +70,44 @@ area_1 = scipy.integrate.simps(gains_1, x) - area_baseline
 ratio_not_default = area_0 / area_best
 ratio_default = area_1 / area_best
 
+
+df = pd.read_csv("cv_results/results_nn_credit.csv", header=None, skiprows=1).T
+
+df.columns = df.iloc[0]
+df.drop(0, inplace=True)
+df["rank_test_score"] = pd.to_numeric(df["rank_test_score"])
+df = df.sort_values(by="param_learning_rate", ascending=True)
+
+train_score = df["mean_train_score"].values.astype(np.float)
+validation_score = df["mean_test_score"].values.astype(np.float)
+learning_rates = df["param_learning_rate"].values.astype(np.float)
+lambdas = df["param_lambd"].values.astype(np.float)
+fig, ax = plt.subplots()
+fig.set_size_inches(3.03, 3.03)
+ax.scatter(learning_rates, lambdas, c=validation_score, s=20, cmap=cm.coolwarm)
+ax.set_xlabel("Learning rate")
+ax.set_ylabel(r"$\lambda$")
+cbar = fig.colorbar(
+    cm.ScalarMappable(
+        norm=cm.colors.Normalize(
+            vmin=validation_score.min(), vmax=validation_score.max()
+        ),
+        cmap=cm.coolwarm,
+    ),
+    ax=ax,
+)
+cbar.set_label("Validation accuracy")
+fig.tight_layout()
+fig.savefig("../doc/figures/nn_learning_rate_lambda_accuracy_credit.pdf", dpi=1000)
+fig.clf()
+
+
 print(
     f"Area ratio for predicting not default: {ratio_not_default}.\n"
     + f"Area ratio for predicting default: {ratio_default}"
+)
+
+print(
+    f"Error rate test: {1 - model.accuracy_score(X_test, y_test)}.\n"
+    + f"Error rate train: {1 - model.accuracy_score(X_train, y_train)}"
 )

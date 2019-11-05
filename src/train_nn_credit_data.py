@@ -1,10 +1,9 @@
 import numpy as np
 import scipy.stats
 import pandas as pd
-from main import MultilayerPerceptronClassifier
-import sklearn.preprocessing as sklpre
 import sklearn.model_selection as sklms
-import sklearn.neural_network as sknn
+from main import MultilayerPerceptronClassifier
+
 
 training_set = np.load("data/credit_data_train.npz")
 test_set = np.load("data/credit_data_test.npz")
@@ -15,13 +14,9 @@ X_test, y_test = test_set["X_test"], test_set["y_test"].reshape(-1, 1)
 candidate_learning_rates = scipy.stats.uniform(1e-4, 1e-1)
 candiate_lambdas = scipy.stats.uniform(0, 1)
 param_dist = {"learning_rate": candidate_learning_rates, "lambd": candiate_lambdas}
-layer_size = [100, 50]
 
 reg = MultilayerPerceptronClassifier(
-    n_epochs=300,
-    batch_size="auto",
-    hidden_layer_size=layer_size,
-    rtol=1e-2,
+    n_epochs=300, batch_size="auto", hidden_layer_size=[100, 50], rtol=1e-2
 )
 
 random_search = sklms.RandomizedSearchCV(
