@@ -37,6 +37,7 @@ class RegressionClass(sklbase.BaseEstimator, sklbase.ClassifierMixin):
             raise ValueError(
                 f"Only batch size 'auto', 'none', function or integer supported. batch_size={batch_size}"
             )
+
     def fit(self, X=None, y=None):
         raise RuntimeError("Please do not use this class directly.")
 
@@ -54,7 +55,6 @@ class LogisticRegression(RegressionClass):
             0, np.sqrt(2 / X.shape[1]), size=X.shape[1]
         ).reshape(-1, 1)
         self.stochastic_gradient_descent(X, y)
-        print("Fit finished!")
 
     def stochastic_gradient_descent(self, X, y):
         if self.learning_schedule == None:
@@ -91,11 +91,12 @@ class LogisticRegression(RegressionClass):
             if i > 10:
                 cost_diff = (cost[i - 11 : i] - cost[i - 10 : i + 1]) / cost[i - 11 : i]
                 if np.max(cost_diff) < self.rtol:
-                    print(
-                        f"Loss function did not improve more than given relative tolerance "
-                        + f"{self.rtol:g} for 10 consecutive epochs. Stopping at epoch {i:g}"
-                    )
-                    print(np.max(cost_diff))
+                    if self.verbose:
+                        print(
+                            f"Loss function did not improve more than given relative tolerance "
+                            + f"{self.rtol:g} for 10 consecutive epochs (max improvement"
+                            + f" was {np.max(cost_diff)}). Stopping at epoch {i:g}"
+                        )
                     break
 
     def predict(self, X):
@@ -169,7 +170,6 @@ class MultilayerPerceptronClassifier(RegressionClass):
 
         self.init_biases_weights()
         self.stochastic_gradient_descent(X, y)
-        print("Fit finished")
 
     def predict(self, X):
         if self.weights_hidden[0].shape[0] != X.shape[1]:
@@ -336,11 +336,12 @@ class MultilayerPerceptronClassifier(RegressionClass):
             if i > 10:
                 cost_diff = (cost[i - 11 : i] - cost[i - 10 : i + 1]) / cost[i - 11 : i]
                 if np.max(cost_diff) < self.rtol:
-                    print(
-                        f"Loss function did not improve more than given relative tolerance "
-                        + f"{self.rtol:g} for 10 consecutive epochs. Stopping at epoch {i:g}"
-                    )
-                    print(np.max(cost_diff))
+                    if self.verbose:
+                        print(
+                            f"Loss function did not improve more than given relative tolerance "
+                            + f"{self.rtol:g} for 10 consecutive epochs (max improvement"
+                            + f" was {np.max(cost_diff)}). Stopping at epoch {i:g}"
+                        )
                     break
 
     @staticmethod
@@ -397,9 +398,10 @@ class MultilayerPerceptronClassifier(RegressionClass):
 
     @property
     def l2(self):
-        return (
-            self.weights_out.sum() + np.concatenate(self.weights_hidden).sum()
-        ) ** 2 / (2 * self.n_features)
+        sum_weights = 0
+        for weights in self.weights_hidden:
+            sum_weights += (weights ** 2).sum()
+        return (sum_weights + (self.weights_out ** 2).sum()) / (2 * self.n_features)
 
 
 class MultilayerPerceptronRegressor(MultilayerPerceptronClassifier):

@@ -27,18 +27,18 @@ echo "Train Franke regression? (y/n)"
 read yn_train_Franke
 if [ "$yn_train_Franke" == "y" ]
 then
-  echo "Training neural network model for n_x = 20, n_y = 20 data points, sigma 1"
+  echo "Training neural network model and fitting hyperparameters for n_x = 20, n_y = 20 data points, sigma 1"
   pipenv run python train_nn_franke.py 20 20 1
 
-  echo "Training neural network model for n_x = 20, n_y = 20 data points, sigma 0.1"
+  echo "Training neural network model and fitting hyperparameters for n_x = 20, n_y = 20 data points, sigma 0.1"
   pipenv run python train_nn_franke.py 20 20 0.1
 
-  echo "Training neural network model for n_x = 200, n_y = 200 data points, sigma 0.1"
-  pipenv run python train_nn_franke.py 200 200 1
+  echo "Training neural network model and fitting hyperparameters for n_x = 200, n_y = 200 data points, sigma 0.1"
+  pipenv run python train_nn_franke.py 200 200 0.1
 fi
 
 
-echo "Generate 3D Franke plots? (y/n)"
+echo "Generate Franke plots? (y/n)"
 read yn_plot_Franke
 if [ "$yn_plot_Franke" == "y" ]
 then
@@ -49,7 +49,7 @@ then
   pipenv run python plot_regression.py 20 20 0.1
 
   echo "Plotting neural network model for n_x = 200, n_y = 200 data points, sigma 0.1"
-  pipenv run python plot_regression.py 200 200 1
+  pipenv run python plot_regression.py 200 200 0.1
 fi
 
 
@@ -67,10 +67,33 @@ echo "Train logistic regression model on credit data? (y/n)"
 read yn_train_logistic_credit
 if [ "$yn_train_logistic_credit" == "y" ]
 then
-  echo "Running logistic regression"
+  echo "Running logistic regression, fitting hyperparameters"
   pipenv run python train_logreg_credit.py
-fi  
+fi
 
+echo "Plot logistic regression results? (y/n)"
+read yn_plot_logreg_credit
+if [ "$yn_plot_logreg_credit" == "y" ]
+then
+  echo "Plotting logistic regression plots"
+  pipenv run python plot_logreg_credit_data.py
+fi
+
+echo "Train neural network model on credit data? (y/n)"
+read yn_train_nn_credit
+if [ "$yn_train_nn_credit" == "y" ]
+then
+  echo "Running logistic regression, fitting hyperparameters"
+  pipenv run python train_nn_credit_data.py
+fi
+
+echo "Plot neural network classification results? (y/n)"
+read yn_plot_nn_credit
+if [ "$yn_plot_nn_credit" == "y" ]
+then
+  echo "Plotting logistic regression plots"
+  pipenv run python plot_nn_credit_data.py
+fi
 
 echo "Build report? (y/n)"
 read ynreport

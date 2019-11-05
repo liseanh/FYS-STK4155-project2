@@ -1,8 +1,9 @@
 import numpy as np
-from main import MultilayerPerceptronClassifier
-import sklearn.preprocessing as sklpre
+import scipy.stats
+import pandas as pd
 import sklearn.model_selection as sklms
-import sklearn.neural_network as sknn
+from main import MultilayerPerceptronClassifier
+
 
 training_set = np.load("data/credit_data_train.npz")
 test_set = np.load("data/credit_data_test.npz")
@@ -10,58 +11,26 @@ test_set = np.load("data/credit_data_test.npz")
 X_train, y_train = training_set["X_train"], training_set["y_train"].reshape(-1, 1)
 X_test, y_test = test_set["X_test"], test_set["y_test"].reshape(-1, 1)
 
+candidate_learning_rates = scipy.stats.uniform(1e-4, 1e-1)
+candiate_lambdas = scipy.stats.uniform(0, 1)
+param_dist = {"learning_rate": candidate_learning_rates, "lambd": candiate_lambdas}
 
-rate = 1e-2
-M = 200
-n = 100
+reg = MultilayerPerceptronClassifier(
+    n_epochs=300, batch_size="auto", hidden_layer_size=[100, 50], rtol=1e-2
+)
 
-layer_size = [100, 100]
-
-test = MultilayerPerceptronClassifier(
-    n_epochs=n,
-    batch_size=M,
-    learning_rate=rate,
-    hidden_layer_size=layer_size,
-    rtol=1e-5,
+random_search = sklms.RandomizedSearchCV(
+    reg,
+    n_iter=100,
+    param_distributions=param_dist,
+    cv=5,
+    iid=False,
+    n_jobs=-1,
     verbose=True,
+    return_train_score=True,
+    error_score=np.nan,
 )
-
-test.fit(X_train, y_train)
-print(
-    f"Our: Train accuracy: {test.accuracy_score(X_train, y_train)}. Test accuracy: {test.accuracy_score(X_test, y_test)}"
-)
-test.save_model("testing.npz")
-test.load_model("testing.npz")
-print(
-    f"Our: Train accuracy: {test.accuracy_score(X_train, y_train)}. Test accuracy: {test.accuracy_score(X_test, y_test)}"
-)
-exit()
-
-reg = sknn.MLPClassifier(
-    hidden_layer_sizes=layer_size,
-    activation="logistic",
-    learning_rate="constant",
-    learning_rate_init=rate,
-    max_iter=n,
-    solver="sgd",
-    batch_size=M,
-    alpha=0,
-    validation_fraction=0,
-    momentum=0,
-    tol=-np.inf,
-    shuffle=True,
-    verbose=True,
-)
-
-reg.fit(X_train, y_train.ravel())
-print(
-    f"Scikit: Train accuracy: {reg.score(X_train, y_train.ravel())}. Test accuracy: {reg.score(X_test, y_test.ravel())}"
-)
-
-reg_test = sknn.MLPClassifier(
-    hidden_layer_sizes=layer_size, max_iter=n, verbose=True, tol=-np.inf
-)
-reg_test.fit(X_train, y_train.ravel())
-print(
-    f"Scikit: Train accuracy: {reg_test.score(X_train, y_train.ravel())}. Test accuracy: {reg_test.score(X_test, y_test.ravel())}"
-)
+random_search.fit(X_train, y_train)
+random_search.best_estimator_.save_model("nn_credit_model.npz")
+df_results = pd.DataFrame.from_dict(random_search.cv_results_, orient="index")
+df_results.to_csv("cv_results/results_nn_credit.csv")
