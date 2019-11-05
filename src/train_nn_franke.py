@@ -18,11 +18,19 @@ except ValueError:
     raise TypeError("Input must be integer, integer and float")
 
 
+def r2_scorer_fix_nan(regressor, X, y):
+    y_pred = regressor.predict(X)
+    if np.any(np.isnan(y_pred)):
+        return -1
+    else:
+        return regressor.r2_score(X, y)
+
+
 training_set = np.load(f"data/franke_data_train_{n_x}_{n_y}_{sigma}.npz")
 test_set = np.load(f"data/franke_data_test_{n_x}_{n_y}_{sigma}.npz")
 
-X_train, z_train = training_set["X_train"], training_set["z_train"]
-X_test, z_test = test_set["X_test"], test_set["z_test"]
+X_train, z_train = training_set["X_train"], training_set["z_train"].reshape(-1, 1)
+X_test, z_test = test_set["X_test"], test_set["z_test"].reshape(-1, 1)
 
 
 reg = MultilayerPerceptronRegressor(
@@ -38,10 +46,11 @@ candidate_learning_rates = scipy.stats.uniform(1e-4, 1e-2)
 candiate_lambdas = scipy.stats.uniform(0, 1)
 param_dist = {"learning_rate": candidate_learning_rates, "lambd": candiate_lambdas}
 
+
 random_search = sklms.RandomizedSearchCV(
     reg,
-    n_iter=100,
-    scoring="r2",
+    n_iter=1,
+    scoring=r2_scorer_fix_nan,
     param_distributions=param_dist,
     cv=5,
     iid=False,

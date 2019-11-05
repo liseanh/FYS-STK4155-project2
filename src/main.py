@@ -314,6 +314,10 @@ class MultilayerPerceptronClassifier(RegressionClass):
                 gradients_weight, gradients_bias = self.backpropagation(
                     X[batch_indices[random_batch]], y[batch_indices[random_batch]]
                 )
+                if np.any(np.isnan(gradients_weight[-1])) or np.any(np.isnan(gradients_bias[-1])):
+                    if self.verbose:
+                        print(f"NaN gradient detected, stopping at epoch {i}.")
+                    return
                 # output layer
                 self.weights_out -= (
                     self.learning_rate * gradients_weight[-1]
@@ -322,6 +326,10 @@ class MultilayerPerceptronClassifier(RegressionClass):
                 self.biases_out -= self.learning_rate * gradients_bias[-1]
                 # hidden layer
                 for l in range(-1, -self.n_hidden_layers - 1, -1):
+                    if np.any(np.isnan(gradients_weight[l])) or np.any(np.isnan(gradients_bias[l])):
+                        if self.verbose:
+                            print(f"NaN gradient detected, stopping at epoch {i}.")
+                        return
                     self.weights_hidden[l] -= (
                         self.learning_rate * gradients_weight[l - 1].T
                         + self.weights_hidden[l] * lambd_feat
