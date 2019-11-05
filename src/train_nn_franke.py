@@ -3,7 +3,7 @@ import numpy as np
 import scipy.stats
 import pandas as pd
 import sklearn.model_selection as sklms
-from main import MultilayerPerceptronRegressor
+from main import MultilayerPerceptronRegressor, Log10Uniform
 
 try:
     n_x = int(sys.argv[1])
@@ -42,8 +42,8 @@ reg = MultilayerPerceptronRegressor(
     activation_function_output="linear",
 )
 
-candidate_learning_rates = scipy.stats.uniform(1e-5, 1e-3)
-candiate_lambdas = scipy.stats.uniform(0, 1)
+candidate_learning_rates = Log10Uniform(-5, -3)
+candiate_lambdas = Log10Uniform(-5, -3)
 param_dist = {"learning_rate": candidate_learning_rates, "lambd": candiate_lambdas}
 
 random_search = sklms.RandomizedSearchCV(

@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.special as sps
+import scipy.stats
 import numba
 import sklearn.base as sklbase
 
@@ -466,6 +467,21 @@ class MultilayerPerceptronRegressor(MultilayerPerceptronClassifier):
     def r2_score(self, X, y):
         return 1 - np.sum((y - self.predict(X)) ** 2) / np.sum((y - np.mean(y)) ** 2)
 
+class Log10Uniform():
+    """
+    "Inspired" by an answer on StackExchange.
+    stackoverflow.com/questions/49538120/how-to-implement-a-log-uniform-distribution-in-scipy
+    """
+    def __init__(self, a, b):
+        self.a = a
+        self.b = b - a
+
+    def rvs(self, size=None):
+        uniform = scipy.stats.uniform(self.loc, self.scale)
+        if size == None:
+            return 10**uniform.rvs()
+        else:
+            return 10**uniform.rvs(size=size)
 
 if __name__ == "__main__":
     pass
