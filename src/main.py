@@ -55,7 +55,6 @@ class LogisticRegression(RegressionClass):
             0, np.sqrt(2 / X.shape[1]), size=X.shape[1]
         ).reshape(-1, 1)
         self.stochastic_gradient_descent(X, y)
-        print("Fit finished!")
 
     def stochastic_gradient_descent(self, X, y):
         if self.learning_schedule == None:
@@ -170,7 +169,6 @@ class MultilayerPerceptronClassifier(RegressionClass):
 
         self.init_biases_weights()
         self.stochastic_gradient_descent(X, y)
-        print("Fit finished")
 
     def predict(self, X):
         if self.weights_hidden[0].shape[0] != X.shape[1]:
