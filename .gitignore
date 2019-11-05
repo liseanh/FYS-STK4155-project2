@@ -449,3 +449,4 @@ ipython_config.py
 *.npy
 *.npz
 *.pkl
+*.csv
