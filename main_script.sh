@@ -34,7 +34,7 @@ then
   pipenv run python train_nn_franke.py 20 20 0.1
 
   echo "Training neural network model and fitting hyperparameters for n_x = 200, n_y = 200 data points, sigma 0.1"
-  pipenv run python train_nn_franke.py 200 200 1
+  pipenv run python train_nn_franke.py 200 200 0.1
 fi
 
 
@@ -49,7 +49,7 @@ then
   pipenv run python plot_regression.py 20 20 0.1
 
   echo "Plotting neural network model for n_x = 200, n_y = 200 data points, sigma 0.1"
-  pipenv run python plot_regression.py 200 200 1
+  pipenv run python plot_regression.py 200 200 0.1
 fi
 
 
