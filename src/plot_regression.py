@@ -140,6 +140,8 @@ ax.scatter(learning_rates, lambdas, c=validation_score, s=20, cmap=cm.coolwarm)
 ax.set_xlabel("Learning rate")
 ax.set_ylabel(r"$\lambda$")
 ax.set_xlim([0, np.max(learning_rates)*1.1])
+ax.set_yscale('log')
+ax.set_xscale('log')
 cbar = fig.colorbar(
     cm.ScalarMappable(
         norm=cm.colors.Normalize(
