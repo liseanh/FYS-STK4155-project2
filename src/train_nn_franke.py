@@ -43,7 +43,7 @@ reg = MultilayerPerceptronRegressor(
 )
 
 candidate_learning_rates = Log10Uniform(-5, -3)
-candiate_lambdas = Log10Uniform(-5, -3)
+candiate_lambdas = Log10Uniform(-10, -3)
 param_dist = {"learning_rate": candidate_learning_rates, "lambd": candiate_lambdas}
 
 random_search = sklms.RandomizedSearchCV(
