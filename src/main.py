@@ -476,12 +476,12 @@ class Log10Uniform():
         self.a = a
         self.b = b - a
 
-    def rvs(self, size=None):
-        uniform = scipy.stats.uniform(self.loc, self.scale)
+    def rvs(self, size=None, random_state=None):
+        uniform = scipy.stats.uniform(self.a, self.b)
         if size == None:
-            return 10**uniform.rvs()
+            return 10**uniform.rvs(random_state=random_state)
         else:
-            return 10**uniform.rvs(size=size)
+            return 10**uniform.rvs(size=size, random_state=random_state)
 
 if __name__ == "__main__":
     pass
