@@ -28,7 +28,7 @@ proba_1 = y_pred
 
 proba_split = np.append(proba_0, proba_1, axis=1)
 
-"""
+
 def bestCurve(y):
     defaults = np.sum(y == 1, dtype=int)
     total = len(y)
@@ -69,7 +69,7 @@ print(
     + f"Area ratio for predicting default: {ratio_default}"
 )
 
-"""
+
 df = pd.read_csv("cv_results/results_logreg.csv", header=None, skiprows=1).T
 
 df.columns = df.iloc[0]
