@@ -68,7 +68,7 @@ read yn_train_logistic_credit
 if [ "$yn_train_logistic_credit" == "y" ]
 then
   echo "Running logistic regression, fitting hyperparameters"
-  pipenv run python train_logreg_credit.py
+  pipenv run python train_logreg_credit_data.py
 fi
 
 echo "Plot logistic regression results? (y/n)"
