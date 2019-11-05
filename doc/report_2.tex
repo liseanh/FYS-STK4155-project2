@@ -25,6 +25,8 @@
 
 %\setlength\parindent{0pt}
 \setlength{\columnsep}{15pt}
+\newcommand{\myparagraph}[1]{\paragraph{#1}\mbox{}\\}
+
 \title{FYS-STK3155/4155 Applied Data Analysis and Machine Learning - Project 2: Classification and Regression }
 
 \author{Lotsberg, Bernhard Nornes \\ Nguyen, Anh-Nguyet Lise \and \url{https://github.com/liseanh/FYS-STK4155-project2/}}
@@ -49,15 +51,19 @@ We will use these methods to classify data of credit card clients' default payme
 \section{Theory}
 
 \subsection{Logistic Regression (LR)}
+For classification.
+
+Sigmoid function
 \begin{equation}
-,
+p(t) = \frac{1}{1 + e^{-t}} =\frac{e^t}{e^t+1}
 \end{equation}
 
 \subsection{Artificial Neural Networks (ANN)}
-In an artificial neural network, something something nodes. The output of the nodes in each layer is given by the value of a chosen activation function $f(z)$. 	
-\subsubsection{Multilayer perceptron}
-The multilayer perceptron is a feedforward neural network. 
+An artificial neural network (ANN) is a computational model consisting of interconnected nodes. The interconnected nodes aim to emulate a simplified biological neural network in a brain  and neuronal firing, and are therefore also commonly referred to as neurons.  The node performs a weighted sum of its inputs that is subsequently passed through a mathematical function to determine its output. This mathematical function is called an activation function. If the output value of the weighted sum does not pass a certain threshold, the neuron will be inactive and yield zero output. 
 
+There is a wide variety of different neural networks. Commonly, they consist of layers of nodes separated into the input layer and output layer, and may also contain one or more in-between layers called hidden layers. One such ANN is the multilayer perceptron (MLP), which is what we will be using in this project for both classification and regression. 
+\subsubsection{Multilayer perceptron (MLP)}
+The multilayer perceptron is a feedforward neural network. 
 The activation of the $j$th neuron of layer $l$ is defined as 
 \begin{equation}
 z_j^l = \sum_{i=1}^{M_{l-1}} w_{ij}^la_j^{l-1} + b_j^l,
@@ -76,7 +82,7 @@ before propagating backwards through the hidden layers using the general equatio
 &\frac{\partial  \mathcal{C}}{\partial b^l_j} = \delta^l_j,\\
 &\delta_j^l= \sum_k \delta_k^{l+1}w_{kj}^{l+1}f'(z_j^l).
 \end{flalign}
-Looking at these equations, it is clear that the chosen cost function $\mathcal{C}$ should be differentiable. 
+Looking at these equations, it is clear that the chosen cost function $\mathcal{C}$ and the activation function $f(z)$ should be differentiable. 
 
 The biases can be initialized to zero, but we have chosen an initial value of 0.01 to ensure that all of the neurons have some initial output. Initializing the weights to zero, however, will result in all neurons outputting the same value. Instead, the  weights are initialized with values drawn from a uniform distribution such that $w_{kj}\in (-1/\sqrt{n}, \ 1/\sqrt{n})$, where $n$ is the amount of nodes in the input layer,  to ensure uniform learning \cite{ML_algo}. 
 
@@ -87,7 +93,7 @@ It is clear that in order to find the best possible fit, we need to optimize the
 \end{equation}
 where $\eta$ is the learning rate, which is a hyperparameter that controls the step length and by extension the convergence time. For smaller values of $\eta$, the method will take longer to converge or might not converge at all within a desired time frame. For larger values of $\eta$, the method might be unstable or pass the minimum altogether and diverge. The parameter $\theta$ is $\beta$ in the LR case, and the weights $W$ and biases $b$ in the MLP case.  
 However, calculating the gradient on the entire data set can be computationally expensive and inefficient for large amounts of data. Additionally, there is a high possibility of a local minimum being misinterpreted as a global minimum by the algorithm. 
-To alleviate these problems, we can use stochastic gradient descent (SGD) with minibatches.  A minibatch is a subset of the data, from which we can calculate its gradient. By using stochasticity to perform gradient descent on randomly chosen minibatches, we have a more efficient way to approximate the gradient of the total data set. 
+To alleviate these problems, we can use stochastic gradient descent (SGD) with minibatches.  A minibatch is a subset of the data, on which we can perform GD. By using stochasticity to perform gradient descent on randomly chosen minibatches of size $M$, we have a more efficient way to approximate the gradient of the total data set as it might not need to use the entire set. Additionally, the stochasticity reduces the possibility of getting stuck in a local minimum.
 
 \section{Data}
 \subsection{Classification - Credit card client data}
