@@ -91,7 +91,7 @@ echo "Plot neural network classification results? (y/n)"
 read yn_plot_nn_credit
 if [ "$yn_plot_nn_credit" == "y" ]
 then
-  echo "Plotting logistic regression plots"
+  echo "Plotting neural network classification plots"
   pipenv run python plot_nn_credit_data.py
 fi
 
