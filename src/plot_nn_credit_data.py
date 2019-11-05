@@ -87,10 +87,10 @@ fig.set_size_inches(3.03, 3.03)
 ax.scatter(learning_rates, lambdas, c=validation_score, s=20, cmap=cm.coolwarm)
 ax.set_xlabel(r"Learning rate $\eta$")
 ax.set_ylabel(r"Shrinkage parameter $\lambda$")
-ax.set_xlim([np.min(learning_rates)*0.9, np.max(learning_rates)*1.1])
-ax.set_ylim([np.min(lambdas)*0.9, np.max(lambdas)*1.1])
-ax.set_yscale('log')
-ax.set_xscale('log')
+ax.set_xlim([np.min(learning_rates) * 0.9, np.max(learning_rates) * 1.1])
+ax.set_ylim([np.min(lambdas) * 0.9, np.max(lambdas) * 1.1])
+ax.set_yscale("log")
+ax.set_xscale("log")
 cbar = fig.colorbar(
     cm.ScalarMappable(
         norm=cm.colors.Normalize(

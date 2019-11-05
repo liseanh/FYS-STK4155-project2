@@ -74,7 +74,7 @@ df = pd.read_csv("cv_results/results_logreg.csv", header=None, skiprows=1).T
 
 df.columns = df.iloc[0]
 df.drop(0, inplace=True)
-df["rank_test_score"] = pd.to_numeric(df["rank_test_score"])
+df["param_learning_rate"] = pd.to_numeric(df["param_learning_rate"])
 df = df.sort_values(by="param_learning_rate", ascending=True)
 
 train_score = df["mean_train_score"].values.astype(np.float)
@@ -92,7 +92,3 @@ ax.set_ylabel("Accuracy")
 fig.tight_layout()
 fig.savefig("../doc/figures/logreg_learning_rate_accuracy.pdf", dpi=1000)
 fig.clf()
-
-
-# logreg_credit_model
-# nn_credit_model

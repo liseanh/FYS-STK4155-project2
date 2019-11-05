@@ -85,7 +85,7 @@ class LogisticRegression(RegressionClass):
                 if np.any(np.isnan(gradient)):
                     if self.verbose:
                         print(f"NaN in gradient, stopping at epoch {i}")
-                    return    
+                    return
                 self.beta -= self.learning_rate * gradient
             y_pred = self.predict_proba(X)
             cost[i] = self.cost(y, y_pred)
@@ -471,11 +471,13 @@ class MultilayerPerceptronRegressor(MultilayerPerceptronClassifier):
     def r2_score(self, X, y):
         return 1 - np.sum((y - self.predict(X)) ** 2) / np.sum((y - np.mean(y)) ** 2)
 
-class Log10Uniform():
+
+class Log10Uniform:
     """
     "Inspired" by an answer on StackExchange.
     stackoverflow.com/questions/49538120/how-to-implement-a-log-uniform-distribution-in-scipy
     """
+
     def __init__(self, a, b):
         self.a = a
         self.b = b - a
@@ -483,9 +485,10 @@ class Log10Uniform():
     def rvs(self, size=None, random_state=None):
         uniform = scipy.stats.uniform(self.a, self.b)
         if size == None:
-            return 10**uniform.rvs(random_state=random_state)
+            return 10 ** uniform.rvs(random_state=random_state)
         else:
-            return 10**uniform.rvs(size=size, random_state=random_state)
+            return 10 ** uniform.rvs(size=size, random_state=random_state)
+
 
 if __name__ == "__main__":
     pass
