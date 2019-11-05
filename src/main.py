@@ -82,6 +82,10 @@ class LogisticRegression(RegressionClass):
                     X[batch_indices[random_batch]],
                     y[batch_indices[random_batch]],
                 ).reshape(-1, 1)
+                if np.any(np.isnan(gradient)):
+                    if self.verbose:
+                        print(f"NaN in gradient, stopping at epoch {i}")
+                    return    
                 self.beta -= self.learning_rate * gradient
             y_pred = self.predict_proba(X)
             cost[i] = self.cost(y, y_pred)
