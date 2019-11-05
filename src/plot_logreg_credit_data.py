@@ -28,7 +28,7 @@ proba_1 = y_pred
 
 proba_split = np.append(proba_0, proba_1, axis=1)
 
-
+"""
 def bestCurve(y):
     defaults = np.sum(y == 1, dtype=int)
     total = len(y)
@@ -69,7 +69,7 @@ print(
     + f"Area ratio for predicting default: {ratio_default}"
 )
 
-
+"""
 df = pd.read_csv("cv_results/results_logreg.csv", header=None, skiprows=1).T
 
 df.columns = df.iloc[0]
@@ -87,6 +87,8 @@ ax.semilogx(learning_rates, train_score, label="train")
 ax.semilogx(learning_rates, validation_score, label="validation")
 ax.legend()
 ax.grid()
+ax.set_xlabel(r"Learning rate $\eta$")
+ax.set_ylabel("Accuracy")
 fig.tight_layout()
 fig.savefig("../doc/figures/logreg_learning_rate_accuracy.pdf", dpi=1000)
 fig.clf()
