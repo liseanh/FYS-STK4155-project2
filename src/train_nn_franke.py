@@ -49,7 +49,7 @@ param_dist = {"learning_rate": candidate_learning_rates, "lambd": candiate_lambd
 
 random_search = sklms.RandomizedSearchCV(
     reg,
-    n_iter=1,
+    n_iter=100,
     scoring=r2_scorer_fix_nan,
     param_distributions=param_dist,
     cv=5,
