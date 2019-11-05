@@ -91,11 +91,12 @@ class LogisticRegression(RegressionClass):
             if i > 10:
                 cost_diff = (cost[i - 11 : i] - cost[i - 10 : i + 1]) / cost[i - 11 : i]
                 if np.max(cost_diff) < self.rtol:
-                    print(
-                        f"Loss function did not improve more than given relative tolerance "
-                        + f"{self.rtol:g} for 10 consecutive epochs. Stopping at epoch {i:g}"
-                    )
-                    print(np.max(cost_diff))
+                    if self.verbose:
+                        print(
+                            f"Loss function did not improve more than given relative tolerance "
+                            + f"{self.rtol:g} for 10 consecutive epochs (max improvement"
+                            + f" was {np.max(cost_diff)}). Stopping at epoch {i:g}"
+                        )
                     break
 
     def predict(self, X):
@@ -335,11 +336,12 @@ class MultilayerPerceptronClassifier(RegressionClass):
             if i > 10:
                 cost_diff = (cost[i - 11 : i] - cost[i - 10 : i + 1]) / cost[i - 11 : i]
                 if np.max(cost_diff) < self.rtol:
-                    print(
-                        f"Loss function did not improve more than given relative tolerance "
-                        + f"{self.rtol:g} for 10 consecutive epochs. Stopping at epoch {i:g}"
-                    )
-                    print(np.max(cost_diff))
+                    if self.verbose:
+                        print(
+                            f"Loss function did not improve more than given relative tolerance "
+                            + f"{self.rtol:g} for 10 consecutive epochs (max improvement"
+                            + f" was {np.max(cost_diff)}). Stopping at epoch {i:g}"
+                        )
                     break
 
     @staticmethod

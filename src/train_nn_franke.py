@@ -48,6 +48,7 @@ random_search = sklms.RandomizedSearchCV(
     n_jobs=-1,
     verbose=True,
     return_train_score=True,
+    error_score=np.nan,
 )
 
 random_search.fit(X_train, z_train)
