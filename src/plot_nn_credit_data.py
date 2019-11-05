@@ -4,11 +4,23 @@ import scikitplot as skplt
 import numpy as np
 from main import MultilayerPerceptronClassifier
 
+
+fonts = {
+    "font.family": "serif",
+    "axes.labelsize": 8,
+    "font.size": 8,
+    "legend.fontsize": 8,
+    "xtick.labelsize": 8,
+    "ytick.labelsize": 8,
+}
+
+plt.rcParams.update(fonts)
+
 test_set = np.load("data/credit_data_test.npz")
 X_test, y_test = test_set["X_test"], test_set["y_test"].reshape(-1, 1)
 
 model = MultilayerPerceptronClassifier()
-model.load_model("testing.npz")
+model.load_model("nn_credit_model.npz")
 y_pred = model.predict_proba(X_test)
 proba_0 = 1 - y_pred
 proba_1 = y_pred

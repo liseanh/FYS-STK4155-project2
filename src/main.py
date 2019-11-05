@@ -397,9 +397,11 @@ class MultilayerPerceptronClassifier(RegressionClass):
 
     @property
     def l2(self):
-        return (
-            self.weights_out.sum() + np.concatenate(self.weights_hidden).sum()
-        ) ** 2 / (2 * self.n_features)
+        sum_weights = 0
+        for weights in self.weights_hidden:
+            sum_weights += (weights**2).sum()
+        return (sum_weights + (self.weights_out**2).sum()) / (2 * self.n_features)
+
 
 
 class MultilayerPerceptronRegressor(MultilayerPerceptronClassifier):

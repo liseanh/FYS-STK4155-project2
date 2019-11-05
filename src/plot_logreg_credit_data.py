@@ -5,6 +5,16 @@ import numpy as np
 import pandas as pd
 from main import LogisticRegression
 
+fonts = {
+    "font.family": "serif",
+    "axes.labelsize": 8,
+    "font.size": 8,
+    "legend.fontsize": 8,
+    "xtick.labelsize": 8,
+    "ytick.labelsize": 8,
+}
+
+plt.rcParams.update(fonts)
 
 test_set = np.load("data/credit_data_test.npz")
 X_test, y_test = test_set["X_test"], test_set["y_test"].reshape(-1, 1)
@@ -30,13 +40,15 @@ def bestCurve(y):
 
 
 x, gains_best = bestCurve(y_test)
-
-skplt.metrics.plot_cumulative_gain(y_test.ravel(), proba_split)
-plt.plot(x, gains_best)
-plt.legend(["Not default", "Default", "Baseline", "Best model"])
-plt.axis([x[0], x[-1], 0, 1.01])
-plt.savefig("../doc/figures/cumulative_gain_logreg.pdf", dpi=1000)
-plt.close()
+fig, ax = plt.subplots()
+skplt.metrics.plot_cumulative_gain(y_test.ravel(), proba_split, ax=ax, title=None)
+ax.plot(x, gains_best)
+ax.legend(["Not default", "Default", "Baseline", "Best model"])
+ax.axis([x[0], x[-1], 0, 1.01])
+fig.set_size_inches(3.03, 3.03)
+fig.tight_layout()
+fig.savefig("../doc/figures/cumulative_gain_logreg.pdf", dpi=1000)
+fig.clf()
 
 
 area_baseline = 0.5
@@ -75,6 +87,7 @@ fig.set_size_inches(3.03, 3.03)
 ax.semilogx(learning_rates, train_score, label="train")
 ax.semilogx(learning_rates, test_score, label="test")
 ax.legend()
+ax.grid()
 fig.tight_layout()
 fig.savefig("../doc/figures/logreg_learning_rate_accuracy.pdf", dpi=1000)
 fig.clf()
