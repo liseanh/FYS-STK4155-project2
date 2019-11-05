@@ -148,7 +148,7 @@ cbar = fig.colorbar(
     ),
     ax=ax,
 )
-cbar.set_label("Validation accuracy")
+cbar.set_label(r"R$^2$ score")
 fig.tight_layout()
 fig.savefig(
     f"../doc/figures/nn_learning_rate_lambda_r2_franke_{n_x}_{n_y}_{sigma}.pdf",

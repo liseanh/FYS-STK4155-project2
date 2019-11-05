@@ -38,14 +38,13 @@ reg = MultilayerPerceptronRegressor(
     batch_size="auto",
     hidden_layer_size=[100, 50],
     rtol=1e-2,
-    verbose=False,
+    verbose=True,
     activation_function_output="linear",
 )
 
-candidate_learning_rates = scipy.stats.uniform(1e-4, 1e-2)
+candidate_learning_rates = scipy.stats.uniform(1e-5, 1e-3)
 candiate_lambdas = scipy.stats.uniform(0, 1)
 param_dist = {"learning_rate": candidate_learning_rates, "lambd": candiate_lambdas}
-
 
 random_search = sklms.RandomizedSearchCV(
     reg,
