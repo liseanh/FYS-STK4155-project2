@@ -38,7 +38,7 @@ reg = MultilayerPerceptronRegressor(
     batch_size="auto",
     hidden_layer_size=[100, 50],
     rtol=1e-2,
-    verbose=True,
+    verbose=False,
     activation_function_output="linear",
 )
 
