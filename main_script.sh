@@ -83,7 +83,7 @@ echo "Train neural network model on credit data? (y/n)"
 read yn_train_nn_credit
 if [ "$yn_train_nn_credit" == "y" ]
 then
-  echo "Running logistic regression, fitting hyperparameters"
+  echo "Running neural network classification, fitting hyperparameters"
   pipenv run python train_nn_credit_data.py
 fi
 
