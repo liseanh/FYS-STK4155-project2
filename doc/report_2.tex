@@ -59,11 +59,12 @@ p(t) = \frac{1}{1 + e^{-t}} =\frac{e^t}{e^t+1}
 \end{equation}
 
 \subsection{Artificial Neural Networks (ANN)}
-An artificial neural network (ANN) is a computational model consisting of interconnected nodes. The interconnected nodes aim to emulate a simplified biological neural network in a brain  and neuronal firing, and are therefore also commonly referred to as neurons.  The node performs a weighted sum of its inputs that is subsequently passed through a mathematical function to determine its output. This mathematical function is called an activation function. If the output value of the weighted sum does not pass a certain threshold, the neuron will be inactive and yield zero output. 
+An artificial neural network (ANN) is a computational model consisting of interconnected nodes. The interconnected nodes aim to emulate a simplified biological neural network in a brain  and neuronal firing, and are therefore also commonly referred to as neurons.  The node performs a weighted sum of its inputs that is subsequently passed through a mathematical function to determine its output. This mathematical function is called an activation function. The output value of the node can be adjusted for different purposes by choosing an appropriate activation function. 
 
 There is a wide variety of different neural networks. Commonly, they consist of layers of nodes separated into the input layer and output layer, and may also contain one or more in-between layers called hidden layers. One such ANN is the multilayer perceptron (MLP), which is what we will be using in this project for both classification and regression. 
 \subsubsection{Multilayer perceptron (MLP)}
-The multilayer perceptron is a feedforward neural network. 
+The multilayer perceptron is a feed-forward neural network (FFNN), which means that the information flows forward only, starting from the input layer and to the output layer. Additionally, if each of the nodes in a layer is connected to all of the nodes in the succeeding layer, the network is fully connected. The inputs of the node are the weighted outputs of the nodes from the preceding layer, in addition to a bias term that can control whether or not the neuron fires if all the inputs are zero \cite{ML_algo}. 
+
 The activation of the $j$th neuron of layer $l$ is defined as 
 \begin{equation}
 z_j^l = \sum_{i=1}^{M_{l-1}} w_{ij}^la_j^{l-1} + b_j^l,
@@ -87,7 +88,7 @@ Looking at these equations, it is clear that the chosen cost function $\mathcal{
 The biases can be initialized to zero, but we have chosen an initial value of 0.01 to ensure that all of the neurons have some initial output. Initializing the weights to zero, however, will result in all neurons outputting the same value. Instead, the  weights are initialized with values drawn from a uniform distribution such that $w_{kj}\in (-1/\sqrt{n}, \ 1/\sqrt{n})$, where $n$ is the amount of nodes in the input layer,  to ensure uniform learning \cite{ML_algo}. 
 
 \subsection{Stochastic Gradient Descent (SGD)}
-It is clear that in order to find the best possible fit, we need to optimize the cost function $\mathcal{C}$ by finding its minimum. A common method to achieve this is the gradient descent (GD), in which the parameters $\theta$ are iteratively adjusted in the direction of the largest negative value of the gradient for a given number of iterations or until it reaches a given tolerance. Mathematically, this is expressed as
+It is clear that in order to find the best possible fit, we need to optimize the cost function $\mathcal{C}$ by finding its minimum. A common method to achieve this is the gradient descent (GD) method, in which the parameters $\theta$ are iteratively adjusted in the direction of the largest negative value of the gradient for a given number of iterations or until it reaches a given tolerance. Mathematically, this is expressed as
 \begin{equation}
 \theta_{i+1} = \theta_i -\eta \nabla \mathcal{C}(\theta_i),
 \end{equation}
@@ -118,12 +119,21 @@ g(x,y) &= \frac{3}{4}\exp{\left(-\frac{(9x-2)^2}{4}   - \frac{(9y-2)^2}{4}\right
  &-\frac{1}{5}\exp{\left(-(9x-4)^2 - (9y-7)^2\right) }  \label{eq:Franke}
 \end{align} and is defined on $x,\ y \in [0,1]$. The data we are fitting is given by 
 $$G(\bm{x}, \bm{y}) = g(\bm{x}, \bm{y}) + \bm{\varepsilon},$$
-where $\bm{x},\ \bm{y}$ are vectors of uniformly spaced values from 0 and 1 of size $(1\times n_x)$ and $(1\times n_y)$ respectively. To directly compare with our previous project, \textit{Project 1: Regression analysis and resampling methods} \cite{regpaper}, we choose to generate and analyze the following data sets: 
-\begin{itemize}[leftmargin=7mm, itemsep=5pt,  parsep=1pt, topsep=3pt]
-\item 400 total data points of $G(\bm{x}, \bm{y}) $ with $\sigma=1$, $n_x=n_y=20$.
-\item 400 total data points of $G(\bm{x}, \bm{y}) $ with $\sigma=0.1$, $n_x=n_y=20$ .
-\item 40 000 total data points with $\sigma=0.1$, $n_x=n_y=200$ .
-\end{itemize}  
+where $\bm{x},\ \bm{y}$ are vectors of uniformly spaced values from 0 and 1 of length $n_x$ and $n_y$ respectively. To directly compare with our previous project, \textit{Project 1: Regression analysis and resampling methods} \cite{regpaper}, we choose to generate and analyze the data sets \texttt{franke0}, \texttt{franke1}, \texttt{franke2} as configured in Table \ref{tab:franke_dataset}. To generate the points, we grid over $n_x$ points in $x$-direction and $n_y$ points in $y$-direction. 
+\textbf{WE NEED TO TALK MORE ABOUT OUR PREVIOUS ANALYSIS AND WHAT KIND OF METHODS AND PARAMETERS WE USED }
+
+\begin{table}[H]
+	\caption{Table of the configurations for our generated data sets using Franke's function given in Equation (\ref{eq:Franke}) with added noise $\bm{\varepsilon} \sim N(0,\  \sigma^2) $. $n_x$ and $n_y$  indicate the number of points used to produce the grid in their respective directions. }
+	\label{tab:franke_dataset}
+	\resizebox{\columnwidth}{!}{
+	\begin{tabular}{|l|l|l|l|l|} \hline
+	Data set name &  Data points	&$n_x$ & $n_y$ & $\sigma$ \\ \hline
+	\texttt{franke0} & 400 & 20 & 20 & 1.0\\ \hline
+	\texttt{franke1	} & 400 & 20 & 20 & 0.1\\ \hline
+	\texttt{franke2} & 40 000& 200 & 200 & 0.1 \\ \hline
+	\end{tabular}
+	}
+\end{table}
 
 \section{Model evaluation}
 \subsection{Regression}
@@ -171,24 +181,24 @@ I = \begin{cases}
 \end{figure}
 
 \begin{figure}[H]
-	\includegraphics[scale=1]{figures/cumulative_gain_NN.pdf}
+	\includegraphics[scale=1]{figures/cumulative_gain_logreg.pdf}
 	\caption{idk yet}
 \end{figure}
 
 
-\begin{figure}
+\begin{figure}[H]
 	\includegraphics[scale=1]{{figures/nn_learning_rate_lambda_r2_franke_20_20_1.0}.pdf}
 	\caption{$R^2$ score of validation set of the Franke function data set with 400 total points $n_x=n_y=20,\ \sigma=1.0$ using the multilayer perceptron regressor. The values of the shrinkage parameter $\lambda$ and the learning rate $\eta$ were chosen using randomized grid search.}
 \end{figure}
 
 
-\begin{figure}
+\begin{figure}[H]
 	\includegraphics[scale=1]{{figures/nn_learning_rate_lambda_r2_franke_20_20_0.1}.pdf}
 	\caption{$R^2$ score of validation set of the Franke function data set with 400 total points, $n_x=n_y=20,\ \sigma=0.1 $ using the multilayer perceptron regressor. The values of the shrinkage parameter $\lambda$ and the learning rate $\eta$ were chosen using randomized grid search.}
 \end{figure}
 
 
-\begin{figure}
+\begin{figure}[H]
 	\includegraphics[scale=1]{{figures/nn_learning_rate_lambda_r2_franke_200_200_0.1}.pdf}
 	\caption{$R^2$ score of validation set of Franke function data with 40 000 total points, $n_x=n_y=200,\ \sigma=0.1 $ using the multilayer perceptron regressor. The values of the shrinkage parameter $\lambda$ and the learning rate $\eta$ were chosen using randomized grid search.}
 \end{figure}
