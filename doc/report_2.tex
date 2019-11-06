@@ -119,12 +119,21 @@ g(x,y) &= \frac{3}{4}\exp{\left(-\frac{(9x-2)^2}{4}   - \frac{(9y-2)^2}{4}\right
  &-\frac{1}{5}\exp{\left(-(9x-4)^2 - (9y-7)^2\right) }  \label{eq:Franke}
 \end{align} and is defined on $x,\ y \in [0,1]$. The data we are fitting is given by 
 $$G(\bm{x}, \bm{y}) = g(\bm{x}, \bm{y}) + \bm{\varepsilon},$$
-where $\bm{x},\ \bm{y}$ are vectors of uniformly spaced values from 0 and 1 of size $(1\times n_x)$ and $(1\times n_y)$ respectively. To directly compare with our previous project, \textit{Project 1: Regression analysis and resampling methods} \cite{regpaper}, we choose to generate and analyze the following data sets: 
-\begin{itemize}[leftmargin=7mm, itemsep=5pt,  parsep=1pt, topsep=3pt]
-\item 400 total data points of $G(\bm{x}, \bm{y}) $ with $\sigma=1$, $n_x=n_y=20$.
-\item 400 total data points of $G(\bm{x}, \bm{y}) $ with $\sigma=0.1$, $n_x=n_y=20$ .
-\item 40 000 total data points with $\sigma=0.1$, $n_x=n_y=200$ .
-\end{itemize}  
+where $\bm{x},\ \bm{y}$ are vectors of uniformly spaced values from 0 and 1 of size $(1\times n_x)$ and $(1\times n_y)$ respectively. To directly compare with our previous project, \textit{Project 1: Regression analysis and resampling methods} \cite{regpaper}, we choose to generate and analyze the data sets \texttt{franke0}, \texttt{franke1}, \texttt{franke2} as configured in Table \ref{tab:franke_dataset}. To generate the points, we grid over $n_x$ points in $x$-direction and $n_y$ points in $y$-direction. 
+\textbf{WE NEED TO TALK MORE ABOUT OUR PREVIOUS ANALYSIS AND WHAT KIND OF METHODS AND PARAMETERS WE USED }
+
+\begin{table}[H]
+	\caption{Table of the configurations for our generated data sets using Franke's function given in Equation (\ref{eq:Franke}) with added noise $\bm{\varepsilon} \sim N(0,\  \sigma^2) $. $n_x$ and $n_y$  indicate the number of points used to produce the grid in their respective directions. }
+	\label{tab:franke_dataset}
+	\resizebox{\columnwidth}{!}{
+	\begin{tabular}{|l|l|l|l|l|} \hline
+	Data set name &  Data points	&$n_x$ & $n_y$ & $\sigma$ \\ \hline
+	\texttt{franke0} & 400 & 20 & 20 & 1.0\\ \hline
+	\texttt{franke1	} & 400 & 20 & 20 & 0.1\\ \hline
+	\texttt{franke2} & 40 000& 200 & 200 & 0.1 \\ \hline
+	\end{tabular}
+	}
+\end{table}
 
 \section{Model evaluation}
 \subsection{Regression}
@@ -177,19 +186,19 @@ I = \begin{cases}
 \end{figure}
 
 
-\begin{figure}
+\begin{figure}[H]
 	\includegraphics[scale=1]{{figures/nn_learning_rate_lambda_r2_franke_20_20_1.0}.pdf}
 	\caption{$R^2$ score of validation set of the Franke function data set with 400 total points $n_x=n_y=20,\ \sigma=1.0$ using the multilayer perceptron regressor. The values of the shrinkage parameter $\lambda$ and the learning rate $\eta$ were chosen using randomized grid search.}
 \end{figure}
 
 
-\begin{figure}
+\begin{figure}[H]
 	\includegraphics[scale=1]{{figures/nn_learning_rate_lambda_r2_franke_20_20_0.1}.pdf}
 	\caption{$R^2$ score of validation set of the Franke function data set with 400 total points, $n_x=n_y=20,\ \sigma=0.1 $ using the multilayer perceptron regressor. The values of the shrinkage parameter $\lambda$ and the learning rate $\eta$ were chosen using randomized grid search.}
 \end{figure}
 
 
-\begin{figure}
+\begin{figure}[H]
 	\includegraphics[scale=1]{{figures/nn_learning_rate_lambda_r2_franke_200_200_0.1}.pdf}
 	\caption{$R^2$ score of validation set of Franke function data with 40 000 total points, $n_x=n_y=200,\ \sigma=0.1 $ using the multilayer perceptron regressor. The values of the shrinkage parameter $\lambda$ and the learning rate $\eta$ were chosen using randomized grid search.}
 \end{figure}
