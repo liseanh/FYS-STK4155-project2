@@ -134,6 +134,8 @@ train_score = df["mean_train_score"].values.astype(np.float)
 validation_score = df["mean_test_score"].values.astype(np.float)
 learning_rates = df["param_learning_rate"].values.astype(np.float)
 lambdas = df["param_lambd"].values.astype(np.float)
+best_learning_rate = learning_rates[validation_score == np.max(validation_score)][0]
+best_lambda = lambdas[validation_score == np.max(validation_score)][0]
 fig, ax = plt.subplots()
 fig.set_size_inches(3.03, 3.03)
 ax.scatter(learning_rates, lambdas, c=validation_score, s=20, cmap=cm.coolwarm)
@@ -165,3 +167,4 @@ print(
     f"R2 score test: {model.r2_score(X_test, z_test)}.\n"
     + f"R2 score train: {model.r2_score(X_train, z_train)}"
 )
+print(f"Best lambda: {best_lambda:g}\n" + f"Best learning rate: {best_learning_rate:g}")

@@ -66,7 +66,8 @@ ratio_default = area_1 / area_best
 
 print(
     f"Area ratio for predicting not default: {ratio_not_default}.\n"
-    + f"Area ratio for predicting default: {ratio_default}"
+    + f"Area ratio for predicting default: {ratio_default}. \n"
+    + f"Error rate: {1 - model.accuracy_score(X_test, y_test)}"
 )
 
 
@@ -80,9 +81,9 @@ df = df.sort_values(by="param_learning_rate", ascending=True)
 train_score = df["mean_train_score"].values.astype(np.float)
 validation_score = df["mean_test_score"].values.astype(np.float)
 learning_rates = df["param_learning_rate"].values.astype(np.float)
-best_learning_rate = learning_rates[validation_score==np.max(validation_score)]
+best_learning_rate = learning_rates[validation_score == np.max(validation_score)][0]
 
-print(f"Best learning rate: {best_learning_rate}")
+print(f"Best learning rate: {best_learning_rate:e}")
 
 fig, ax = plt.subplots()
 fig.set_size_inches(3.03, 3.03)
