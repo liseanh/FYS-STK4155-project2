@@ -446,7 +446,7 @@ ipython_config.py
 
 # End of https://www.gitignore.io/api/latex,linux,macos,python,visualstudiocode
 
-*.npy
-*.npz
-*.pkl
-*.csv
+# *.npy
+# *.npz
+# *.pkl
+# *.csv
