@@ -51,14 +51,15 @@ We will use these methods to classify data of credit card clients' default payme
 
 \section{Learning methods}
 \subsection{Logistic Regression (LR)}
-For classification.
-
+Logistic regression (LR)  is a statistical model that can be used to predict a binary dependent variable.
 Sigmoid function
 \begin{equation}
 p(t) = \frac{1}{1 + e^{-t}} =\frac{e^t}{e^t+1}
 \end{equation}
+In this project we will use LR on the Taiwanese credit card data to try to predict default ($y=1$) or non-default ($y=0$) payment and evaluate the model's predictive accuracy in this particular classification problem.
 
 \subsection{Artificial Neural Networks (ANN)}
+
 An artificial neural network (ANN) is a computational model consisting of interconnected nodes. The interconnected nodes aim to emulate a simplified biological neural network in a brain  and neuronal firing, and are therefore also commonly referred to as neurons.  The node performs a weighted sum of its inputs that is subsequently passed through a mathematical function to determine its output. This mathematical function is called an activation function. The output value of the node can be adjusted for different purposes by choosing an appropriate activation function.
 
 There is a wide variety of different neural networks. Commonly, they consist of layers of nodes separated into the input layer and output layer, and may also contain one or more in-between layers called hidden layers. One such ANN is the multilayer perceptron (MLP), which is what we will be using in this project for both classification and regression.
@@ -173,8 +174,8 @@ I = \begin{cases}
  	\begin{tabular}{|l|l|l|l|}
     \hline
  	   Method & \makecell[l]{Error \\rate} & \makecell[l]{Area ratio \\default} & \makecell[l]{Area ratio \\non-default} \\ 			\hline
-    		LR & 0.31 & 0.46 & 0.13 \\ \hline
-    		NN & pls  & pls & pls \\ \hline
+    		LR & 0.310 & 0.459 & 0.132 \\ \hline
+    		NN & 0.21  & 0.545 & 0.157 \\ \hline
     	\end{tabular}
 	}
 \end{table}
@@ -203,6 +204,7 @@ I = \begin{cases}
 	\includegraphics[scale=1]{figures/nn_learning_rate_lambda_accuracy_credit.pdf}
 	\caption{Accuracy score of validation set of the credit card data using the multilayer perceptron classifier. The values of the shrinkage parameter $\lambda$ and the learning rate $\eta$ were chosen using randomized search.}
 \end{figure}
+
 
 
 \begin{figure}[H]
