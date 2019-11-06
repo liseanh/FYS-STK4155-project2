@@ -3,6 +3,7 @@ import scipy.stats
 import pandas as pd
 import sklearn.model_selection as sklms
 from main import MultilayerPerceptronClassifier, Log10Uniform
+
 np.random.seed(1997)
 
 training_set = np.load("data/credit_data_train.npz")
@@ -28,7 +29,7 @@ random_search = sklms.RandomizedSearchCV(
     n_jobs=-1,
     verbose=True,
     return_train_score=True,
-    error_score=np.nan,
+    error_score=0,
 )
 random_search.fit(X_train, y_train)
 random_search.best_estimator_.save_model("nn_credit_model.npz")

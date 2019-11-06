@@ -45,7 +45,8 @@ class RegressionClass(sklbase.BaseEstimator, sklbase.ClassifierMixin):
     def accuracy_score(self, X, y):
         if len(y.shape) == 1:
             raise ValueError("y-array must have shape (n, 1) Use numpy.reshape(-1, 1)")
-        return np.mean(self.predict(X) == np.array(y, dtype=np.int))
+        with np.errstate(greater_equal="raise"):
+            return np.mean(self.predict(X) == np.array(y, dtype=np.int))
 
 
 class LogisticRegression(RegressionClass):
