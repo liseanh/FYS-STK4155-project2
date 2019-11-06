@@ -46,16 +46,24 @@
 Classification in statistical analysis is a useful tool, e.g. for predicting outcomes of various situations or classifying and sorting large amounts of data.
 
 The aim of this project is  to study classification and regression problems through our own implementation of logistic regression and a multilayer perceptron (MLP) in Python. This particular data set has been used in a prior research paper by Yeh, I. C. and Che-hui Lien about data mining techniques \cite{origarticle}, and can be downloaded from the \href{https://archive.ics.uci.edu/ml/datasets/default+of+credit+card+clients}{UCI Machine Learning Repository} \cite{UCI}.
-We will use these methods to classify data of credit card clients' default payment from a Taiwanese bank. Additionally, we will use the MLP to solve a regression problem on Franke's function and compare the result from a prior project where we used standard least squares to solve the regression problem \cite{regpaper}.
+We will use these methods to classify data of credit card clients' default payment from a Taiwanese bank. Additionally, we will use the MLP to approximate Franke's function and compare with results from a prior project where we used ordinary least squares, ridge and lasso regression to approximate it. \cite{regpaper}.
 
 
 \section{Learning methods}
 \subsection{Logistic Regression (LR)}
-Logistic regression (LR)  is a statistical model that can be used to predict a binary dependent variable.
-Sigmoid function
+Logistic regression (LR)  is a statistical model that can be used to predict a binary dependent variable. It functions in a manner similar to linear regression (hence the name), the difference being that the outputs are put through an activation function. Usually this activation function is the Sigmoid function, which is defined as
 \begin{equation}
-p(t) = \frac{1}{1 + e^{-t}} =\frac{e^t}{e^t+1}
+p(X) = \frac{1}{1 + e^{-X \beta}} =\frac{e^{X \beta}}{e^{X \beta}+1}.
+\label{sigmoid}
 \end{equation}
+Here $X$ is the design matrix, and $\beta$ is a vector containing the weights assigned to each
+feature in $X$. It is useful to use another cost function than the mean squared error, as the output
+from our logistic regression is defined as $\hat{y}=p(X)\in [0, 1]$, where we say that outcome 0 is predicted if $\hat{y}< 0.5$ and outcome 1 else. The cost function most commonly used in this case is called
+the cross entropy, and is defined as
+\begin{equation}
+  crossentropyheretomorrow
+\end{equation}
+
 In this project we will use LR on the Taiwanese credit card data to try to predict default ($y=1$) or non-default ($y=0$) payment and evaluate the model's predictive accuracy in this particular classification problem.
 
 \subsection{Artificial Neural Networks (ANN)}
@@ -174,8 +182,8 @@ I = \begin{cases}
  	\begin{tabular}{|l|l|l|l|}
     \hline
  	   Method & \makecell[l]{Error \\rate} & \makecell[l]{Area ratio \\default} & \makecell[l]{Area ratio \\non-default} \\ 			\hline
-    		LR & 0.310 & 0.459 & 0.132 \\ \hline
-    		NN & 0.21  & 0.545 & 0.157 \\ \hline
+    		LR & 0.31  & 0.43 & 0.12 \\ \hline
+    		NN & 0.22  & 0.55 & 0.16 \\ \hline
     	\end{tabular}
 	}
 \end{table}
@@ -193,11 +201,19 @@ I = \begin{cases}
 \end{table}
 
 \begin{table}[H]
-  \caption{Table of best hyperparameters for all models in the project.}
-  \begin{tabular}{|l|l|}
-
+  \caption{Table of best hyperparameters for all models in the project.
+   Found using 5-fold cross validation}
+  	\resizebox{\columnwidth}{!}{
+  \begin{tabular}{|l|l|l|}
+    \hline
+    Model & Shrinkage $\lambda$ & Learning rate $\eta$ \\ \hline
+    LR credit data & N/A & $4.4 \cdot 10^{-4}$ \\ \hline
+    NN credit data & $6.9 \cdot 10^{-7}$ & $0.08$ \\ \hline
+    NN \texttt{franke0} & $4.1\cdot 10^{-6}$ & $9.1\cdot 10^{-5}$ \\ \hline
+    NN \texttt{franke1} & $6.4\cdot 10^{-8}$ & $1.5 \cdot 10^{-4}$\\ \hline
+    NN \texttt{franke2} & $3.6\cdot 10^{-10}$ & $3.7 \cdot 10^{-4}$\\ \hline
   \end{tabular}
-
+  }
 \end{table}
 
 \begin{figure}[H]

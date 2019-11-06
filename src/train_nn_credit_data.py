@@ -3,7 +3,7 @@ import scipy.stats
 import pandas as pd
 import sklearn.model_selection as sklms
 from main import MultilayerPerceptronClassifier, Log10Uniform
-np.random.seed(1997)
+np.random.seed(len("jedna d ja"))
 
 training_set = np.load("data/credit_data_train.npz")
 test_set = np.load("data/credit_data_test.npz")
@@ -11,7 +11,7 @@ test_set = np.load("data/credit_data_test.npz")
 X_train, y_train = training_set["X_train"], training_set["y_train"].reshape(-1, 1)
 X_test, y_test = test_set["X_test"], test_set["y_test"].reshape(-1, 1)
 
-candidate_learning_rates = Log10Uniform(-3, -0.5)
+candidate_learning_rates = Log10Uniform(-3, -1)
 candiate_lambdas = Log10Uniform(-10, 0)
 param_dist = {"learning_rate": candidate_learning_rates, "lambd": candiate_lambdas}
 
