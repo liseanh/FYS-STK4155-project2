@@ -17,6 +17,7 @@
 \usepackage{wrapfig,lipsum,booktabs}
 \usepackage{enumitem}
 \usepackage{hyperref}
+\usepackage{makecell}
 
 \bibliographystyle{plain}
 % \renewcommand{\thesubsection}{\alph{subsection})}
@@ -48,8 +49,7 @@ The aim of this project is  to study classification and regression problems thro
 We will use these methods to classify data of credit card clients' default payment from a Taiwanese bank. Additionally, we will use the MLP to solve a regression problem on Franke's function and compare the result from a prior project where we used standard least squares to solve the regression problem \cite{regpaper}.
 
 
-\section{Theory}
-
+\section{Learning methods}
 \subsection{Logistic Regression (LR)}
 For classification.
 
@@ -127,7 +127,7 @@ where $\bm{x},\ \bm{y}$ are vectors of uniformly spaced values from 0 and 1 of l
 	\label{tab:franke_dataset}
 	\resizebox{\columnwidth}{!}{
 	\begin{tabular}{|l|l|l|l|l|} \hline
-	Data set name &  Data points	&$n_x$ & $n_y$ & $\sigma$ \\ \hline
+	Data set &  Data points	&$n_x$ & $n_y$ & $\sigma$ \\ \hline
 	\texttt{franke0} & 400 & 20 & 20 & 1.0\\ \hline
 	\texttt{franke1	} & 400 & 20 & 20 & 0.1\\ \hline
 	\texttt{franke2} & 40 000& 200 & 200 & 0.1 \\ \hline
@@ -157,9 +157,6 @@ I = \begin{cases}
 \end{cases} .
 \]
 
-\section{Method}
-
-
 
 
 \section{Results}
@@ -171,15 +168,15 @@ I = \begin{cases}
 
 
 \begin{table}[H]
-\centering
-\resizebox{\columnwidth}{!}{
-  \begin{tabular}{|l|l|l|l|}
+	\caption{Table of error rates and area ratios for classification of the credit card data using logistic regression (LR) and the multilayer perceptron (MLP) neural network (NN). }
+	\resizebox{\columnwidth}{!}{
+ 	\begin{tabular}{|l|l|l|l|}
     \hline
-    Method & Error rate & Area ratio 1 & Area ratio 0 default \\ \hline
-    Logistic Regression & 0.31 & 0.46 & 0.13 \\ \hline
-    Neural Network & 0.21  & 0.586 & 0.17 \\ \hline
-  \end{tabular}
-}  
+ 	   Method & \makecell[l]{Error \\rate} & \makecell[l]{Area ratio \\default} & \makecell[l]{Area ratio \\non-default} \\ 			\hline
+    		LR & 0.31 & 0.46 & 0.13 \\ \hline
+    		NN & 0.21  & 0.586 & 0.17 \\ \hline
+    	\end{tabular}
+	}  
 \end{table}
 
 \begin{figure}[H]
