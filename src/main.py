@@ -17,6 +17,39 @@ class RegressionClass(sklbase.BaseEstimator, sklbase.ClassifierMixin):
         verbose=False,
         learning_schedule=None,
     ):
+    """
+    Base class for the logistic regressor and the multilayer perceptron regressor 
+    and classifier. Please do not call this class on its own as it does not 
+    contain any regression methods by itself.
+
+    Parameters: 
+
+    learning rate: float, default 0.1 
+        The learning rate used in the stochastic gradient descent solver.
+
+    n_epochs: int, default 2000
+        number of epochs used in the stochastic gradient descent solver.
+
+    rtol: float, default 0.01
+        Relative tolerance used as a stopping criteria in the stochastic gradient
+        descent solver. 
+
+    batch_size: int, default "auto"
+        Size of the minibatches used in the stochastic gradient descent solver.
+        If "auto", then batch_size = min(200, N), where N is the number of 
+        input samples.
+    
+    penalty: float, default None
+        The L2 shrinkage parameter used for regularisation of the weights in the 
+        MultilayerPerceptronClassifier and MultilayerPerceptronRegressor.
+
+    verbose: bool, default False
+        Whether or not to print progress in terminal 
+
+    learning_schedule:  float, default None
+        deprecated
+
+    """
         self.batch_size = batch_size
         self.learning_rate = learning_rate
         self.n_epochs = n_epochs
@@ -26,6 +59,14 @@ class RegressionClass(sklbase.BaseEstimator, sklbase.ClassifierMixin):
         self.learning_schedule = learning_schedule
 
     def get_batch_size(self, len_y):
+        """
+        Returns the batch size of the minibatches. 
+
+        Parameter: 
+
+        len_y: int
+            Number of data samples 
+        """
         if self.batch_size == "auto":
             return np.min([200, len_y])
         elif self.batch_size == None:
@@ -40,6 +81,9 @@ class RegressionClass(sklbase.BaseEstimator, sklbase.ClassifierMixin):
             )
 
     def fit(self, X=None, y=None):
+        """
+        Raises error if method is run directly
+        """
         raise RuntimeError("Please do not use this class directly.")
 
     def accuracy_score(self, X, y):
@@ -49,6 +93,10 @@ class RegressionClass(sklbase.BaseEstimator, sklbase.ClassifierMixin):
 
 
 class LogisticRegression(RegressionClass):
+    """
+    Inherits RegressionClass. 
+    Performs logistic regression for data set X and corresponding binary output y
+    """
     def fit(self, X, y):
         if len(y.shape) == 1:
             raise ValueError("y-array must have shape (n, 1) Use numpy.reshape(-1, 1)")
