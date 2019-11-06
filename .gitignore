@@ -448,5 +448,9 @@ ipython_config.py
 
 # *.npy
 # *.npz
-# *.pkl
+*.pkl
 # *.csv
+franke_data*.npz
+credit_data*.npz
+design_matrix_credit.npy
+targets_credit.npy
