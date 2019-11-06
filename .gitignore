@@ -448,5 +448,5 @@ ipython_config.py
 
 # *.npy
 # *.npz
-# *.pkl
+*.pkl
 # *.csv
