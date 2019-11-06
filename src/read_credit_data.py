@@ -6,7 +6,7 @@ import sklearn.compose as sklco
 import sklearn.model_selection as sklms
 import imblearn
 
-np.random.seed(len("bof"))
+np.random.seed(len("bof 2"))
 
 # Retrieve credit card data
 cwd = os.getcwd()

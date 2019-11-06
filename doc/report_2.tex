@@ -51,12 +51,12 @@ We will use these methods to classify data of credit card clients' default payme
 
 \section{Learning methods}
 \subsection{Logistic Regression (LR)}
-Logistic regression (LR)  is a statistical model that can be used to predict a binary dependent variable. 
+Logistic regression (LR)  is a statistical model that can be used to predict a binary dependent variable.
 Sigmoid function
 \begin{equation}
 p(t) = \frac{1}{1 + e^{-t}} =\frac{e^t}{e^t+1}
 \end{equation}
-In this project we will use LR on the Taiwanese credit card data to try to predict default ($y=1$) or non-default ($y=0$) payment and evaluate the model's predictive accuracy in this particular classification problem. 
+In this project we will use LR on the Taiwanese credit card data to try to predict default ($y=1$) or non-default ($y=0$) payment and evaluate the model's predictive accuracy in this particular classification problem.
 
 \subsection{Artificial Neural Networks (ANN)}
 
@@ -177,7 +177,27 @@ I = \begin{cases}
     		LR & 0.310 & 0.459 & 0.132 \\ \hline
     		NN & 0.21  & 0.545 & 0.157 \\ \hline
     	\end{tabular}
-	}  
+	}
+\end{table}
+
+\begin{table}[H]
+	\caption{Table of R2 scores for our neural network regression models on the three Franke data sets. }
+	\resizebox{\columnwidth}{!}{
+ 	\begin{tabular}{|l|l|l|l|}
+    \hline
+ 	   Data set & \texttt{franke0} & \texttt{franke1} &	\texttt{franke2} \\	\hline
+    		Train R$^2$ & 0.01 & 0.59 & 0.84 \\ \hline
+    		Test R$^2$  & -0.06 & 0.59 & 0.83 \\ \hline
+    	\end{tabular}
+	}
+\end{table}
+
+\begin{table}[H]
+  \caption{Table of best hyperparameters for all models in the project.}
+  \begin{tabular}{|l|l|}
+
+  \end{tabular}
+
 \end{table}
 
 \begin{figure}[H]
