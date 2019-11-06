@@ -4,6 +4,8 @@ import joblib
 import sklearn.model_selection as sklms
 import sklearn.preprocessing as sklpre
 
+np.random.seed(len("Morten"))
+
 
 def generate_Franke_data(x_points, y_points, std=0):
     """
@@ -14,10 +16,10 @@ def generate_Franke_data(x_points, y_points, std=0):
     x_points: int
         Number of points in the x-direction
 
-    y_points : int 
+    y_points : int
         Number of points in the y-direction
 
-    std: int, default=0 
+    std: int, default=0
         Standard deviation of the added Gaussian noise
 
     """

@@ -6,6 +6,8 @@ import sklearn.compose as sklco
 import sklearn.model_selection as sklms
 import imblearn
 
+np.random.seed(len("bof"))
+
 # Retrieve credit card data
 cwd = os.getcwd()
 filename = cwd + "/data/default of credit card clients.xls"
