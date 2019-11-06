@@ -23,6 +23,7 @@ pyqt5 = "*"
 scikit-plot = "*"
 joblib = "*"
 pytest = "*"
+scipy = "*"
 
 [requires]
 python_version = "3.6"
