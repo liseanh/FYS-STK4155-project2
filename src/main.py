@@ -120,7 +120,7 @@ class LogisticRegression(RegressionClass):
 
     def load_model(self, filename):
         model = np.load(f"models/{filename}", allow_pickle=True)
-        self.beta = model["beta"]
+        self.beta = model["beta"].reshape(-1, 1)
 
     @staticmethod
     def cost(y, y_pred):
