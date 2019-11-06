@@ -12,7 +12,7 @@ test_set = np.load("data/credit_data_test.npz")
 X_train, y_train = training_set["X_train"], training_set["y_train"].reshape(-1, 1)
 X_test, y_test = test_set["X_test"], test_set["y_test"].reshape(-1, 1)
 
-candidate_learning_rates = Log10Uniform(-4, -1)
+candidate_learning_rates = Log10Uniform(-3, 0)
 candiate_lambdas = Log10Uniform(-10, 0)
 param_dist = {"learning_rate": candidate_learning_rates, "lambd": candiate_lambdas}
 
