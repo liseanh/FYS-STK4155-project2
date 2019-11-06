@@ -450,3 +450,4 @@ ipython_config.py
 # *.npz
 *.pkl
 # *.csv
+franke_data*.npz
