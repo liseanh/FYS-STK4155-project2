@@ -13,7 +13,6 @@ class RegressionClass(sklbase.BaseEstimator, sklbase.ClassifierMixin):
         n_epochs=2000,
         rtol=0.01,
         batch_size="auto",
-        penalty=None,
         verbose=False,
         learning_schedule=None,
     ):
@@ -39,10 +38,6 @@ class RegressionClass(sklbase.BaseEstimator, sklbase.ClassifierMixin):
             If "auto", then batch_size = min(200, N), where N is the number of
             input samples.
 
-        penalty: float, default None
-            The L2 shrinkage parameter used for regularisation of the weights in the
-            MultilayerPerceptronClassifier and MultilayerPerceptronRegressor.
-
         verbose: bool, default False
             Whether or not to print progress in terminal
 
@@ -53,7 +48,6 @@ class RegressionClass(sklbase.BaseEstimator, sklbase.ClassifierMixin):
         self.batch_size = batch_size
         self.learning_rate = learning_rate
         self.n_epochs = n_epochs
-        self.penalty = penalty
         self.rtol = rtol
         self.verbose = verbose
         self.learning_schedule = learning_schedule
@@ -87,6 +81,10 @@ class RegressionClass(sklbase.BaseEstimator, sklbase.ClassifierMixin):
         raise RuntimeError("Please do not use this class directly.")
 
     def accuracy_score(self, X, y):
+        """
+        Raises error if method is run directly on its own before a regression 
+        method
+        """
         if len(y.shape) == 1:
             raise ValueError("y-array must have shape (n, 1) Use numpy.reshape(-1, 1)")
         with np.errstate(invalid="raise"):
@@ -96,9 +94,23 @@ class RegressionClass(sklbase.BaseEstimator, sklbase.ClassifierMixin):
 class LogisticRegression(RegressionClass):
     """
     Inherits RegressionClass.
-    Performs logistic regression for data set X and corresponding binary output y
+    Performs logistic regression for feature matrix X and corresponding binary 
+    output y
     """
+
     def fit(self, X, y):
+        """
+        Fits the model to the data.
+
+        Parameters: 
+
+        X: numpy ndarray
+            Feature matrix 
+
+        y: numpy array
+            Binary output
+
+        """
         if len(y.shape) == 1:
             raise ValueError("y-array must have shape (n, 1) Use numpy.reshape(-1, 1)")
         self.beta = np.random.normal(
@@ -107,6 +119,19 @@ class LogisticRegression(RegressionClass):
         self.stochastic_gradient_descent(X, y)
 
     def stochastic_gradient_descent(self, X, y):
+        """
+        Runs stochastic gradient descent for optimization of the cost function.
+        Uses the cross-entropy as the cost function.
+
+        Parameters: 
+
+        X: numpy ndarray
+            Feature matrix 
+
+        y: numpy array
+            True binary output
+
+        """
         if self.learning_schedule == None:
             reduce_i = self.n_epochs + 1
         else:
@@ -153,26 +178,76 @@ class LogisticRegression(RegressionClass):
                         )
                     break
 
+    def predict_proba(self, X):
+        """
+        Predicts output probabilities 
+
+        Parameters:
+
+        X: numpy ndarray
+            Feature matrix
+
+        """
+
+        exp_expression = np.exp(X @ self.beta)
+        exp_expression = exp_expression / (1 + exp_expression)
+        return exp_expression.reshape(-1, 1)
+
     def predict(self, X):
+        """
+        Converts output probabilities into binary output.
+
+        Parameters:
+
+        X: numpy ndarray
+            Feature matrix
+
+        """
+
         prediction = self.predict_proba(X)
         prediction[prediction >= 0.5] = 1
         prediction[prediction != 1] = 0
         return prediction
 
-    def predict_proba(self, X):
-        exp_expression = np.exp(X @ self.beta)
-        exp_expression = exp_expression / (1 + exp_expression)
-        return exp_expression.reshape(-1, 1)
-
     def save_model(self, filename):
+        """
+        Saves the model
+
+        Parameters:
+
+        filename: str
+            Output file name of the model
+
+        """
         np.savez(f"models/{filename}", beta=self.beta)
 
     def load_model(self, filename):
+        """
+        Loads a previously saved model
+
+        Parameters:
+
+        filename: str
+            File name of the model
+
+        """
         model = np.load(f"models/{filename}", allow_pickle=True)
         self.beta = model["beta"].reshape(-1, 1)
 
     @staticmethod
     def cost(y, y_pred):
+        """
+        Returns the cross-entropy/cost function values
+
+        Parameters:
+
+        y: numpy ndarray
+            The true binary outputs
+
+        y_pred: numpy ndarray
+            The predicted binary outputs found using the model
+
+        """
         return (
             -np.sum(sps.xlogy(y, y_pred) + sps.xlogy(1 - y, 1 - y_pred))
             / y_pred.shape[0]
@@ -181,6 +256,21 @@ class LogisticRegression(RegressionClass):
     @staticmethod
     @numba.njit
     def grad_cost_function(beta, X, y):
+        """
+        Returns the gradient of the cost function
+
+        Parameters: 
+
+        beta: numpy ndarray
+            Logistic regression predictors  
+        
+        X: numpy ndarray
+            Feature matrix
+        
+        y: numpy ndarray
+            True binary output
+
+        """
         exp_expression = np.exp(X @ beta)
         exp_expression = exp_expression / (1 + exp_expression)
         return (-X.T @ (y - exp_expression)).sum(axis=1)
@@ -195,19 +285,51 @@ class MultilayerPerceptronClassifier(RegressionClass):
         n_epochs=2000,
         rtol=0.001,
         batch_size="auto",
-        penalty=None,
         verbose=False,
         activation_function_output="sigmoid",
         learning_schedule=None,
     ):
+        """
+        Inherits RegressionClass.
+        Performs classification analysis using a multilayer perceptron
+
+        Parameters:
+
+        hidden_layer_size: iterable, default [20, 10]
+            Number of nodes in each hidden layer
+
+        lambd: float, default 0
+            The L2 shrinkage parameter used for regularisation of the weights in 
+            the MultilayerPerceptronClassifier and MultilayerPerceptronRegressor.
+
+        learning rate: float, default 0.1
+            The learning rate used in the stochastic gradient descent solver.
+
+        n_epochs: int, default 2000
+            number of epochs used in the stochastic gradient descent solver.
+
+        rtol: float, default 0.001
+            Relative tolerance used as a stopping criteria in the stochastic gradient
+            descent solver.
+
+        batch_size: int, default "auto"
+            Size of the minibatches used in the stochastic gradient descent solver.
+            If "auto", then batch_size = min(200, N), where N is the number of
+            input samples.
+
+        verbose: bool, default False
+            Whether or not to print progress in terminal.
+
+        activation_function_output: str, default "sigmoid"
+            Specifies which activation function to use for the output layer.
+            Supports "linear" and "sigmoid".
+
+        learning_schedule:  float, default None
+            Deprecated. Supposed to be adaptive learning rate.
+
+        """
         super().__init__(
-            learning_rate,
-            n_epochs,
-            rtol,
-            batch_size,
-            penalty,
-            verbose,
-            learning_schedule,
+            learning_rate, n_epochs, rtol, batch_size, verbose, learning_schedule
         )
         self.lambd = lambd
         self.hidden_layer_size = hidden_layer_size
@@ -215,6 +337,18 @@ class MultilayerPerceptronClassifier(RegressionClass):
         self.activation_function_output = activation_function_output
 
     def fit(self, X, y):
+        """
+        Fits the model to the data.
+
+        Parameters: 
+
+        X: numpy ndarray
+            Feature matrix 
+
+        y: numpy array
+            True binary output
+
+        """
         self.n_features = len(X[0, :])
         self.n_inputs = len(X[:, 0])
         if len(y.shape) == 1:
@@ -225,7 +359,33 @@ class MultilayerPerceptronClassifier(RegressionClass):
         self.init_biases_weights()
         self.stochastic_gradient_descent(X, y)
 
+    def predict_proba(self, X):
+        """
+        Predicts output probabilities
+
+        Parameters:
+
+        X: numpy ndarray
+            Feature matrix
+
+        """
+        if self.weights_hidden[0].shape[0] != X.shape[1]:
+            print(len(self.weights_hidden[0].shape[0]), X.shape[1])
+            raise ValueError(
+                "Model was fitted on different inputs than what was provided"
+            )
+        return self.feed_forward(X)[0][-1]
+
     def predict(self, X):
+        """
+        Converts output probabilities into binary output
+
+        Parameters:
+
+        X: numpy ndarray
+            Feature matrix
+
+        """
         if self.weights_hidden[0].shape[0] != X.shape[1]:
             print(len(self.weights_hidden[0].shape[0]), X.shape[1])
             raise ValueError(
@@ -237,15 +397,19 @@ class MultilayerPerceptronClassifier(RegressionClass):
         prediction[prediction != 1] = 0
         return np.array(prediction, dtype=np.int)
 
-    def predict_proba(self, X):
-        if self.weights_hidden[0].shape[0] != X.shape[1]:
-            print(len(self.weights_hidden[0].shape[0]), X.shape[1])
-            raise ValueError(
-                "Model was fitted on different inputs than what was provided"
-            )
-        return self.feed_forward(X)[0][-1]
-
     def accuracy_score(self, X, y):
+        """
+        Returns accuracy score of the model
+
+        Parameters:
+
+        X: numpy ndarray
+            Feature matrix 
+
+        y: numpy array
+            True binary output
+
+        """
         if self.weights_out.shape[1] != y.shape[1]:
             print(self.weights_out.shape[1], y.shape[1])
             raise ValueError(
@@ -254,6 +418,15 @@ class MultilayerPerceptronClassifier(RegressionClass):
         return super().accuracy_score(X, y)
 
     def save_model(self, filename):
+        """
+        Saves the weights and biases of the model
+
+        Parameters:
+
+        filename: str
+            Output file name of the model
+
+        """
         np.savez(
             f"models/{filename}",
             weights_out=self.weights_out,
@@ -263,6 +436,15 @@ class MultilayerPerceptronClassifier(RegressionClass):
         )
 
     def load_model(self, filename):
+        """
+        Loads a previously saved model containing the weights and biases
+
+        Parameters:
+
+        filename: str
+            File name of the model
+
+        """
         model = np.load(f"models/{filename}", allow_pickle=True)
         self.weights_out = model["weights_out"]
         self.weights_hidden = model["weights_hidden"]
@@ -272,6 +454,10 @@ class MultilayerPerceptronClassifier(RegressionClass):
         self.n_hidden_layers = len(self.weights_hidden)
 
     def init_biases_weights(self):
+        """
+        Initializes the biases and the weights.
+        """
+
         std_weight_init = np.sqrt(1 / self.n_features)
 
         self.weights_hidden = []
@@ -304,6 +490,14 @@ class MultilayerPerceptronClassifier(RegressionClass):
         self.biases_out = np.zeros(self.n_outputs) + 0.01
 
     def feed_forward(self, X):
+        """
+        Runs feed-forward.
+
+        Parameters:
+
+        X: numpy ndarray
+            Feature matrix
+        """
         a_i = np.zeros(self.n_hidden_layers + 2, dtype=np.ndarray)
         z_i = np.zeros(self.n_hidden_layers + 2, dtype=np.ndarray)
 
@@ -320,6 +514,10 @@ class MultilayerPerceptronClassifier(RegressionClass):
         return a_i, z_i
 
     def backpropagation(self, X, y):
+        """
+        Runs backpropagation. Iterates through all epochs or until a given
+        tolerance is reached
+        """
         a_i, z_i = self.feed_forward(X)
         delta = np.zeros(self.n_hidden_layers + 1, dtype=np.ndarray)
         gradient_bias = np.zeros_like(delta)
@@ -346,6 +544,19 @@ class MultilayerPerceptronClassifier(RegressionClass):
         return gradient_weight, gradient_bias
 
     def stochastic_gradient_descent(self, X, y):
+        """
+        Runs stochastic gradient descent for optimization of the cost function.
+        Uses the cross-entropy as the cost function.
+
+        Parameters: 
+
+        X: numpy ndarray
+            Feature matrix 
+
+        y: numpy array
+            True binary output
+
+        """
         if self.learning_schedule == None:
             reduce_i = self.n_epochs + 1
         else:
@@ -412,23 +623,43 @@ class MultilayerPerceptronClassifier(RegressionClass):
 
     @staticmethod
     @numba.njit
-    def activation_function_out(z, activation_function_output):
+    def activation_function_out(z_i, activation_function_output):
         """
-        Method for ensuring modifyable output activation function. Should expand
-        this functionality to all layers if we have the time.
+        Method for ensuring modifiable output activation function. Supports
+        linear and sigmoid. 
+
+        Parameters:
+
+        z_i: numpy ndarray
+            Activation of node
+
+        activation_function_output: str
+            Either "linear" for a linear output activation function or "sigmoid"
+            for the sigmoid as output activation function
+
         """
         if activation_function_output == "linear":
-            return z
+            return z_i
         elif activation_function_output == "sigmoid":
-            expo = np.exp(z)
+            expo = np.exp(z_i)
             return expo / (1 + expo)
 
     @staticmethod
     @numba.njit
     def grad_activation_out(z_i, activation_function_output):
         """
-        Method for ensuring modifyable output activation function. Should expand
-        this functionality to all layers if we have the time.
+        Returns the gradient of the modifiable output activation function. 
+        Supports linear and sigmoid.
+
+        Parameters:
+
+        z_i: numpy ndarray
+            Activation of node
+
+        activation_function_output: str
+            Either "linear" for a linear output activation function or "sigmoid"
+            for the sigmoid as output activation function
+
         """
         if activation_function_output == "linear":
             return np.ones_like(z_i)
@@ -440,7 +671,12 @@ class MultilayerPerceptronClassifier(RegressionClass):
     @numba.njit
     def sigmoid(z):
         """
-        The sigmoid function. Use as activation function
+        Returns the sigmoid function. Use as activation function
+
+        Parameters:
+
+        z: numpy ndarray
+            Activation of node
         """
         expo = np.exp(z)
         return expo / (1 + expo)
@@ -448,22 +684,57 @@ class MultilayerPerceptronClassifier(RegressionClass):
     @staticmethod
     @numba.njit
     def grad_activation(z_i):
+        """
+        Returns the gradient of the sigmoid function.
+
+        Parameters:
+        
+        z: numpy ndarray
+            Activation of node
+        """
         exp_expression = np.exp(-z_i)
         return exp_expression / ((1 + exp_expression) ** 2)
 
-    @staticmethod
-    @numba.njit
-    def grad_cost(y, y_pred):
-        return y_pred - y
-
     def cost(self, y, y_pred):
+        """
+        Returns the cross-entropy/cost function values with added penalty term
+        
+        Parameters:
+
+        y: numpy ndarray
+            The true binary outputs
+
+        y_pred: numpy ndarray
+            The predicted binary outputs found using the model
+        
+        """
         return (
             -np.sum(sps.xlogy(y, y_pred) + sps.xlogy(1 - y, 1 - y_pred))
             / y_pred.shape[0]
         ) + self.lambd * self.l2
 
+    @staticmethod
+    @numba.njit
+    def grad_cost(y, y_pred):
+        """
+        Returns the gradient of the cross-entropy/cost function values.
+        
+        Parameters:
+
+        y: numpy ndarray
+            The true binary outputs
+
+        y_pred: numpy ndarray
+            The predicted binary outputs found using the model
+        
+        """
+        return y_pred - y
+
     @property
     def l2(self):
+        """
+        Calculates L2 penalty on the weights
+        """
         sum_weights = 0
         for weights in self.weights_hidden:
             sum_weights += (weights ** 2).sum()
@@ -473,17 +744,56 @@ class MultilayerPerceptronClassifier(RegressionClass):
 class MultilayerPerceptronRegressor(MultilayerPerceptronClassifier):
     def __init__(
         self,
-        hidden_layer_size=(20, 10, 5, 3),
+        hidden_layer_size=[20, 10],
         learning_rate=0.1,
         lambd=0,
         n_epochs=2000,
         rtol=0.001,
         batch_size="auto",
-        penalty=None,
         verbose=False,
         activation_function_output="linear",
         learning_schedule=None,
     ):
+        """
+        Inherits MultilayerPerceptronClassifier.
+        Performs classification analysis using a multilayer perceptron
+
+        Parameters:
+
+        hidden_layer_size: iterable, default [20, 10]
+            Number of nodes in each hidden layer
+
+        lambd: float, default 0
+            The L2 shrinkage parameter used for regularisation of the weights in 
+            the MultilayerPerceptronClassifier and MultilayerPerceptronRegressor.
+
+        learning rate: float, default 0.1
+            The learning rate used in the stochastic gradient descent solver.
+
+        n_epochs: int, default 2000
+            number of epochs used in the stochastic gradient descent solver.
+
+        rtol: float, default 0.001
+            Relative tolerance used as a stopping criteria in the stochastic gradient
+            descent solver.
+
+        batch_size: int, default "auto"
+            Size of the minibatches used in the stochastic gradient descent solver.
+            If "auto", then batch_size = min(200, N), where N is the number of
+            input samples.
+
+        verbose: bool, default False
+            Whether or not to print progress in terminal.
+
+        activation_function_output: str, default "linear"
+            Specifies which activation function to use for the output layer.
+            Supports "linear" and "sigmoid".
+
+        learning_schedule:  float, default None
+            Deprecated. Supposed to be adaptive learning rate.
+
+        """
+
         super().__init__(
             hidden_layer_size,
             learning_rate,
@@ -491,13 +801,21 @@ class MultilayerPerceptronRegressor(MultilayerPerceptronClassifier):
             n_epochs,
             rtol,
             batch_size,
-            penalty,
             verbose,
             activation_function_output,
             learning_schedule,
         )
 
     def predict(self, X):
+        """
+        Converts output probabilities into binary output
+
+        Parameters:
+
+        X: numpy ndarray
+            Feature matrix
+
+        """
         if self.weights_hidden[0].shape[0] != X.shape[1]:
             print(len(self.weights_hidden[0].shape[0]), X.shape[1])
             raise ValueError(
@@ -507,17 +825,56 @@ class MultilayerPerceptronRegressor(MultilayerPerceptronClassifier):
         return prediction
 
     def cost(self, y, y_pred):
+        """
+        Returns the cost function, (mean squared error)/2 with added penalty term
+        
+       Parameters:
+
+        y: numpy ndarray
+            The true binary outputs
+
+        y_pred: numpy ndarray
+            The predicted binary outputs found using the model
+        
+        """
         return np.mean((y_pred - y) ** 2) / 2 + self.lambd * self.l2
 
     @staticmethod
     @numba.njit
     def grad_cost(y, y_pred):
+        """
+        Returns the gradient of the cost function, (mean squared error)/2.
+        
+        Parameters:
+
+        y: numpy ndarray
+            The true binary outputs
+
+        y_pred: numpy ndarray
+            The predicted binary outputs found using the model
+        
+        """
         return y_pred - y
 
     def accuracy_score(self):
+        """
+        Raises an error, as accuracy score is not a valid metric for this method.
+        """
         raise TypeError("Accuracy score is not valid for regression")
 
     def r2_score(self, X, y):
+        """
+        Returns R2 score of the model
+
+        Parameters: 
+
+        X: numpy ndarray
+            Feature matrix 
+        
+        y: numpy ndarray
+            True binary outputs
+
+        """
         return 1 - np.sum((y - self.predict(X)) ** 2) / np.sum((y - np.mean(y)) ** 2)
 
 
@@ -525,6 +882,11 @@ class Log10Uniform:
     """
     "Inspired" by an answer on StackExchange.
     stackoverflow.com/questions/49538120/how-to-implement-a-log-uniform-distribution-in-scipy
+
+    Implements a logistic uniform distribution to be used with scikit-learn's 
+    built-in function sklearn.model_selection.RandomizedSearchCV to find optimal
+    parameters for the LogisticRegression, MultilayerPerceptronClassifier and 
+    MultilayerPerceptronRegressor subclasses.
     """
 
     def __init__(self, a, b):
