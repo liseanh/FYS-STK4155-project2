@@ -3,7 +3,7 @@ import scipy.stats
 import pandas as pd
 import sklearn.model_selection as sklms
 from main import MultilayerPerceptronClassifier, Log10Uniform
-
+np.random.seed(1997)
 
 training_set = np.load("data/credit_data_train.npz")
 test_set = np.load("data/credit_data_test.npz")
