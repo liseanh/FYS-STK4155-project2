@@ -80,6 +80,9 @@ df = df.sort_values(by="param_learning_rate", ascending=True)
 train_score = df["mean_train_score"].values.astype(np.float)
 validation_score = df["mean_test_score"].values.astype(np.float)
 learning_rates = df["param_learning_rate"].values.astype(np.float)
+best_learning_rate = learning_rates[validation_score==np.max(validation_score)]
+
+print(f"Best learning rate: {best_learning_rate}")
 
 fig, ax = plt.subplots()
 fig.set_size_inches(3.03, 3.03)
