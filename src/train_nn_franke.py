@@ -42,7 +42,7 @@ reg = MultilayerPerceptronRegressor(
     activation_function_output="linear",
 )
 
-candidate_learning_rates = Log10Uniform(-4, -1)
+candidate_learning_rates = Log10Uniform(-4, -2)
 candiate_lambdas = Log10Uniform(-10, -1)
 param_dist = {"learning_rate": candidate_learning_rates, "lambd": candiate_lambdas}
 

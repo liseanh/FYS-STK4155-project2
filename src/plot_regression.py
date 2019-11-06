@@ -132,6 +132,8 @@ df = df.sort_values(by="param_learning_rate", ascending=True)
 
 train_score = df["mean_train_score"].values.astype(np.float)
 validation_score = df["mean_test_score"].values.astype(np.float)
+# Making all strongly negative scores default to 1.
+validation_score[validation_score < -1] = -1
 learning_rates = df["param_learning_rate"].values.astype(np.float)
 lambdas = df["param_lambd"].values.astype(np.float)
 best_learning_rate = learning_rates[validation_score == np.max(validation_score)][0]
