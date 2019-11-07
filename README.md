@@ -9,7 +9,7 @@ To generate/read data, train the models, print/plot the results and build the re
 
 ## Source structure 
 
-* <tt> src/main.py</tt>: Main script containing all regression met* hods 
+* <tt> src/main.py</tt>: Main script containing all regression methods 
 * <tt> src/test_main.py</tt>: Unit tests for <tt> src/main.py </tt>.
 * <tt> src/read_credit_data</tt>: Reads, preprocesses and exports the credit card data as  <tt>.npz</tt> files.
 * <tt> src/generate_franke.py</tt>: Generates, preprocesses and exports the Franke function data as <tt>.npz</tt> files.
