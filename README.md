@@ -23,3 +23,5 @@ To generate/read data, train the models, print/plot the results and build the re
 * <tt> doc/report_2.tex</tt>, <tt> doc/references.bib</tt>: <tt> .tex</tt> file for the project report and references
 * <tt> doc/report_2.pdf</tt>: The built report as a  <tt>.pdf</tt>.
 * <tt> doc/figures</tt>: Folder where all the figures from <tt> src/plot_*.py</tt> are saved.
+
+We have used [Black](https://github.com/psf/black) for proper code formatting in Python.
