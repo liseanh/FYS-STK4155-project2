@@ -61,25 +61,47 @@ feature in $X$. It is useful to use another cost function than the mean squared 
 from our logistic regression is defined as $\hat{y}=p(X)\in [0, 1]$, where we say that outcome 0 is predicted if $\hat{y}< 0.5$ and outcome 1 else. The cost function most commonly used in this case is called
 the cross entropy, and is defined as
 \begin{equation}
-  crossentropyheretomorrow
+  \mathcal{C}_\text{LR}= \textbf{PLS INSERT}
 \end{equation}
 
 In this project we will use LR on the Taiwanese credit card data to try to predict default ($y=1$) or non-default ($y=0$) payment and evaluate the model's predictive accuracy in this particular classification problem.
 
-\subsection{Artificial Neural Networks (ANN)}
+\subsection{Neural Networks (NN)}
 
-An artificial neural network (ANN) is a computational model consisting of interconnected nodes. The interconnected nodes aim to emulate a simplified biological neural network in a brain  and neuronal firing, and are therefore also commonly referred to as neurons.  The node performs a weighted sum of its inputs that is subsequently passed through a mathematical function to determine its output. This mathematical function is called an activation function. The output value of the node can be adjusted for different purposes by choosing an appropriate activation function.
+An artificial neural network (NN) is a computational model consisting of interconnected nodes. The interconnected nodes aim to emulate a simplified biological neural network and neuronal firing in a brain , and are therefore also commonly referred to as neurons.  The node performs a weighted sum of its inputs that is subsequently passed through a mathematical function to determine its output. This mathematical function is called an activation function $f(z)$. The output value of the node can be adjusted for different purposes by choosing an appropriate activation function.
 
-There is a wide variety of different neural networks. Commonly, they consist of layers of nodes separated into the input layer and output layer, and may also contain one or more in-between layers called hidden layers. One such ANN is the multilayer perceptron (MLP), which is what we will be using in this project for both classification and regression.
-\subsubsection{Multilayer perceptron (MLP)}
-The multilayer perceptron is a feed-forward neural network (FFNN), which means that the information flows forward only, starting from the input layer and to the output layer. Additionally, if each of the nodes in a layer is connected to all of the nodes in the succeeding layer, the network is fully connected. The inputs of the node are the weighted outputs of the nodes from the preceding layer, in addition to a bias term that can control whether or not the neuron fires if all the inputs are zero \cite{ML_algo}.
+There is a wide variety of different neural networks. Commonly, they consist of layers of nodes separated into the input layer and output layer, and may also contain one or more in-between layers called hidden layers. One such NN is the multilayer perceptron (MLP), which is what we will be using in this project for both classification and regression.
+\subsection{Multilayer perceptron (MLP)}
+\subsubsection{Feed-forward  }
+The multilayer perceptron is a feed-forward neural network (FFNN), which means that the information flows forward only, starting from the input layer and to the output layer. Additionally, if each of the nodes in a layer is connected to all of the nodes in the succeeding layer, the network is fully connected. The inputs of the node are the weighted outputs of the nodes from the preceding layer, in addition to a bias term that can control whether or not the neuron fires if all the inputs are zero \cite{ML_algo}. The weighted sum of the inputs of each node is called the activation.
+ 
+\paragraph{Mathematical algorithm} \myparagraph{Input layer}
+Starting with the input layer, which is the first layer in the MLP,  the activation is calculated using the input coordinates $x_j$, 
+\begin{equation}
+z_i^1 = \sum^{M_1}_{j=1}w_{ij}^1x_j + b_i^1,
+\end{equation}
+where the superscript 1 indicates the first layer, $M_1$ is the number of inputs to the $i$th node in the first layer, $b_i$ is the bias and $w_{ij}$ represents the weights.
 
-The activation of the $j$th neuron of layer $l$ is defined as
+The output of the nodes in the input layer is determined by the activation function $f(z)$,
+\begin{equation}
+f(z_i^1) = f \left( \sum^{M_1}_{j=1}w_{ij}^1x_j + b_i^1 \right)
+\end{equation}
+\myparagraph{Hidden layers and output layer}
+Similarly for the subsequent layers; the hidden layers and the output layer, the activation of the $j$th neuron of layer $l$ is defined as
 \begin{equation}
 z_j^l = \sum_{i=1}^{M_{l-1}} w_{ij}^la_j^{l-1} + b_j^l,
 \end{equation}
-where $b_j^l$ and $w_{ij}^l$ are the biases and weights at layer $l$, and $a_j^l=f(z_j^l) $.
+where $b_j^l$ and $w_{ij}^l$ are the biases and weights at layer $l$, ${M_{l-1}}$ is the number of nodes at layer $l-1$ and $a_j^{l-1}=f(z_j^{l-1}) $.
+The output of each node is then decided by passing the activation through the activation function,
+\begin{equation}
+ f(z_j^l) =f \left(     \sum_{i=1}^{M_{l-1}} w_{ij}^la_j^{l-1} + b_j^l \right)
+\end{equation}
+This is nearly identical to the method for the input layer, except that the inputs of these layers are the outputs from the previous layer.
 
+\subsubsection{Backpropagation}
+In order for the NN to learn, the weights and biases are initialized with values that we will discuss shortly. The weights and biases are then optimalized to minimize the cost function through a process called backpropagation, where we iterate backwards from the last layer to the first hidden layer. Another feed-forward process is initiated  from the input layer to the output layer with the new biases and weights. If the cost function is not yet sufficiently minimized, then backpropagation is performed again. This process is repeated until the cost function is optimalized.
+
+\myparagraph{Mathematical algorithm}
 To calculate the optimal biases and weights for the problem, we initialize the gradients of the cost function $\mathcal{C}$ with respect to the  weights $W$ and biases $b$ at the output  layer $l=L$ 	and the output error $\delta_L$ as
 \begin{flalign}
 &\frac{\partial  \mathcal{C}}{\partial w^L_{jk}} = \delta^L_j a_k^{L-1}, \\
@@ -92,8 +114,15 @@ before propagating backwards through the hidden layers using the general equatio
 &\frac{\partial  \mathcal{C}}{\partial b^l_j} = \delta^l_j,\\
 &\delta_j^l= \sum_k \delta_k^{l+1}w_{kj}^{l+1}f'(z_j^l).
 \end{flalign}
-Looking at these equations, it is clear that the chosen cost function $\mathcal{C}$ and the activation function $f(z)$ should be differentiable.
+The full derivation of these equations can be found in \cite{morten_NN}.
 
+Looking at these equations, it is clear that the chosen cost function $\mathcal{C}$ and the activation function $f(z)$ should be differentiable. 
+For this project we have chosen to use the logistic loss as cost function, which is the negative log-likelihood,
+\begin{equation}
+\mathcal{C}(\theta) = -\log (P)
+\end{equation}
+
+\myparagraph{Initialising the weights and biases}
 The biases can be initialized to zero, but we have chosen an initial value of 0.01 to ensure that all of the neurons have some initial output. Initializing the weights to zero, however, will result in all neurons outputting the same value. Instead, the  weights are initialized with values drawn from a uniform distribution such that $w_{kj}\in (-1/\sqrt{n}, \ 1/\sqrt{n})$, where $n$ is the amount of nodes in the input layer,  to ensure uniform learning \cite{ML_algo}.
 
 \subsection{Stochastic Gradient Descent (SGD)}
@@ -201,8 +230,8 @@ I = \begin{cases}
 \end{table}
 
 \begin{table}[H]
-  \caption{Table of best hyperparameters for all models in the project.
-   Found using 5-fold cross validation}
+  \caption{Table of the best hyperparameters values for shrinkage $\lambda$ and learning rate $\eta$ for the logistic regression (LR) and neural network (NN) models. The parameters were found using 5-fold cross validation. 
+   Found using 5-fold cross validation. The minibatch size was kept constant at $M=200$. }
   	\resizebox{\columnwidth}{!}{
   \begin{tabular}{|l|l|l|}
     \hline
@@ -210,7 +239,7 @@ I = \begin{cases}
     LR credit data & N/A & $4.4 \cdot 10^{-4}$ \\ \hline
     NN credit data & $6.9 \cdot 10^{-7}$ & $0.08$ \\ \hline
     NN \texttt{franke0} & $4.1\cdot 10^{-6}$ & $9.1\cdot 10^{-5}$ \\ \hline
-    NN \texttt{franke1} & $6.4\cdot 10^{-8}$ & $1.5 \cdot 10^{-4}$\\ \hline
+    NN \texttt{franke1} & $6.4\cdot 10^{-8}$ & $1.5 \cdot 10^{-4}$\\ \hline
     NN \texttt{franke2} & $3.6\cdot 10^{-10}$ & $3.7 \cdot 10^{-4}$\\ \hline
   \end{tabular}
   }
