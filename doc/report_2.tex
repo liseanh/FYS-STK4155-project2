@@ -45,8 +45,8 @@
 \section{Introduction}
 Classification in statistical analysis is a useful tool, e.g. for predicting outcomes of various situations or classifying and sorting large amounts of data.
 
-The aim of this project is  to study classification and regression problems through our own implementation of logistic regression and a multilayer perceptron (MLP) in Python. This particular data set has been used in a prior research paper by Yeh, I. C. and Che-hui Lien about data mining techniques \cite{origarticle}, and can be downloaded from the \href{https://archive.ics.uci.edu/ml/datasets/default+of+credit+card+clients}{UCI Machine Learning Repository} \cite{UCI}.
-We will use these methods to classify data of credit card clients' default payment from a Taiwanese bank. Additionally, we will use the MLP to approximate Franke's function and compare with results from a prior project where we used ordinary least squares, ridge and lasso regression to approximate it. \cite{regpaper}.
+The aim of this project is  to study classification and regression problems through our own implementation of logistic regression and a multilayer perceptron (MLP) in Python. The particular data set we will be studying for classification has been used in a prior research paper by Yeh, I. C. and Che-hui Lien about data mining techniques \cite{origarticle}, which we will compare some of our results with.  The full data set can be downloaded from the \href{https://archive.ics.uci.edu/ml/datasets/default+of+credit+card+clients}{UCI Machine Learning Repository} \cite{UCI}. The data set contains certain features of credit card clients' default payment from a Taiwanese bank.
+For the regression problem we will use the MLP to approximate Franke's function and compare with results from a prior project where we used ordinary least squares, ridge and lasso regression to approximate it. \cite{regpaper}.
 
 
 \section{Learning methods}
@@ -68,14 +68,15 @@ In this project we will use LR on the Taiwanese credit card data to try to predi
 
 \subsection{Neural Networks (NN)}
 
-An artificial neural network (NN) is a computational model consisting of interconnected nodes. The interconnected nodes aim to emulate a simplified biological neural network and neuronal firing in a brain , and are therefore also commonly referred to as neurons.  The node performs a weighted sum of its inputs that is subsequently passed through a mathematical function to determine its output. This mathematical function is called an activation function $f(z)$. The output value of the node can be adjusted for different purposes by choosing an appropriate activation function.
+An artificial neural network (NN) is a computational model consisting of interconnected nodes. The interconnected nodes aim to emulate a simplified biological neural network and neuronal firing in a brain , and are therefore also commonly referred to as neurons.  The node performs a weighted sum of its inputs that is subsequently passed through a mathematical function to determine its output. This mathematical function is called an activation function $f(z)$, and should emulate neuronal firing. 
 
 There is a wide variety of different neural networks. Commonly, they consist of layers of nodes separated into the input layer and output layer, and may also contain one or more in-between layers called hidden layers. One such NN is the multilayer perceptron (MLP), which is what we will be using in this project for both classification and regression.
 \subsection{Multilayer perceptron (MLP)}
+
 \subsubsection{Feed-forward  }
 The multilayer perceptron is a feed-forward neural network (FFNN), which means that the information flows forward only, starting from the input layer and to the output layer. Additionally, if each of the nodes in a layer is connected to all of the nodes in the succeeding layer, the network is fully connected. The inputs of the node are the weighted outputs of the nodes from the preceding layer, in addition to a bias term that can control whether or not the neuron fires if all the inputs are zero \cite{ML_algo}. The weighted sum of the inputs of each node is called the activation.
  
-\paragraph{Mathematical algorithm} \myparagraph{Input layer}
+\subsubsection*{Mathematical algorithm} \myparagraph{Input layer}
 Starting with the input layer, which is the first layer in the MLP,  the activation is calculated using the input coordinates $x_j$, 
 \begin{equation}
 z_i^1 = \sum^{M_1}_{j=1}w_{ij}^1x_j + b_i^1,
@@ -98,7 +99,7 @@ The output of each node is then decided by passing the activation through the ac
 \end{equation}
 This is nearly identical to the method for the input layer, except that the inputs of these layers are the outputs from the previous layer.
 
-\subsubsection{Backpropagation}
+\subsubsection{Backpropagation} \label{subsub:backpropagation}
 In order for the NN to learn, the weights and biases are initialized with values that we will discuss shortly. The weights and biases are then optimalized to minimize the cost function through a process called backpropagation, where we iterate backwards from the last layer to the first hidden layer. Another feed-forward process is initiated  from the input layer to the output layer with the new biases and weights. If the cost function is not yet sufficiently minimized, then backpropagation is performed again. This process is repeated until the cost function is optimalized.
 
 \myparagraph{Mathematical algorithm}
@@ -112,19 +113,35 @@ before propagating backwards through the hidden layers using the general equatio
 \begin{flalign}
 &\frac{\partial  \mathcal{C}}{\partial w^l_{jk}} = \delta^l_j a_k^{l-1}, \\
 &\frac{\partial  \mathcal{C}}{\partial b^l_j} = \delta^l_j,\\
-&\delta_j^l= \sum_k \delta_k^{l+1}w_{kj}^{l+1}f'(z_j^l).
+&\delta_j^l= \sum_k \delta_k^{l+1}w_{kj}^{l+1}f'(z_j^l). \label{eq:delta_j^ l}
 \end{flalign}
-The full derivation of these equations can be found in \cite{morten_NN}.
+The full derivation of these equations can be found in \textit{Neural networks, from the simple perceptron to deep learning} by Morthen Hjorth-Jensen \cite{morten_NN}.  
 
-Looking at these equations, it is clear that the chosen cost function $\mathcal{C}$ and the activation function $f(z)$ should be differentiable. 
-For this project we have chosen to use the logistic loss as cost function, which is the negative log-likelihood,
+\subsubsection{Choosing activation function}
+There are certain properties that an activation function $f(z)$ should possess \cite{ML_algo}:
+\begin{enumerate}
+\item $f(z)$ should be differentiable (continuous). \label{item:differentiable_f}
+\item $f(z)$ should be non-constant and  reach saturation at both ends of the range.
+\item $f(z)$ should change quickly between the saturation values  at the middle of the range. 
+\end{enumerate}
+It is clear that the activation function $f(z)$ should be differentiable from Equation (\ref{eq:delta_j^ l}) in the backpropagation algorithm, while the remaining properties are mainly related to the emulation of firing of neurons in a brain. 
+
+There are several functions that meet these requirements. Historically, the sigmoid function has been a popular choice of activation function until recently. To compare our results with the original paper from 2009 by I-Cheng Yeh and Che-hui Lien \cite{origarticle}, we have chosen to use the sigmoid function in our implementation of MLP, as it is likely the same function they used. The function is given by 
 \begin{equation}
+f(z) = \frac{1}{1+e^{-z}}\ .
+\end{equation}
+
+\textbf{SAY SOMETHING ABOUT OUTPUT ACTIVATION FUNCTION TOO}
+\subsubsection{Choosing cost function}
+Looking at the equations for backpropagation, it is clear that the chosen cost function $\mathcal{C}$ and the activation function $f(z)$ should be differentiable.  Additionally, the cost function should be chosen with the desired functionality in mind, i.e. the cost functions for regression and classification should be different. 
+For this project we have chosen to use the logistic loss as cost function, which is the negative log-likelihood,\begin{equation}
 \mathcal{C}(\theta) = -\log (P)
 \end{equation}
 
-\myparagraph{Initialising the weights and biases}
+\subsubsection{Initialising  the weights and biases}
 The biases can be initialized to zero, but we have chosen an initial value of 0.01 to ensure that all of the neurons have some initial output. Initializing the weights to zero, however, will result in all neurons outputting the same value. Instead, the  weights are initialized with values drawn from a uniform distribution such that $w_{kj}\in (-1/\sqrt{n}, \ 1/\sqrt{n})$, where $n$ is the amount of nodes in the input layer,  to ensure uniform learning \cite{ML_algo}.
 
+\subsubsection{NUMBER OF LAYERS, YES? OR MAYBE EXPLAIN SOMEWHERE ELSE}
 \subsection{Stochastic Gradient Descent (SGD)}
 It is clear that in order to find the best possible fit, we need to optimize the cost function $\mathcal{C}$ by finding its minimum. A common method to achieve this is the gradient descent (GD) method, in which the parameters $\theta$ are iteratively adjusted in the direction of the largest negative value of the gradient for a given number of iterations or until it reaches a given tolerance. Mathematically, this is expressed as
 \begin{equation}
