@@ -5,7 +5,7 @@ The project is based on classification using logistic regression (LR) and a mult
 
 The aim of this project is to get a deeper understanding of the two different methods and to apply them to a real data set. To acheieve this, we have made our own implementation of LR and MLP in Python. 
 
-Please install Pipfile by running <tt>pipenv install</tt> prior to running any scripts.  
+Please install [Pipfile](https://github.com/pypa/pipfile) by running <tt>pipenv install</tt> prior to running any scripts.  
 To generate/read data, train the models, print/plot the results and build the report, run <tt> main_script.sh </tt>. 
 
 ## Source structure 
