@@ -3,7 +3,7 @@ This is our source code for Project 2 in the course [FYS-STK4155 Applied Data An
 
 The project is based on classification using logistic regression (LR) and a multilayer perceptron (MLP) on credit card data from the [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/default+of+credit+card+clients). Additionally, we will perform regression analysis on the two-dimensional Franke function and compare the results with a [prior analysis](https://github.com/bernharl/FYS-STK4155-project1) where we used ordinary least squares. 
 
-The aim of this project is to get a deeper understanding of the two different methods and to apply them to a real data set. To acheieve this, we have made our own implementation of LR and MLP in Python. 
+The aim of this project is to get a deeper understanding of the two different methods and to apply them to a real data set. To achieve this, we have made our own implementation of LR and MLP in Python. 
 
 Please install dependencies using [Pipenv](https://github.com/pypa/pipenv) by using the command <tt>pipenv install</tt> prior to running any scripts.  
 To generate/read data, train the models, print/plot the results and build the report, run <tt> main_script.sh </tt>. 
