@@ -31,7 +31,8 @@
 
 \title{FYS-STK3155/4155 Applied Data Analysis and Machine Learning - Project 2: Classification and Regression }
 
-\author{Lotsberg, Bernhard Nornes \\ Nguyen, Anh-Nguyet Lise \and \url{https://github.com/liseanh/FYS-STK4155-project2/}}
+\author{Lotsberg, Bernhard Nornes \\ Nguyen, Anh-Nguyet Lise \and 
+\url{https://github.com/liseanh/FYS-STK4155-project2/}}
 \date{October - November 2019}
 \begin{document}
 \twocolumn[
@@ -59,6 +60,84 @@ For the regression problem we will use the MLP to approximate Franke's function
 and compare with results from a prior project where we used ordinary least
 squares, ridge and lasso regression to approximate it. \cite{regpaper}.
 
+
+\section{Data}
+\subsection{Classification - Credit card client data}
+For the classification part of this project,  we are using credit card payment
+data from a Taiwanese bank downloaded from the \href{https://archive.ics.uci.edu/ml/datasets/default+of+credit+card+clients}{UCI Machine Learning Repository}. The
+response variable is a binary variable of default payment with Yes = 1, No = 0.
+The original data set consists of 30 000 observations, with X amount of
+observations with default payments. There are 23 features, cited
+from the original paper they are described as \cite{origarticle}:
+\begin{itemize}[leftmargin=5mm, itemsep=0pt,  parsep=1pt]
+ \item X1: Amount of the given credit (NT dollar): it includes both the individual consumer credit and his/her family (supplementary) credit.
+\item X2: Gender (1 = male; 2 = female).
+\item X3: Education (1 = graduate school; 2 = university; 3 = high school; 4 = others).
+\item X4: Marital status (1 = married; 2 = single; 3 = others).
+\item X5: Age (year).
+\item X6 - X11: History of past payment. We tracked the past monthly payment
+records (from April to September, 2005) as follows: X6 = the repayment status in
+September, 2005; X7 = the repayment status in August, 2005; . . .;X11 = the
+repayment status in April, 2005. The measurement scale for the repayment status
+is: -1 = pay duly; 1 = payment delay for one month; 2 = payment delay for two
+months; . . .; 8 = payment delay for eight months; 9 = payment delay for nine
+months and above.
+\item X12-X17: Amount of bill statement (NT dollar). X12 = amount of bill
+statement in September, 2005; X13 = amount of bill statement in August, 2005;
+. . .; X17 = amount of bill statement in April, 2005.
+\item X18-X23: Amount of previous payment (NT dollar). X18 = amount paid in
+September, 2005; X19 = amount paid in August, 2005; . . .; X23 = amount paid in
+April, 2005.
+\end{itemize}
+
+\subsection{Regression - Franke's function}
+For the regression part part of this project we will be performing regression
+analysis on Franke's function $g(x,y)$ with added Gaussian noise $\bm{\varepsilon}
+\sim N(0,\  \sigma^2) $. Franke's function is given by
+\begin{align}
+g(x,y) &= \frac{3}{4}\exp{\left(-\frac{(9x-2)^2}{4}   - \frac{(9y-2)^2}{4}\right)} \nonumber\\
+ &+\frac{3}{4}\exp{\left(-\frac{(9x+1)^2}{49}- \frac{(9y+1)}{10}\right)} \nonumber\\
+ &+\frac{1}{2}\exp{\left(-\frac{(9x-7)^2}{4} - \frac{(9y-3)^2}{4}\right)} \nonumber\\
+ &-\frac{1}{5}\exp{\left(-(9x-4)^2 - (9y-7)^2\right) }  \label{eq:Franke}
+\end{align} and is defined on $x,\ y \in [0,1]$. The data we are fitting is
+given by
+$$G(\bm{x}, \bm{y}) = g(\bm{x}, \bm{y}) + \bm{\varepsilon},$$
+where $\bm{x},\ \bm{y}$ are vectors of uniformly spaced values from 0 and 1 of
+length $n_x$ and $n_y$ respectively. To directly compare with our previous
+project, \textit{Project 1: Regression analysis and resampling methods}
+\cite{regpaper}, we choose to generate and analyze the data sets \texttt{franke0},
+\texttt{franke1}, \texttt{franke2} as configured in Table \ref{tab:franke_dataset}.
+To generate the points, we grid over $n_x$ points in $x$-direction and $n_y$ points
+in $y$-direction.
+\textbf{WE NEED TO TALK MORE ABOUT OUR PREVIOUS ANALYSIS AND WHAT KIND OF METHODS
+AND PARAMETERS WE USED }
+
+\begin{table}[H]
+	\caption{Table of the configurations for our generated data sets using
+	Franke's function given in Equation (\ref{eq:Franke}) with added noise $\bm
+	{\varepsilon} \sim N(0,\  \sigma^2) $. $n_x$ and $n_y$  indicate the number
+	of points used to produce the grid in their respective directions. }
+	\label{tab:franke_dataset}
+	\resizebox{\columnwidth}{!}{
+	\begin{tabular}{|l|l|l|l|c|} \hline
+	Data set &  Data points	&$n_x$ & $n_y$ & $\sigma$ \\ \hline
+	\texttt{franke0} & 400 & 20 & 20 & 1.0\\ \hline
+	\texttt{franke1	} & 400 & 20 & 20 & 0.10\\ \hline
+	\texttt{franke2} & 40 000& 200 & 200 & 0.10 \\ \hline
+	\end{tabular}
+	}
+\end{table}
+
+\subsection{Preprocessing}
+We use \texttt{Scikit-learn's}\cite{sklearn_api} library  to split the data 
+sets into test and training sets, and to scale and center the data. 
+For both data sets we used $1/3$rd of the total data as testing data 
+and the remaining $2/3$rds as training. To center the data, the means of the
+predictors in the test set were subtracted from both the training and the test 
+sets. The data is scaled by normalizing with respect to the variances of the 
+predictors in the training set. 
+
+\subsubsection{Categorical variables}
 
 \section{Learning methods}
 \subsection{Logistic Regression (LR)}
@@ -290,73 +369,6 @@ the stochasticity reduces the possibility of getting stuck in a local minimum.
 
 \subsection{Choice of hyperparameters}
 
-
-\section{Data}
-\subsection{Classification - Credit card client data}
-For the classification part of this project,  we are using credit card payment
-data from a Taiwanese bank downloaded from the \href{https://archive.ics.uci.edu/ml/datasets/default+of+credit+card+clients}{UCI Machine Learning Repository}. The
-response variable is a binary variable of default payment with Yes = 1, No = 0.
-The original data set consists of 30 000 observations, with X amount of
-observations with default payments. There are 23 explanatory variables, cited
-from the original paper they are described as \cite{origarticle}:
-\begin{itemize}[leftmargin=5mm, itemsep=0pt,  parsep=1pt]
- \item X1: Amount of the given credit (NT dollar): it includes both the individual consumer credit and his/her family (supplementary) credit.
-\item X2: Gender (1 = male; 2 = female).
-\item X3: Education (1 = graduate school; 2 = university; 3 = high school; 4 = others).
-\item X4: Marital status (1 = married; 2 = single; 3 = others).
-\item X5: Age (year).
-\item X6 - X11: History of past payment. We tracked the past monthly payment
-records (from April to September, 2005) as follows: X6 = the repayment status in
-September, 2005; X7 = the repayment status in August, 2005; . . .;X11 = the
-repayment status in April, 2005. The measurement scale for the repayment status
-is: -1 = pay duly; 1 = payment delay for one month; 2 = payment delay for two
-months; . . .; 8 = payment delay for eight months; 9 = payment delay for nine
-months and above.
-\item X12-X17: Amount of bill statement (NT dollar). X12 = amount of bill
-statement in September, 2005; X13 = amount of bill statement in August, 2005;
-. . .; X17 = amount of bill statement in April, 2005.
-\item X18-X23: Amount of previous payment (NT dollar). X18 = amount paid in
-September, 2005; X19 = amount paid in August, 2005; . . .; X23 = amount paid in
-April, 2005.
-\end{itemize}
-
-\subsection{Regression - Franke's function}
-For the regression part part of this project we will be performing regression
-analysis on Franke's function $g(x,y)$ with added Gaussian noise $\bm{\varepsilon}
-\sim N(0,\  \sigma^2) $. Franke's function is given by
-\begin{align}
-g(x,y) &= \frac{3}{4}\exp{\left(-\frac{(9x-2)^2}{4}   - \frac{(9y-2)^2}{4}\right)} \nonumber\\
- &+\frac{3}{4}\exp{\left(-\frac{(9x+1)^2}{49}- \frac{(9y+1)}{10}\right)} \nonumber\\
- &+\frac{1}{2}\exp{\left(-\frac{(9x-7)^2}{4} - \frac{(9y-3)^2}{4}\right)} \nonumber\\
- &-\frac{1}{5}\exp{\left(-(9x-4)^2 - (9y-7)^2\right) }  \label{eq:Franke}
-\end{align} and is defined on $x,\ y \in [0,1]$. The data we are fitting is
-given by
-$$G(\bm{x}, \bm{y}) = g(\bm{x}, \bm{y}) + \bm{\varepsilon},$$
-where $\bm{x},\ \bm{y}$ are vectors of uniformly spaced values from 0 and 1 of
-length $n_x$ and $n_y$ respectively. To directly compare with our previous
-project, \textit{Project 1: Regression analysis and resampling methods}
-\cite{regpaper}, we choose to generate and analyze the data sets \texttt{franke0},
-\texttt{franke1}, \texttt{franke2} as configured in Table \ref{tab:franke_dataset}.
-To generate the points, we grid over $n_x$ points in $x$-direction and $n_y$ points
-in $y$-direction.
-\textbf{WE NEED TO TALK MORE ABOUT OUR PREVIOUS ANALYSIS AND WHAT KIND OF METHODS
-AND PARAMETERS WE USED }
-
-\begin{table}[H]
-	\caption{Table of the configurations for our generated data sets using
-	Franke's function given in Equation (\ref{eq:Franke}) with added noise $\bm
-	{\varepsilon} \sim N(0,\  \sigma^2) $. $n_x$ and $n_y$  indicate the number
-	of points used to produce the grid in their respective directions. }
-	\label{tab:franke_dataset}
-	\resizebox{\columnwidth}{!}{
-	\begin{tabular}{|l|l|l|l|c|} \hline
-	Data set &  Data points	&$n_x$ & $n_y$ & $\sigma$ \\ \hline
-	\texttt{franke0} & 400 & 20 & 20 & 1.0\\ \hline
-	\texttt{franke1	} & 400 & 20 & 20 & 0.10\\ \hline
-	\texttt{franke2} & 40 000& 200 & 200 & 0.10 \\ \hline
-	\end{tabular}
-	}
-\end{table}
 
 \section{Model evaluation}
 \subsection{Regression}
