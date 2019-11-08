@@ -18,6 +18,7 @@
 \usepackage{enumitem}
 \usepackage{hyperref}
 \usepackage{makecell}
+\usepackage{array}
 
 \bibliographystyle{plain}
 % \renewcommand{\thesubsection}{\alph{subsection})}
@@ -60,10 +61,10 @@ Here $X$ is the design matrix, and $\beta$ is a vector containing the weights as
 feature in $X$. It is useful to use another cost function than the mean squared error, as the output
 from our logistic regression is defined as $\hat{y}=p(X)\in [0, 1]$, where we say that outcome 0 is predicted if $\hat{y}< 0.5$ and outcome 1 else. The cost function most commonly used in this case is called
 the cross entropy, and is defined as
-\begin{equation}
-  \mathcal{C}_\text{LR}= \textbf{PLS INSERT}
-\end{equation}
-
+\begin{align}
+\mathcal{C_\text{ LR}}(\bm{\beta}) &= -\sum_{i=0}^{n-1} \left[\  y_i\log p(y_i|x_i, \bm{\beta}) \right. \\
+ &\left.+ (1-y_i)\log(1-p(y_i|x_i,\bm{\beta})    \right] \\
+\end{align}
 In this project we will use LR on the Taiwanese credit card data to try to predict default ($y=1$) or non-default ($y=0$) payment and evaluate the model's predictive accuracy in this particular classification problem.
 
 \subsection{Neural Networks (NN)}
@@ -124,21 +125,35 @@ There are certain properties that an activation function $f(z)$ should possess \
 \item $f(z)$ should be non-constant and  reach saturation at both ends of the range.
 \item $f(z)$ should change quickly between the saturation values  at the middle of the range. 
 \end{enumerate}
-It is clear that the activation function $f(z)$ should be differentiable from Equation (\ref{eq:delta_j^ l}) in the backpropagation algorithm, while the remaining properties are mainly related to the emulation of firing of neurons in a brain. 
+It is clear  from Equation (\ref{eq:delta_j^ l}) in the backpropagation algorithm that the activation function $f(z)$ should be differentiable, while the remaining properties are mainly related to the emulation of firing of neurons in a brain. 
 
-There are several functions that meet these requirements. Historically, the sigmoid function has been a popular choice of activation function until recently. To compare our results with the original paper from 2009 by I-Cheng Yeh and Che-hui Lien \cite{origarticle}, we have chosen to use the sigmoid function in our implementation of MLP, as it is likely the same function they used. The function is given by 
+There are several functions that meet these requirements. Historically, the sigmoid function has been a popular choice of activation function until recently. To compare our results with the original paper from 2009 by I-Cheng Yeh and Che-hui Lien \cite{origarticle}, we have chosen to use the sigmoid function in our implementation of the MLP, as it is likely the same function they used. The function is given by 
 \begin{equation}
 f(z) = \frac{1}{1+e^{-z}}\ .
 \end{equation}
 
-\textbf{SAY SOMETHING ABOUT OUTPUT ACTIVATION FUNCTION TOO}
-\subsubsection{Choosing cost function}
-Looking at the equations for backpropagation, it is clear that the chosen cost function $\mathcal{C}$ and the activation function $f(z)$ should be differentiable.  Additionally, the cost function should be chosen with the desired functionality in mind, i.e. the cost functions for regression and classification should be different. 
-For this project we have chosen to use the logistic loss as cost function, which is the negative log-likelihood,\begin{equation}
-\mathcal{C}(\theta) = -\log (P)
-\end{equation}
 
-\subsubsection{Initialising  the weights and biases}
+However, there are cases where we do not want a sigmoidal output activation function, such as for regression problems where the outputs should be from a continuous range instead of binary. Instead of a sigmoidal activation function for the regression case at output layer $l=L$, we implement a linear activation function, such that 
+\begin{equation}
+f(z_j^L)=z_j^L= \sum_{i=1}^{M_{L-1}} w_{ij}^L a_j^{L-1} + b_j^L.
+\end{equation}
+For our binary classification case, we keep the sigmoid function as the output activation function.
+\subsubsection{Choosing cost function}
+Looking at the equations for backpropagation, it is clear that the chosen cost function $\mathcal{C}$ and the activation function $f(z)$ should be differentiable.  Additionally, the cost function should be chosen with the desired functionality in mind, i.e. the cost functions for regression and classification should be different. 	
+For the classification part in this project we have chosen to use the logistic loss as cost function, which is the negative log-likelihood,
+\begin{align}
+\mathcal{C_\text{ NN}^\text{ C}}(\bm{W}) &= -\sum_{i=0}^{n-1} \left[\  a_i^l\log p\left(a_i^l|z_i^l,\ \bm{ W} \right) \right.  \\
+ 																					&      \left. + (1-a_i^l)\log \left(1-p(a_i^l|z_i^l,\ \bm{ W})\right)    \right],  \nonumber
+\end{align}
+with $a_i^l=f(z_i^l)$ being a function of the biases and weights, 
+
+For the regression part we will use
+\begin{equation}
+\mathcal{C}_\text{ NN}^\text{ R} = \frac{1}{2}\sum_{i=0}^{n-1}(t_i-y_i)^2,
+\end{equation}
+where $t_i$ is the target, $n$ is our number of targets and $y_i$ is the NN output. 
+
+\subsubsection{Initialising  the weights and biases}	
 The biases can be initialized to zero, but we have chosen an initial value of 0.01 to ensure that all of the neurons have some initial output. Initializing the weights to zero, however, will result in all neurons outputting the same value. Instead, the  weights are initialized with values drawn from a uniform distribution such that $w_{kj}\in (-1/\sqrt{n}, \ 1/\sqrt{n})$, where $n$ is the amount of nodes in the input layer,  to ensure uniform learning \cite{ML_algo}.
 
 \subsubsection{NUMBER OF LAYERS, YES? OR MAYBE EXPLAIN SOMEWHERE ELSE}
@@ -181,11 +196,11 @@ where $\bm{x},\ \bm{y}$ are vectors of uniformly spaced values from 0 and 1 of l
 	\caption{Table of the configurations for our generated data sets using Franke's function given in Equation (\ref{eq:Franke}) with added noise $\bm{\varepsilon} \sim N(0,\  \sigma^2) $. $n_x$ and $n_y$  indicate the number of points used to produce the grid in their respective directions. }
 	\label{tab:franke_dataset}
 	\resizebox{\columnwidth}{!}{
-	\begin{tabular}{|l|l|l|l|l|} \hline
+	\begin{tabular}{|l|l|l|l|c|} \hline
 	Data set &  Data points	&$n_x$ & $n_y$ & $\sigma$ \\ \hline
 	\texttt{franke0} & 400 & 20 & 20 & 1.0\\ \hline
-	\texttt{franke1	} & 400 & 20 & 20 & 0.1\\ \hline
-	\texttt{franke2} & 40 000& 200 & 200 & 0.1 \\ \hline
+	\texttt{franke1	} & 400 & 20 & 20 & 0.10\\ \hline
+	\texttt{franke2} & 40 000& 200 & 200 & 0.10 \\ \hline
 	\end{tabular}
 	}
 \end{table}
@@ -235,13 +250,18 @@ I = \begin{cases}
 \end{table}
 
 \begin{table}[H]
-	\caption{Table of R2 scores for our neural network regression models on the three Franke data sets. }
+	\caption{Table of R2 scores for our neural network (NN) regression models on the three Franke data sets and the ordinary least squares (OLS) model from our previous study \cite{regpaper}. }
 	\resizebox{\columnwidth}{!}{
- 	\begin{tabular}{|l|l|l|l|}
+ 	\begin{tabular}{|l|r|r|r|r|}
     \hline
- 	   Data set & \texttt{franke0} & \texttt{franke1} &	\texttt{franke2} \\	\hline
-    		Train R$^2$ & 0.01 & 0.59 & 0.84 \\ \hline
-    		Test R$^2$  & -0.06 & 0.59 & 0.83 \\ \hline
+ 	     {}                                       &$R^2$  & \texttt{franke0}  & \texttt{franke1} &	\texttt{franke2} \\	\hline
+    	 \multirow{2}{*}{NN}   &Train       & 0.0052  					& 0.59 					   & 0.84 \\ \cline{2-5}
+    		 									     & Test       & - 0.057 					& 0.59 					   & 0.83 \\ \hline
+    \multirow{2}{*}{OLS}   &Train       & 0.024  					& 0.87				       & N/A \\ \cline{2-5}
+    		 									     & Test       & - 0.040					& 0.82 					  & N/A\\ \hline
+    		 							
+    		 													 							
+    		 											
     	\end{tabular}
 	}
 \end{table}
@@ -249,17 +269,18 @@ I = \begin{cases}
 \begin{table}[H]
   \caption{Table of the best hyperparameters values for shrinkage $\lambda$ and learning rate $\eta$ for the logistic regression (LR) and neural network (NN) models. The parameters were found using 5-fold cross validation. 
    Found using 5-fold cross validation. The minibatch size was kept constant at $M=200$. }
+{\setlength{\extrarowheight}{2pt}
   	\resizebox{\columnwidth}{!}{
   \begin{tabular}{|l|l|l|}
     \hline
     Model & Shrinkage $\lambda$ & Learning rate $\eta$ \\ \hline
     LR credit data & N/A & $4.4 \cdot 10^{-4}$ \\ \hline
-    NN credit data & $6.9 \cdot 10^{-7}$ & $0.08$ \\ \hline
+    NN credit data & $6.9 \cdot 10^{-7}$ & $7.7 \cdot 10^{-2}$ \\ \hline
     NN \texttt{franke0} & $4.1\cdot 10^{-6}$ & $9.1\cdot 10^{-5}$ \\ \hline
     NN \texttt{franke1} & $6.4\cdot 10^{-8}$ & $1.5 \cdot 10^{-4}$\\ \hline
     NN \texttt{franke2} & $3.6\cdot 10^{-10}$ & $3.7 \cdot 10^{-4}$\\ \hline
   \end{tabular}
-  }
+  }}
 \end{table}
 
 \begin{figure}[H]
