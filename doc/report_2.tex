@@ -243,7 +243,7 @@ To calculate the optimal biases and weights for the problem, we initialize the
 gradients of the cost function $\mathcal{C}$ with respect to the  weights $W$
 and biases $b$ at the output  layer $l=L$ 	and the output error $\delta_L$ as
 \begin{flalign}
-&\frac{\partial  \mathcal{C}}{\partial w^L_{jk}} = \delta^L_j a_k^{L-1}, 
+&\frac{\partial  \mathcal{C}}{\partial w^L_{jk}} = \delta^L_j a_k^{L-1},
 \label{eq:dC/dw_L}\\
 &\frac{\partial  \mathcal{C}}{\partial b^L_j} = \delta^L_j,\\
 &\delta_j^L= f'(z_j^L)\frac{\partial \mathcal{C}}{\partial a_j^L},
@@ -251,7 +251,7 @@ and biases $b$ at the output  layer $l=L$ 	and the output error $\delta_L$ as
 \end{flalign}
 before propagating backwards through the hidden layers using the general equations
 \begin{flalign}
-&\frac{\partial  \mathcal{C}}{\partial w^l_{jk}} = \delta^l_j a_k^{l-1}, 
+&\frac{\partial  \mathcal{C}}{\partial w^l_{jk}} = \delta^l_j a_k^{l-1},
 \label{eq:dC/dw_l} \\
 &\frac{\partial  \mathcal{C}}{\partial b^l_j} = \delta^l_j,\\
 &\delta_j^l= \sum_k \delta_k^{l+1}w_{kj}^{l+1}f'(z_j^l). \label{eq:delta_j^ l}
@@ -299,7 +299,7 @@ activation function.
 \subsubsection{Choosing cost function}
 Looking at the equations for backpropagation, it is clear that the chosen cost
 function $\mathcal{C}$ should be differentiable as well.
-Additionally, the cost function should be chosen with the desired functionality 
+Additionally, the cost function should be chosen with the desired functionality
 in mind, i.e. the cost functions for regression and classification should be different.
 
 For the classification part of this project we have chosen to use the logistic
@@ -317,11 +317,11 @@ a_i^L-t_i, \label{eq:dC/da_NN^C}
 \end{align}
 where $t_i$ is the target.\\
 
-For the regression part we will use the cost function 
+For the regression part we will use the cost function
 \begin{equation}
 \mathcal{C}_\text{ NN}^\text{ R} = \frac{1}{2}\sum_{i=0}^{n-1}(t_i-a_i^l)^2.
 \end{equation}
-The gradient in the last layer is given by 
+The gradient in the last layer is given by
 \begin{equation}
 	\frac{\partial \mathcal{C}_\text{ NN}^\text{ R}}{\partial a_i^L}=t_i -a_i^L\ .
 	\label{eq:dC/da_NN^R}
@@ -336,8 +336,22 @@ Instead, the  weights are initialized with values drawn from a uniform distribut
 such that $w_{kj}\in (-1/\sqrt{n}, \ 1/\sqrt{n})$, where $n$ is the amount of
 nodes in the input layer,  to ensure uniform learning \cite{ML_algo}.
 
-\subsubsection{Regularisation}
-
+\subsubsection{Regularization}
+As neural networks often have large amounts of parameters, they are considered
+very high variance low bias estimators. This means they are very prone to
+overfitting. To counteract this, we introduce regularization using the $L_2$
+penalty on the weights similarily to Ridge regression. Mathematically, this means
+adding the regularized cost function becomes
+\begin{equation}
+  \mathcal{C}_{\text{Regularized}} = \mathcal{C}_\text{ NN}^{C/R} + \lambda ||\bm{W}||_2^2
+  \label{Regularized cost}
+\end{equation}
+and its derivative becomes
+\begin{equation}
+  \frac{ \partial C}  {\partial \bm{W}}_\text{Regularized}
+  = \frac{ \partial C_\text{ NN}^\text{ C/R}}  {\partial \bm{W}} + \lambda \bm{W}.
+\end{equation}
+Here $\lambda$ is a hyperparameter we need to tune.
 
 \subsection{Stochastic Gradient Descent (SGD)}
 \label{SGD}
@@ -367,8 +381,20 @@ minibatches of size $M$, we have a more efficient way to approximate the gradien
 of the total data set as it might not need to use the entire set. Additionally,
 the stochasticity reduces the possibility of getting stuck in a local minimum.
 
-\subsection{Choice of hyperparameters}
+\subsection{Choosing hyperparameters}
+Hyperparameters are not estimated when fitting a model, and therefore must be
+found by other means. A naive approach when you have few hyperparameters could
+be to find them manually by trial and failure. A slightly better approach is to
+grid over your hyperparameter space. This can be very computationally expensive,
+however. Studies indicate that a random search is preferable, as it is less
+systematic than a grid search, and therefore is statistically more likely to
+find better hyperparameters  \ref{bergstra2012random}. For each trial parameter,
+we evaluate the model on the training data, preferably either splitting some of
+the training data into validation data or using cross validation to avoid overfitting.
+The final best model is then evaluated using the test data.
 
+To perform the parameter search we use the RandomizedSearchCV class provided
+ by Scikit-Learn \ref{sklearn_api}. 
 
 \section{Model evaluation}
 \subsection{Regression}
@@ -435,7 +461,7 @@ I = \begin{cases}
     	 \multirow{2}{*}{NN}  &Train   & 0.0052  & 0.59 & 0.84 \\ \cline{2-5}
     		 				  &Test    & - 0.057 & 0.59 & 0.83 \\ \hline
     \multirow{2}{*}{OLS}      &Train   & 0.024   & 0.87	& N/A \\ \cline{2-5}
-    		 				  & Test   & - 0.040 & 0.82 & N/A\\ \hline	
+    		 				  & Test   & - 0.040 & 0.82 & N/A\\ \hline
     	\end{tabular}
 	}
 \end{table}
