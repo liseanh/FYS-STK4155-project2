@@ -164,13 +164,16 @@ To calculate the optimal biases and weights for the problem, we initialize the
 gradients of the cost function $\mathcal{C}$ with respect to the  weights $W$
 and biases $b$ at the output  layer $l=L$ 	and the output error $\delta_L$ as
 \begin{flalign}
-&\frac{\partial  \mathcal{C}}{\partial w^L_{jk}} = \delta^L_j a_k^{L-1}, \\
+&\frac{\partial  \mathcal{C}}{\partial w^L_{jk}} = \delta^L_j a_k^{L-1},
+\label{eq:dC/dw_L}\\
 &\frac{\partial  \mathcal{C}}{\partial b^L_j} = \delta^L_j,\\
 &\delta_j^L= f'(z_j^L)\frac{\partial \mathcal{C}}{\partial a_j^L},
+\label{eq:delta_j^L}
 \end{flalign}
 before propagating backwards through the hidden layers using the general equations
 \begin{flalign}
-&\frac{\partial  \mathcal{C}}{\partial w^l_{jk}} = \delta^l_j a_k^{l-1}, \\
+&\frac{\partial  \mathcal{C}}{\partial w^l_{jk}} = \delta^l_j a_k^{l-1},
+\label{eq:dC/dw_l} \\
 &\frac{\partial  \mathcal{C}}{\partial b^l_j} = \delta^l_j,\\
 &\delta_j^l= \sum_k \delta_k^{l+1}w_{kj}^{l+1}f'(z_j^l). \label{eq:delta_j^ l}
 \end{flalign}
@@ -228,20 +231,25 @@ loss as cost function, which is the negative log-likelihood,
 &   \left. + (1-a_i^l)\log \left(1-p(a_i^l|z_i^l,\ \bm{ W,\ b} )\right) \right],
 \nonumber
 \end{align}
-with $a_i^l=f(z_i^l)$ as before. The gradient is
+with $a_i^l=f(z_i^l)$ as before. The gradient at the last layer is
 \begin{align}
-\frac{ \partial C_\text{ NN}^\text{ C}}  {\partial a_i^l} =
-a_i^l-t_i,
+\frac{ \partial C_\text{ NN}^\text{ C}}  {\partial a_i^L} =
+a_i^L-t_i, \label{eq:dC/da_NN^C}
 \end{align}
 where $t_i$ is the target.\\
 
-For the regression part we will use
+For the regression part we will use the cost function
 \begin{equation}
-\mathcal{C}_\text{ NN}^\text{ R} = \frac{1}{2}\sum_{i=0}^{n-1}(t_i-y_i)^2,
+\mathcal{C}_\text{ NN}^\text{ R} = \frac{1}{2}\sum_{i=0}^{n-1}(t_i-a_i^l)^2.
 \end{equation}
-where $t_i$ is the target, $n$ is our number of targets and $y_i$ is the NN output.
+The gradient in the last layer is given by
+\begin{equation}
+	\frac{\partial \mathcal{C}_\text{ NN}^\text{ R}}{\partial a_i^L}=t_i -a_i^L\ .
+	\label{eq:dC/da_NN^R}
+\end{equation}
 
-\subsubsection{Initializing the weights and biases}
+The gradients in Equation (\ref{eq:dC/da_NN^C}) and (\ref{eq:dC/da_NN^R}) can then be inserted into Equation (\ref{eq:delta_j^ l}) in the backpropagation algorithm.
+\subsubsection{Initialising  the weights and biases}
 The biases can be initialized to zero, but we have chosen an initial value of 0.01
 to ensure that all of the neurons have some initial output. Initializing the
 weights to zero, however, will result in all neurons outputting the same value.
@@ -425,14 +433,11 @@ I = \begin{cases}
 	\resizebox{\columnwidth}{!}{
  	\begin{tabular}{|l|r|r|r|r|}
     \hline
- 	     {}                                       &$R^2$  & \texttt{franke0}  & \texttt{franke1} &	\texttt{franke2} \\	\hline
-    	 \multirow{2}{*}{NN}   &Train       & 0.0052  					& 0.59 					   & 0.84 \\ \cline{2-5}
-    		 									     & Test       & - 0.057 					& 0.59 					   & 0.83 \\ \hline
-    \multirow{2}{*}{OLS}   &Train       & 0.024  					& 0.87				       & N/A \\ \cline{2-5}
-    		 									     & Test       & - 0.040					& 0.82 					  & N/A\\ \hline
-
-
-
+ 	     {} &$R^2$  & \texttt{franke0} & \texttt{franke1} &	\texttt{franke2} \\	\hline
+    	 \multirow{2}{*}{NN}  &Train   & 0.0052  & 0.59 & 0.84 \\ \cline{2-5}
+    		 				  &Test    & - 0.057 & 0.59 & 0.83 \\ \hline
+    \multirow{2}{*}{OLS}      &Train   & 0.024   & 0.87	& N/A \\ \cline{2-5}
+    		 				  & Test   & - 0.040 & 0.82 & N/A\\ \hline
     	\end{tabular}
 	}
 \end{table}
