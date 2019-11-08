@@ -303,7 +303,19 @@ of the total data set as it might not need to use the entire set. Additionally,
 the stochasticity reduces the possibility of getting stuck in a local minimum.
 
 \subsection{Choosing hyperparameters}
-Hyperparameters have to be found via trial and error. 
+Hyperparameters are not estimated when fitting a model, and therefore must be
+found by other means. A naive approach when you have few hyperparameters could
+be to find them manually by trial and failure. A slightly better approach is to
+grid over your hyperparameter space. This can be very computationally expensive,
+however. Studies indicate that a random search is preferable, as it is less
+systematic than a grid search, and therefore is statistically more likely to
+find better hyperparameters  \ref{bergstra2012random}. For each trial parameter,
+we evaluate the model on the training data, preferably either splitting some of
+the training data into validation data or using cross validation to avoid overfitting.
+The final best model is then evaluated using the test data.
+
+To perform the parameter search we use the RandomizedSearchCV class provided
+ by Scikit-Learn \ref{sklearn_api}. 
 
 \section{Data}
 \subsection{Classification - Credit card client data}
