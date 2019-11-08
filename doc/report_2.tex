@@ -217,7 +217,7 @@ activation function.
 \subsubsection{Choosing cost function}
 Looking at the equations for backpropagation, it is clear that the chosen cost
 function $\mathcal{C}$ should be differentiable as well.
-Additionally, the cost function should be chosen with the desired functionality 
+Additionally, the cost function should be chosen with the desired functionality
 in mind, i.e. the cost functions for regression and classification should be different.
 
 For the classification part of this project we have chosen to use the logistic
@@ -241,7 +241,7 @@ For the regression part we will use
 \end{equation}
 where $t_i$ is the target, $n$ is our number of targets and $y_i$ is the NN output.
 
-\subsubsection{Initialising  the weights and biases}
+\subsubsection{Initializing the weights and biases}
 The biases can be initialized to zero, but we have chosen an initial value of 0.01
 to ensure that all of the neurons have some initial output. Initializing the
 weights to zero, however, will result in all neurons outputting the same value.
@@ -249,8 +249,22 @@ Instead, the  weights are initialized with values drawn from a uniform distribut
 such that $w_{kj}\in (-1/\sqrt{n}, \ 1/\sqrt{n})$, where $n$ is the amount of
 nodes in the input layer,  to ensure uniform learning \cite{ML_algo}.
 
-\subsubsection{Regularisation}
-
+\subsubsection{Regularization}
+As neural networks often have large amounts of parameters, they are considered
+very high variance low bias estimators. This means they are very prone to
+overfitting. To counteract this, we introduce regularization using the $L_2$
+penalty on the weights similarily to Ridge regression. Mathematically, this means
+adding the regularized cost function becomes
+\begin{equation}
+  \mathcal{C}_{\text{Regularized}} = \mathcal{C}_\text{ NN}^{C/R} + \lambda ||\bm{W}||_2^2
+  \label{Regularized cost}
+\end{equation}
+and its derivative becomes
+\begin{equation}
+  \frac{ \partial C}  {\partial \bm{W}}_\text{Regularized}
+  = \frac{ \partial C_\text{ NN}^\text{ C/R}}  {\partial \bm{W}} + \lambda \bm{W}.
+\end{equation}
+Here $\lambda$ is a hyperparameter we need to tune.
 
 \subsection{Stochastic Gradient Descent (SGD)}
 \label{SGD}
@@ -280,8 +294,8 @@ minibatches of size $M$, we have a more efficient way to approximate the gradien
 of the total data set as it might not need to use the entire set. Additionally,
 the stochasticity reduces the possibility of getting stuck in a local minimum.
 
-\subsection{Choice of hyperparameters}
-
+\subsection{Choosing hyperparameters}
+Hyperparameters have to be found via trial and error. 
 
 \section{Data}
 \subsection{Classification - Credit card client data}
