@@ -111,7 +111,8 @@ To generate the points, we grid over $n_x$ points in $x$-direction and $n_y$ poi
 in $y$-direction.
 For comparison we will look at the results from our previous regression of
 Franke's function using Ordinary Least Squares, which was the best model in our
-previous project and compare the $R^2$ score.
+previous project and compare the $R^2$ score. We only have results from OLS on
+\texttt{franke0} and \text{franke1}, however.
 
 
 \begin{table}[H]
@@ -471,15 +472,18 @@ I = \begin{cases}
 0, & t_i \neq y_i
 \end{cases} .
 \]
+The error rate used in the original article \cite{origarticle} is then defined as
+$1 - accuracy$.
+
 For the data used in this project, this is not a very good metric however. This is
 because even a model that predicts 0 for all cases would get an accuracy score of
 nearly 0.8. The need for a better model evaluation is clear, and we employ the same
-technique as in the article used for comparison: The area ratio. This is the area
-between the baseline and our model in a cumulative gains plot divided by the area
-between the theoretically best model and the baseline. To generate cumulative gains
-plots, we used the Python library \texttt{Scikit-Plot}'s function
-\texttt{plot_cumulative_gain}. How these plots are interpreted is explained 
-in the Discussion section.
+technique as in the article used for comparison: the area ratio \cite{origarticle}.
+This is the area between the baseline and our model in a cumulative gains plot
+divided by the area between the theoretically best model and the baseline.
+To generate cumulative gains plots, we used the Python library
+\texttt{Scikit-Plot}'s function \texttt{plot\_cumulative\_gain}. How these plots
+are interpreted is explained in the Discussion section.
 \section{Results}
 
 \begin{figure}[H]
