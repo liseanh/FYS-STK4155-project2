@@ -403,13 +403,14 @@ Neural networks have very many hyperparameters. The amount of layers, nodes in e
 layer, batch size, learning rate and penalization should all ideally be tested.
 As with LR, we have chosen to use a constant batch size of 200. For the layers
 and nodes, we have chosen to limit ourself to two hidden layers with many nodes,
-as that is suitable for very many types of data \cite{ML_algo}. Our first hidden layer has 100
-nodes, the second has 50. This leaves learning rate and the regularization parameter
-which are found using randomized search.
+as that is suitable for very many types of data \cite{ML_algo}. Our first hidden
+layer has 100 nodes, the second has 50. This leaves the learning rate and
+the regularization parameter which are found using randomized search.
 
-To perform the parameter search we use the RandomizedSearchCV class provided
-by Scikit-Learn \ref{sklearn_api} on hundred samples, with 5-fold cross validation
-to evaluate each sample's accuracy score.
+To perform the parameter search we use the \texttt{RandomizedSearchCV} class provided
+by \texttt{Scikit-Learn} \cite{sklearn_api} on hundred samples of hyperparameters,
+with 5-fold cross validation to evaluate each sample. Our evaluation methods are
+explained in the next section.
 
 \section{Model evaluation}
 \subsection{Regression}
@@ -423,6 +424,7 @@ given by
 where $\bm{y}$ is the given data, $\bm{\hat{y}}$ is the model and ${\bar{y}}$ is
 the mean value of $\bm{y}$.
 \subsection{Classification}
+\label{Classification}
 To evaluate the performance of our classification model, we consider the accuracy
 score, given by
 \begin{equation}
