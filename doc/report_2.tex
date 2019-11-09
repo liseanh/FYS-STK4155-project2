@@ -109,8 +109,11 @@ project, \textit{Project 1: Regression analysis and resampling methods}
 \texttt{franke1}, \texttt{franke2} as configured in Table \ref{tab:franke_dataset}.
 To generate the points, we grid over $n_x$ points in $x$-direction and $n_y$ points
 in $y$-direction.
-\textbf{WE NEED TO TALK MORE ABOUT OUR PREVIOUS ANALYSIS AND WHAT KIND OF METHODS
-AND PARAMETERS WE USED }
+For comparison we will look at the results from our previous regression of
+Franke's function using Ordinary Least Squares, which was the best model in our
+previous project and compare the $R^2$ score. We only have results from OLS on
+\texttt{franke0} and \text{franke1}, however.
+
 
 \begin{table}[H]
 	\caption{Table of the configurations for our generated data sets using
@@ -129,46 +132,46 @@ AND PARAMETERS WE USED }
 \end{table}
 
 \subsection{Preprocessing}
-As the Franke data set is simulated, it does not require as much preprocessing as 
-the real-life credit card data set does. Additionally, the credit card data set 
-contains both categorical and continuous variables, whereas the Franke data set 
-only contains continuous variables. Due to this, we will start by discussing the 
-inital steps in the preprocessing of the credit card data. 
+As the Franke data set is simulated, it does not require as much preprocessing as
+the real-life credit card data set does. Additionally, the credit card data set
+contains both categorical and continuous variables, whereas the Franke data set
+only contains continuous variables. Due to this, we will start by discussing the
+inital steps in the preprocessing of the credit card data.
 
-We first removed feature outliers in the credit data set by looking at the supposed 
-discrete values of $X2-X4$ and $X6-X11$. However, though in the original paper 
-they stated that $X6-X11$ $\in\{-1,\ 1,\ 2,\ 3,\dots,\ 9\}$, the majority of 
-the samples contained the values 0 and 2, which were undefined. Removing these 
-would have reduced the data set down to only approximately four thousand data 
-points, so we have opted to keep them in our analysis as unexplained variables 
-and ended up with a data set of 29603 points, 6606 of which were default payments.  
+We first removed feature outliers in the credit data set by looking at the supposed
+discrete values of $X2-X4$ and $X6-X11$. However, though in the original paper
+they stated that $X6-X11$ $\in\{-1,\ 1,\ 2,\ 3,\dots,\ 9\}$, the majority of
+the samples contained the values 0 and 2, which were undefined. Removing these
+would have reduced the data set down to only approximately four thousand data
+points, so we have opted to keep them in our analysis as unexplained variables
+and ended up with a data set of 29603 points, 6606 of which were default payments.
 
-To ensure that the categorical variables $X2$-$X4$ in the credit card set were 
-considered equal by the classifiers, we incorporated the use of dummy variables 
-and one-hot encoded the variables. 
+To ensure that the categorical variables $X2$-$X4$ in the credit card set were
+considered equal by the classifiers, we incorporated the use of dummy variables
+and one-hot encoded the variables.
 
-We use \texttt{Scikit-learn's}\cite{sklearn_api} library to split both data sets 
-into test and training sets, and to scale and center the data. 
-For both data sets we used $1/3$rd of the total data as testing data 
+We use \texttt{Scikit-learn's}\cite{sklearn_api} library to split both data sets
+into test and training sets, and to scale and center the data.
+For both data sets we used $1/3$rd of the total data as testing data
 and the remaining $2/3$rds as training. To center the data, the means of the
-continuous variables in the training set were subtracted from both the training 
-and the test sets. Each continuous variable in the training and test sets was 
-scaled with respect to its standard deviation in the training set. 
+continuous variables in the training set were subtracted from both the training
+and the test sets. Each continuous variable in the training and test sets was
+scaled with respect to its standard deviation in the training set.
 
-Before scaling the credit card data set, we first opted to upsample the number of 
+Before scaling the credit card data set, we first opted to upsample the number of
 default payment samples in the training set by using \resizebox{!}{6.38pt}{\texttt{imblearn.over\_sampling.RandomOverSampler}}
-from the library \texttt{imbalanced-learn}, which randomly duplicates the default 
-payment samples, until there was an equal amount of default payment samples as 
-non-default samples. This was done to improve the model prediction. Note that we 
-did not upsample the amount of defaults in the test set. 
+from the library \texttt{imbalanced-learn}, which randomly duplicates the default
+payment samples, until there was an equal amount of default payment samples as
+non-default samples. This was done to improve the model prediction. Note that we
+did not upsample the amount of defaults in the test set.
 
 
 \section{Learning methods}
 \subsection{Logistic Regression (LR)}
 Logistic regression (LR)  is a statistical model that can be used to predict a
-binary dependent variable, which in our project will be one of the methods used 
-for binary classification of the credit card default/non-default payments. LR 
-outputs the probability of a sample to be in either 1 (default) or non-default (0), 
+binary dependent variable, which in our project will be one of the methods used
+for binary classification of the credit card default/non-default payments. LR
+outputs the probability of a sample to be in either 1 (default) or non-default (0),
 with the probability being given by the logit (Sigmoid) function, such that
 \begin{align}
 p(y=1 | \bm{X}, \bm{\beta}) &= \frac{1}{1 + e^{-\bm{X} \bm{\beta}}} =
@@ -177,24 +180,23 @@ p(y\neq1 | \bm{X}, \bm{\beta}) &= 1 - p(y=1 | \bm{X}, \bm{\beta})\ .
 \label{eq:LR_probability}
 \end{align}
 Here $\bm{X}$ is the feature matrix, and $\bm{\beta}$ is a vector containing the weights
-assigned to each feature in $X$. It is useful to use another cost function than 
-the mean squared error, as the output from our logistic regression is defined as 
-$\hat{y}=p(X)\in [0, 1]$, where we say that outcome 0 is predicted if 
-$\hat{y}< 0.5$ and outcome 1 else. The cost function most commonly used in this 
-case is called the cross entropy, given by
-defined as
+assigned to each feature in $\bm{X}$.  The cost function most commonly used in this
+case is called the cross entropy, which is the negative log-likelihood of a prediction
+being in the dataset and is given by
 \begin{align}
 \mathcal{C_\text{ LR}}(\bm{\beta}) =& -\sum_{i=0}^{n-1} \left[\  y_i\log p(y_i|x_i, \bm{\beta}) \right. \nonumber\\
  &\left.+ (1-y_i)\log(1-p(y_i|x_i,\bm{\beta})    \right]
 \end{align}
-We have chosen the cross entropy as our cost function as we are only going to use 
-LR for binary classification. 
 
-To optimize the cost function, we find the optimal weights $\bm{\beta}$ by 
-solving $\text{argmin}_{\bm{\beta}}$. Similarly to for LASSO regression, which 
-we used in our previous project, this has no analytical solution and must be 
-estimated using numerical methods, e.g. gradient descent \cite{regpaper}. This 
+
+To optimize the cost function, we find the optimal weights $\bm{\beta}$ by
+solving $\text{argmin}_{\bm{\beta}}$. Similarly to for LASSO regression, which
+we used in our previous project, this has no analytical solution and must be
+estimated using numerical methods, e.g. gradient descent \cite{regpaper}. This
 along with its stochastic sibling is described in section \ref{SGD}.
+
+When using the model for prediction, $\hat{y}=p(X)\in [0, 1]$, where we say
+that outcome 0 is predicted if $\hat{y}< 0.5$ and outcome 1 else.
 
 In this project we will use LR on the Taiwanese credit card data to try to predict
 default ($y=1$) or non-default ($y=0$) payment and evaluate the model's predictive
@@ -388,17 +390,19 @@ It is clear that in order to find the best possible fit, we need to optimize the
 cost function $\mathcal{C}$ by finding its minimum. A common method to achieve
 this is the gradient descent (GD) method, in which the parameters $\theta$ are
 iteratively adjusted in the direction of the largest negative value of the
-gradient for a given number of iterations or until it reaches a given tolerance.
+gradient for a given number of epochs or until it reaches a given tolerance.
 Mathematically, this is expressed as
 \begin{equation}
 \theta_{i+1} = \theta_i -\eta \nabla \mathcal{C}(\theta_i),
 \end{equation}
 where $\eta$ is the learning rate, which is a hyperparameter that controls the
 step length and by extension the convergence time. For smaller values of $\eta$,
-the method will take longer to converge or might not converge at all within a
-desired time frame. For larger values of $\eta$, the method might be unstable or
+the method will take longer to converge or might not converge at all within the
+maximum number of epochs. For larger values of $\eta$, the method might be unstable or
 pass the minimum altogether and diverge. The parameter $\theta$ is $\beta$ in
 the LR case, and the weights $W$ and biases $b$ in the MLP case.
+Our definition of convergence is when the cost function does not change by more
+than a factor 0.01 for ten epochs.
 
 However, calculating the gradient on the entire data set can be computationally
 expensive and inefficient for large amounts of data. Additionally, there is a high
@@ -414,10 +418,10 @@ the stochasticity reduces the possibility of getting stuck in a local minimum.
 Hyperparameters are not estimated when fitting a model, and must instead be
 found by other means. A naive approach when you have few hyperparameters could
 be to find them manually by trial and error. A slightly better approach is to
-grid over your hyperparameter space. However, this can be very computationally 
+grid over your hyperparameter space. However, this can be very computationally
 expensive. Studies indicate that a random search is preferable, as it is less
-systematic than a grid search, and thus more statistically likely to find better 
-hyperparameters  \cite{bergstra2012random}. For each trial parameter, we evaluate 
+systematic than a grid search, and thus more statistically likely to find better
+hyperparameters  \cite{bergstra2012random}. For each trial parameter, one evaluates
 the model on the training data, preferably either splitting some of
 the training data into validation data or using cross validation to avoid overfitting.
 The final best model is then evaluated using the test data.
@@ -431,15 +435,18 @@ The learning rate is found using a randomized search with cross validation.
 Neural networks contain many hyperparameters. The amount of layers, nodes in each
 layer, batch size, learning rate and penalization should all ideally be tested.
 As with LR, we have chosen to use a constant batch size of 200. For the layers
-and nodes, we have chosen to limit ourself to two hidden layers with many nodes,
-as that is suitable for very many types of data \cite{ML_algo}. Our first hidden
-layer has 100 nodes, the second has 50. This leaves the learning rate and
+and nodes, we have chosen to limit ourself to two hidden layers with many nodes.
+A neural network with a single hidden layer with a large amount of nodes is already
+sufficient enough to be considered a universal approximator. With two hidden layers,
+the amount of nodes needed is reduced \cite{ML_algo}, making a two hidden layer
+neural network sufficient for most cases. For both datasets analyzed, our first
+hidden layer has 100 nodes, the second has 50. This leaves the learning rate and
 the regularization parameter which are found using randomized search.
 
 To perform the parameter search we use the \texttt{RandomizedSearchCV} class provided
 by \texttt{Scikit-Learn} \cite{sklearn_api} on 100 samples of hyperparameters,
-with 5-fold cross validation to evaluate each sample. Our evaluation methods are
-explained in the next section.
+with 5-fold cross validation to evaluate each sample. The maximum number of epochs
+is set to 300 for all models. Our evaluation methods are explained in the next section.
 
 \section{Model evaluation}
 \subsection{Regression}
@@ -468,7 +475,18 @@ I = \begin{cases}
 0, & t_i \neq y_i
 \end{cases} .
 \]
+The error rate used in the original article \cite{origarticle} is then defined as
+$1 - accuracy$.
 
+For the data used in this project, this is not a very good metric however. This is
+because even a model that predicts 0 for all cases would get an accuracy score of
+nearly 0.8. The need for a better model evaluation is clear, and we employ the same
+technique as in the article used for comparison: the area ratio \cite{origarticle}.
+This is the area between the baseline and our model in a cumulative gains plot
+divided by the area between the theoretically best model and the baseline.
+To generate cumulative gains plots, we used the Python library
+\texttt{Scikit-Plot}'s function \texttt{plot\_cumulative\_gain}. How these plots
+are interpreted is explained in the Discussion section.
 \section{Results}
 Figure \ref{fig:logreg_eta_accuracy} shows the accuracy score for LR on the credit 
 card training and validation data set for 100 different values of the learning 
@@ -606,19 +624,25 @@ results have been modelled using these values.
 \end{table}
 
 
+\begin{figure}[H]
+	\includegraphics[scale=1]{figures/cumulative_gain_logreg.pdf}
+	\caption{Cumulative gains plot for LR fit on the credit card data.
+  The closer a curve is to the "best model" curve, the better the model is at
+  predicting that given outcome. Our model is much better at predicting default
+  than non-default.}
+	\label{fig:logreg_gain}
+\end{figure}
 
 
 \begin{figure}[H]
 	\includegraphics[scale=1]{figures/cumulative_gain_NN.pdf}
-	\caption{idk yet}
+	\caption{Cumulative gains plot for LR fit on the credit card data.
+  The closer a curve is to the "best model" curve, the better the model is at
+  predicting that given outcome. Our model is much better at predicting default
+  than non-default.}
 	\label{fig:nn_gain}
 \end{figure}
 
-\begin{figure}[H]
-	\includegraphics[scale=1]{figures/cumulative_gain_logreg.pdf}
-	\caption{idk yet}
-	\label{fig:logreg_gain}
-\end{figure}
 
 
 \begin{figure*}
