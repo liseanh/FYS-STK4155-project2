@@ -171,11 +171,12 @@ for binary classification of the credit card default/non-default payments. LR
 outputs the probability of a sample to be in either 1 (default) or non-default (0), 
 with the probability being given by the logit (Sigmoid) function, such that
 \begin{align}
-p(y=1 | X, \bm{\beta}) &= \frac{1}{1 + e^{-X \beta}} =\frac{e^{X \beta}}{e^{X \beta}+1},\\
-p(y\neq1 | X, \bm{\beta}) &= 1 - p(y=1 | X, \bm{\beta})\ .
+p(y=1 | \bm{X}, \bm{\beta}) &= \frac{1}{1 + e^{-\bm{X} \bm{\beta}}} =
+\frac{e^{\bm{X} \bm{\beta}}}{e^{\bm{X} \bm{\beta}}+1},\\
+p(y\neq1 | \bm{X}, \bm{\beta}) &= 1 - p(y=1 | \bm{X}, \bm{\beta})\ .
 \label{eq:LR_probability}
 \end{align}
-Here $X$ is the feature matrix, and $\beta$ is a vector containing the weights
+Here $\bm{X}$ is the feature matrix, and $\bm{\beta}$ is a vector containing the weights
 assigned to each feature in $X$. It is useful to use another cost function than 
 the mean squared error, as the output from our logistic regression is defined as 
 $\hat{y}=p(X)\in [0, 1]$, where we say that outcome 0 is predicted if 
@@ -469,14 +470,104 @@ I = \begin{cases}
 \]
 
 \section{Results}
+Figure \ref{fig:logreg_eta_accuracy} shows the accuracy score for LR on the credit 
+card training and validation data set for 100 different values of the learning 
+rate $\eta$ found using randomized search. Looking at the figure, we observe 
+that the accuracy  score drops significantly for learning rates at the higher 
+and lower values of the range. The learning rate value that maximizes the 
+accuracy score is considered the best value and is shown in Table 
+\ref{tab:hyperparameters}. 
 
 \begin{figure}[H]
 	\includegraphics[scale=1]{figures/logreg_learning_rate_accuracy.pdf}
-	\caption{Accuracy score of validation set of the credit card data using the
-	logistic regression classifier. The values of the shrinkage parameter
-	$\lambda$ were chosen using randomized search.}
+	\caption{Accuracy score of validation set of the credit data using  logistic
+	regression for various values of the shrinkage parameter 
+	chosen using randomized search.}
 	\label{fig:logreg_eta_accuracy}
 \end{figure}
+
+Similarly, Figure \ref{fig:nn_eta_lambda_credit_accuracy} shows the accuracy 
+score for the MLP classifier used on the credit card data set for 100 different 
+combinations of values for the learning rate $\eta$ and the shrinkage parameter 
+$\lambda$ configured using random search. The figure shows that most of the 
+combinations of our learning and shrinkage parameters in our chosen range give 
+an accuracy score between approximately 0.65-0.70, with the exception of a few 
+outliers. Generally, it seems like accuracy scores improve with smaller learning 
+rates within our chosen range. The effect of the choice of shrinkage parameter 
+is not as conclusive, although it seems like the score is lower when the 
+shrinkage parameter is of orders larger than $10^{-2}$. The combination of 
+learning rate and shrinkage parameter that gives the highest accuracy score is 
+considered the most optimal of our combinations, and is also shown in Table 
+\ref{tab:hyperparameters}. 
+
+
+\begin{figure}[H]
+	\includegraphics[scale=1]{figures/nn_learning_rate_lambda_accuracy_credit.pdf}
+	\caption{Accuracy score of validation set of the credit card data using the
+	multilayer perceptron classifier on the credit card data for various shrinkage 
+	parameters and learning rates chosen using randomized search.}
+	\label{fig:nn_eta_lambda_credit_accuracy}
+\end{figure}
+
+Figure \ref{fig:nn_eta_lambda_r2_400_1.0}, \ref{fig:nn_eta_lambda_r2_400_0.1} and 
+\ref{fig:nn_eta_lambda_r2_40000_0.1} show the validation $R^2$ scores for the MLP regressor on the \texttt{franke0}, \texttt{franke1} and \texttt{franke2} data 
+sets.  
+
+
+\begin{figure}[H]
+	\includegraphics[scale=1]{{figures/nn_learning_rate_lambda_r2_franke_20_20_1.0}.pdf}
+	\caption{$R^2$ score of validation set on the \texttt{franke0} data set using 
+	the multilayer perceptron regressor for various shrinkage parameters and 
+	learning rates chosen using randomized search.}
+	\label{fig:nn_eta_lambda_r2_400_1.0}
+\end{figure}
+
+
+\begin{figure}[H]
+	\includegraphics[scale=1]{{figures/nn_learning_rate_lambda_r2_franke_20_20_0.1}.pdf}
+	\caption{$R^2$ score of validation set on the \texttt{franke1} data set using 
+	the multilayer perceptron regressor for various shrinkage parameters and 
+	learning rates chosen using randomized search.}
+	\label{fig:nn_eta_lambda_r2_400_0.1}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[scale=1]{{figures/nn_learning_rate_lambda_r2_franke_200_200_0.1}.pdf}
+	\caption{$R^2$ score of validation set on the \texttt{franke2} data set using 
+	the multilayer perceptron regressor for various shrinkage parameters and 
+	learning rates chosen using randomized search.}
+	\label{fig:nn_eta_lambda_r2_40000_0.1}
+\end{figure}
+
+
+Table \ref{tab:hyperparameters} shows the optimal hyperparameter values we found 
+for the learning rate $\eta$ for both LR and the MLP for both classification and 
+regression, as well as the shrinkage parameter $\lambda$ for the MLP. All the 
+results have been modelled using these values. 
+\begin{table}[H]
+	\caption{Table of the best hyperparameters values for shrinkage $\lambda$ and
+	learning rate $\eta$ for the logistic regression (LR) and neural network (NN)
+	models. The parameters were found using 5-fold cross validation. The minibatch
+	size was kept constant at $M=200$. }
+	\label{tab:hyperparameters}
+  {\setlength{\extrarowheight}{2pt}
+		\resizebox{\columnwidth}{!}{
+	\begin{tabular}{|l|l|l|}
+	  \hline
+	  Model & Shrinkage $\lambda$ & Learning rate $\eta$ \\ \hline
+	  LR credit data & N/A & $4.4 \cdot 10^{-4}$ \\ \hline
+	  NN credit data & $6.9 \cdot 10^{-7}$ & $7.7 \cdot 10^{-2}$ \\ \hline
+	  NN \texttt{franke0} & $4.1\cdot 10^{-6}$ & $9.1\cdot 10^{-5}$ \\ \hline
+	  NN \texttt{franke1} & $6.4\cdot 10^{-8}$ & $1.5 \cdot 10^{-4}$\\ \hline
+	  NN \texttt{franke2} & $3.6\cdot 10^{-10}$ & $3.7 \cdot 10^{-4}$\\ \hline
+	\end{tabular}
+	}}
+  \end{table}
+
+
+
+\subsection{Classification}
+
 
 
 \begin{table}[H]
@@ -493,6 +584,9 @@ I = \begin{cases}
     	\end{tabular}
 	}
 \end{table}
+
+\subsection{Regression}
+
 
 \begin{table}[H]
 	\caption{Table of R2 scores for our neural network (NN) regression models on
@@ -511,33 +605,6 @@ I = \begin{cases}
 	}
 \end{table}
 
-\begin{table}[H]
-  \caption{Table of the best hyperparameters values for shrinkage $\lambda$ and
-  learning rate $\eta$ for the logistic regression (LR) and neural network (NN)
-  models. The parameters were found using 5-fold cross validation. The minibatch
-  size was kept constant at $M=200$. }
-  \label{tab:hyperparameters}
-{\setlength{\extrarowheight}{2pt}
-  	\resizebox{\columnwidth}{!}{
-  \begin{tabular}{|l|l|l|}
-    \hline
-    Model & Shrinkage $\lambda$ & Learning rate $\eta$ \\ \hline
-    LR credit data & N/A & $4.4 \cdot 10^{-4}$ \\ \hline
-    NN credit data & $6.9 \cdot 10^{-7}$ & $7.7 \cdot 10^{-2}$ \\ \hline
-    NN \texttt{franke0} & $4.1\cdot 10^{-6}$ & $9.1\cdot 10^{-5}$ \\ \hline
-    NN \texttt{franke1} & $6.4\cdot 10^{-8}$ & $1.5 \cdot 10^{-4}$\\ \hline
-    NN \texttt{franke2} & $3.6\cdot 10^{-10}$ & $3.7 \cdot 10^{-4}$\\ \hline
-  \end{tabular}
-  }}
-\end{table}
-
-\begin{figure}[H]
-	\includegraphics[scale=1]{figures/nn_learning_rate_lambda_accuracy_credit.pdf}
-	\caption{Accuracy score of validation set of the credit card data using the
-	multilayer perceptron classifier. The values of the shrinkage parameter
-	$\lambda$ and the learning rate $\eta$ were chosen using randomized search.}
-	\label{fig:nn_eta_lambda_credit_accuracy}
-\end{figure}
 
 
 
@@ -553,35 +620,6 @@ I = \begin{cases}
 	\label{fig:logreg_gain}
 \end{figure}
 
-
-\begin{figure}[H]
-	\includegraphics[scale=1]{{figures/nn_learning_rate_lambda_r2_franke_20_20_1.0}.pdf}
-	\caption{$R^2$ score of validation set of the Franke function data set with
-	400 total points $n_x=n_y=20,\ \sigma=1.0$ using the multilayer perceptron
-	regressor. The values of the shrinkage parameter $\lambda$ and the learning
-	rate $\eta$ were chosen using randomized grid search.}
-	\label{fig:nn_eta_lambda_r2_400_1.0}
-\end{figure}
-
-
-\begin{figure}[H]
-	\includegraphics[scale=1]{{figures/nn_learning_rate_lambda_r2_franke_20_20_0.1}.pdf}
-	\caption{$R^2$ score of validation set of the Franke function data set with
-	400 total points, $n_x=n_y=20,\ \sigma=0.1 $ using the multilayer perceptron
-	regressor. The values of the shrinkage parameter $\lambda$ and the learning
-	rate $\eta$ were chosen using randomized grid search.}
-	\label{fig:nn_eta_lambda_r2_400_0.1}
-\end{figure}
-
-
-\begin{figure}[H]
-	\includegraphics[scale=1]{{figures/nn_learning_rate_lambda_r2_franke_200_200_0.1}.pdf}
-	\caption{$R^2$ score of validation set of Franke function data with 40 000
-	total points, $n_x=n_y=200,\ \sigma=0.1 $ using the multilayer perceptron
-	regressor. The values of the shrinkage parameter $\lambda$ and the learning
-	rate $\eta$ were chosen using randomized grid search.}
-	\label{fig:nn_eta_lambda_r2_40000_0.1}
-\end{figure}
 
 \begin{figure*}
 	\includegraphics[width=\columnwidth]{{figures/3dplot_train_20_20_1.0}.pdf}
