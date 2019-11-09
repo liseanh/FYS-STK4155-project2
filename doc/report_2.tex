@@ -109,8 +109,10 @@ project, \textit{Project 1: Regression analysis and resampling methods}
 \texttt{franke1}, \texttt{franke2} as configured in Table \ref{tab:franke_dataset}.
 To generate the points, we grid over $n_x$ points in $x$-direction and $n_y$ points
 in $y$-direction.
-\textbf{WE NEED TO TALK MORE ABOUT OUR PREVIOUS ANALYSIS AND WHAT KIND OF METHODS
-AND PARAMETERS WE USED }
+For comparison we will look at the results from our previous regression of
+Franke's function using Ordinary Least Squares, which was the best model in our
+previous project and compare the $R^2$ score.
+
 
 \begin{table}[H]
 	\caption{Table of the configurations for our generated data sets using
@@ -176,24 +178,23 @@ p(y\neq1 | X, \bm{\beta}) &= 1 - p(y=1 | X, \bm{\beta})\ .
 \label{eq:LR_probability}
 \end{align}
 Here $X$ is the feature matrix, and $\beta$ is a vector containing the weights
-assigned to each feature in $X$. It is useful to use another cost function than
-the mean squared error, as the output from our logistic regression is defined as
-$\hat{y}=p(X)\in [0, 1]$, where we say that outcome 0 is predicted if
-$\hat{y}< 0.5$ and outcome 1 else. The cost function most commonly used in this
-case is called the cross entropy, given by
-defined as
+assigned to each feature in $X$.  The cost function most commonly used in this
+case is called the cross entropy, which is the negative log-likelihood of a prediction
+being in the dataset and is given by
 \begin{align}
 \mathcal{C_\text{ LR}}(\bm{\beta}) =& -\sum_{i=0}^{n-1} \left[\  y_i\log p(y_i|x_i, \bm{\beta}) \right. \nonumber\\
  &\left.+ (1-y_i)\log(1-p(y_i|x_i,\bm{\beta})    \right]
 \end{align}
-We have chosen the cross entropy as our cost function as we are only going to use
-LR for binary classification.
+
 
 To optimize the cost function, we find the optimal weights $\bm{\beta}$ by
 solving $\text{argmin}_{\bm{\beta}}$. Similarly to for LASSO regression, which
 we used in our previous project, this has no analytical solution and must be
 estimated using numerical methods, e.g. gradient descent \cite{regpaper}. This
 along with its stochastic sibling is described in section \ref{SGD}.
+
+When using the model for prediction, $\hat{y}=p(X)\in [0, 1]$, where we say
+that outcome 0 is predicted if $\hat{y}< 0.5$ and outcome 1 else.
 
 In this project we will use LR on the Taiwanese credit card data to try to predict
 default ($y=1$) or non-default ($y=0$) payment and evaluate the model's predictive
@@ -413,10 +414,10 @@ the stochasticity reduces the possibility of getting stuck in a local minimum.
 Hyperparameters are not estimated when fitting a model, and must instead be
 found by other means. A naive approach when you have few hyperparameters could
 be to find them manually by trial and error. A slightly better approach is to
-grid over your hyperparameter space. However, this can be very computationally 
+grid over your hyperparameter space. However, this can be very computationally
 expensive. Studies indicate that a random search is preferable, as it is less
-systematic than a grid search, and thus more statistically likely to find better 
-hyperparameters  \cite{bergstra2012random}. For each trial parameter, we evaluate 
+systematic than a grid search, and thus more statistically likely to find better
+hyperparameters  \cite{bergstra2012random}. For each trial parameter, we evaluate
 the model on the training data, preferably either splitting some of
 the training data into validation data or using cross validation to avoid overfitting.
 The final best model is then evaluated using the test data.
@@ -431,8 +432,11 @@ Neural networks contain many hyperparameters. The amount of layers, nodes in eac
 layer, batch size, learning rate and penalization should all ideally be tested.
 As with LR, we have chosen to use a constant batch size of 200. For the layers
 and nodes, we have chosen to limit ourself to two hidden layers with many nodes.
-A neural network with a single hidden layer with larg \cite{ML_algo}. Our first hidden
-layer has 100 nodes, the second has 50. This leaves the learning rate and
+A neural network with a single hidden layer with a large amount of nodes is already
+sufficient enough to be considered a universal approximator. With two hidden layers,
+the amount of nodes needed is reduced \cite{ML_algo}, making a two hidden layer
+neural network sufficient for most cases. For both datasets analyzed, our first
+hidden layer has 100 nodes, the second has 50. This leaves the learning rate and
 the regularization parameter which are found using randomized search.
 
 To perform the parameter search we use the \texttt{RandomizedSearchCV} class provided
@@ -467,7 +471,15 @@ I = \begin{cases}
 0, & t_i \neq y_i
 \end{cases} .
 \]
-
+For the data used in this project, this is not a very good metric however. This is
+because even a model that predicts 0 for all cases would get an accuracy score of
+nearly 0.8. The need for a better model evaluation is clear, and we employ the same
+technique as in the article used for comparison: The area ratio. This is the area
+between the baseline and our model in a cumulative gains plot divided by the area
+between the theoretically best model and the baseline. To generate cumulative gains
+plots, we used the Python library \texttt{Scikit-Plot}'s function
+\texttt{plot_cumulative_gain}. How these plots are interpreted is explained 
+in the Discussion section.
 \section{Results}
 
 \begin{figure}[H]
