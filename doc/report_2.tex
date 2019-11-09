@@ -685,7 +685,18 @@ results have been modelled using these values.
 \end{figure*}
 
 \section{Discussion}
-fill
+The area ratios in table \ref{tab:area_ratios} along with figures
+\ref{fig:cumulative_gain_logreg} and \ref{fig:cumulative_gain_NN} align closely
+with the results from the original paper \cite{origarticle}, with the neural
+network being noticeably better at predicting the default of a credit card user.
+While both models can predict the positive outcome with modest success, they are
+not suited for predicting the negative outcome within any kind of satisfactory
+margin. This is not all bad, though, as it is more important for a lender to avoid
+false negatives than false positives. As we see no clear signs of overfitting,
+we may also be able find better fit by for instance running a significantly higher
+amount of hyperparameter samples in the randomized search, or by also searching
+for the best batch size, which we have neglected completely because of computational
+cost, as our program runs very slowly for low batch sizes.
 \section{Conclusion}
 fill
 %\bibliographystyle{iEEEtran}
