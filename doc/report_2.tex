@@ -389,17 +389,19 @@ It is clear that in order to find the best possible fit, we need to optimize the
 cost function $\mathcal{C}$ by finding its minimum. A common method to achieve
 this is the gradient descent (GD) method, in which the parameters $\theta$ are
 iteratively adjusted in the direction of the largest negative value of the
-gradient for a given number of iterations or until it reaches a given tolerance.
+gradient for a given number of epochs or until it reaches a given tolerance.
 Mathematically, this is expressed as
 \begin{equation}
 \theta_{i+1} = \theta_i -\eta \nabla \mathcal{C}(\theta_i),
 \end{equation}
 where $\eta$ is the learning rate, which is a hyperparameter that controls the
 step length and by extension the convergence time. For smaller values of $\eta$,
-the method will take longer to converge or might not converge at all within a
-desired time frame. For larger values of $\eta$, the method might be unstable or
+the method will take longer to converge or might not converge at all within the
+maximum number of epochs. For larger values of $\eta$, the method might be unstable or
 pass the minimum altogether and diverge. The parameter $\theta$ is $\beta$ in
 the LR case, and the weights $W$ and biases $b$ in the MLP case.
+Our definition of convergence is when the cost function does not change by more
+than a factor 0.01 for ten epochs.
 
 However, calculating the gradient on the entire data set can be computationally
 expensive and inefficient for large amounts of data. Additionally, there is a high
@@ -418,7 +420,7 @@ be to find them manually by trial and error. A slightly better approach is to
 grid over your hyperparameter space. However, this can be very computationally
 expensive. Studies indicate that a random search is preferable, as it is less
 systematic than a grid search, and thus more statistically likely to find better
-hyperparameters  \cite{bergstra2012random}. For each trial parameter, we evaluate
+hyperparameters  \cite{bergstra2012random}. For each trial parameter, one evaluates
 the model on the training data, preferably either splitting some of
 the training data into validation data or using cross validation to avoid overfitting.
 The final best model is then evaluated using the test data.
@@ -442,8 +444,8 @@ the regularization parameter which are found using randomized search.
 
 To perform the parameter search we use the \texttt{RandomizedSearchCV} class provided
 by \texttt{Scikit-Learn} \cite{sklearn_api} on 100 samples of hyperparameters,
-with 5-fold cross validation to evaluate each sample. Our evaluation methods are
-explained in the next section.
+with 5-fold cross validation to evaluate each sample. The maximum number of epochs
+is set to 300 for all models. Our evaluation methods are explained in the next section.
 
 \section{Model evaluation}
 \subsection{Regression}
@@ -555,19 +557,25 @@ are interpreted is explained in the Discussion section.
 	\label{fig:nn_eta_lambda_credit_accuracy}
 \end{figure}
 
+\begin{figure}[H]
+	\includegraphics[scale=1]{figures/cumulative_gain_logreg.pdf}
+	\caption{Cumulative gains plot for LR fit on the credit card data.
+  The closer a curve is to the "best model" curve, the better the model is at
+  predicting that given outcome. Our model is much better at predicting default
+  than non-default.}
+	\label{fig:logreg_gain}
+\end{figure}
 
 
 \begin{figure}[H]
 	\includegraphics[scale=1]{figures/cumulative_gain_NN.pdf}
-	\caption{idk yet}
+	\caption{Cumulative gains plot for LR fit on the credit card data.
+  The closer a curve is to the "best model" curve, the better the model is at
+  predicting that given outcome. Our model is much better at predicting default
+  than non-default.}
 	\label{fig:nn_gain}
 \end{figure}
 
-\begin{figure}[H]
-	\includegraphics[scale=1]{figures/cumulative_gain_logreg.pdf}
-	\caption{idk yet}
-	\label{fig:logreg_gain}
-\end{figure}
 
 
 \begin{figure}[H]
