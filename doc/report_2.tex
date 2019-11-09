@@ -459,11 +459,11 @@ given by
     \label{eq:R2}
 \end{equation}
 where $\bm{y}$ is the given data, $\bm{\hat{y}}$ is the model and ${\bar{y}}$ is
-the mean value of $\bm{y}$. The $R^2$ score evaluates how well your model 
-$\bm{\hat{y}}$ fits the true values $\hat{y}$, with a value of 1 indicating a 
-perfect fit. An $R^2$ score of 0 indicates that the model is as good of an 
-estimator as the mean value ${\bar{y}}$, and a lower value means that the mean 
-value is a better estimator than the model. 
+the mean value of $\bm{y}$. The $R^2$ score evaluates how well your model
+$\bm{\hat{y}}$ fits the true values $\hat{y}$, with a value of 1 indicating a
+perfect fit. An $R^2$ score of 0 indicates that the model is as good of an
+estimator as the mean value ${\bar{y}}$, and a lower value means that the mean
+value is a better estimator than the model.
 
 
 \subsection{Classification}
@@ -490,15 +490,15 @@ The error rate used in the original article \cite{origarticle} is then defined a
 
 For the data used in this project, this is not a very good metric however. This is
 because even a model that predicts 0 for all cases would get an accuracy score of
-nearly 0.8 due to the large ratio of non-default payments to default payments in 
-the credit card data set. The need for a better model evaluation is clear, and 
-we employ the same technique as in the original article by I-Cheng Yeh and Che-hui 
-Lien, which was the area ratio \cite{origarticle} between the baseline and our 
-model in a cumulative gains plot divided by the area between the theoretically 
-best model and the baseline. To generate cumulative gains plots, we used the 
-Python library \texttt{Scikit-Plot}'s function \texttt{plot\_cumulative\_gain}. 
-An area ratio of 1 would simply be the theoretically most optimal fit, whereas 
-lower ratios indicate lower predictive ability of the model. 
+nearly 0.8 due to the large ratio of non-default payments to default payments in
+the credit card data set. The need for a better model evaluation is clear, and
+we employ the same technique as in the original article by I-Cheng Yeh and Che-hui
+Lien, which was the area ratio \cite{origarticle} between the baseline and our
+model in a cumulative gains plot divided by the area between the theoretically
+best model and the baseline. To generate cumulative gains plots, we used the
+Python library \texttt{Scikit-Plot}'s function \texttt{plot\_cumulative\_gain}.
+An area ratio of 1 would simply be the theoretically most optimal fit, whereas
+lower ratios indicate lower predictive ability of the model.
 
 \section{Results}
 Figure \ref{fig:logreg_eta_accuracy} shows the accuracy score for LR on the credit
@@ -540,36 +540,36 @@ considered the most optimal of our combinations, and is also shown in Table
 	\label{fig:nn_eta_lambda_credit_accuracy}
 \end{figure}
 
-Figure \ref{fig:nn_eta_lambda_r2_400_1.0}, \ref{fig:nn_eta_lambda_r2_400_0.1} and 
-\ref{fig:nn_eta_lambda_r2_40000_0.1} show the validation $R^2$ scores for the MLP 
-regressor on the \texttt{franke0}, \texttt{franke1} and \texttt{franke2} data 
-sets, respectively. For a reminder of the differences between these data sets, 
-please refer to Table \ref{tab:franke_dataset}. As for the classification methods, 
-the models were evaluated for 100 different combinations of learning rate and 
-shrinkage parameter values. 
+Figure \ref{fig:nn_eta_lambda_r2_400_1.0}, \ref{fig:nn_eta_lambda_r2_400_0.1} and
+\ref{fig:nn_eta_lambda_r2_40000_0.1} show the validation $R^2$ scores for the MLP
+regressor on the \texttt{franke0}, \texttt{franke1} and \texttt{franke2} data
+sets, respectively. For a reminder of the differences between these data sets,
+please refer to Table \ref{tab:franke_dataset}. As for the classification methods,
+the models were evaluated for 100 different combinations of learning rate and
+shrinkage parameter values.
 
-\noindent For \texttt{franke0} in Figure 
-\ref{fig:nn_eta_lambda_r2_400_1.0}, the $R^2$ score is the lowest for the higher 
+\noindent For \texttt{franke0} in Figure
+\ref{fig:nn_eta_lambda_r2_400_1.0}, the $R^2$ score is the lowest for the higher
 values of the learning rate in the chosen range at around order $10^{-3}-10^{-2}$
-and the highest between approximately $10^{-4}-10^{-3}$. The shrinkage parameter 
-values in our range do not seem to have a large effect on the $R^2$ score of the 
-model. 
+and the highest between approximately $10^{-4}-10^{-3}$. The shrinkage parameter
+values in our range do not seem to have a large effect on the $R^2$ score of the
+model.
 
-\noindent For \texttt{franke1} in Figure \ref{fig:nn_eta_lambda_r2_400_0.1}, the 
-learning rates of order around $10^{-2}$ seem to result in the lowest $R^2$ 
-scores, as well as a small amount of outliers at learning rates of order $10^{-5}$,   whereas the highest $R^2$ scores seem to be at around learning rates of order 
-$10^{-4}$. Shrinkage parameters of order $10^{-2}$ and higher result in a lower 
-$R^2$ score. 
+\noindent For \texttt{franke1} in Figure \ref{fig:nn_eta_lambda_r2_400_0.1}, the
+learning rates of order around $10^{-2}$ seem to result in the lowest $R^2$
+scores, as well as a small amount of outliers at learning rates of order $10^{-5}$,   whereas the highest $R^2$ scores seem to be at around learning rates of order
+$10^{-4}$. Shrinkage parameters of order $10^{-2}$ and higher result in a lower
+$R^2$ score.
 
-\noindent For \texttt{franke2} in Figure \ref{fig:nn_eta_lambda_r2_40000_0.1}, 
-there is not a large difference in $R^2$ scores between learning rates of order 
-$10^{-5}-10^{-3}$, where they are the highest. They are lowest for larger values 
-of learning rates. Additionally, the shrinkage parameters of order $10^{-3}$ or 
-larger drastically reduce the $R^2$ scores, while smaller values seem to result 
-in better scores. 
+\noindent For \texttt{franke2} in Figure \ref{fig:nn_eta_lambda_r2_40000_0.1},
+there is not a large difference in $R^2$ scores between learning rates of order
+$10^{-5}-10^{-3}$, where they are the highest. They are lowest for larger values
+of learning rates. Additionally, the shrinkage parameters of order $10^{-3}$ or
+larger drastically reduce the $R^2$ scores, while smaller values seem to result
+in better scores.
 
-\noindent The most optimal models for the regression case were the ones that 
-maximized the $R^2$ scores. The corresponding shrinkage parameter and learning 
+\noindent The most optimal models for the regression case were the ones that
+maximized the $R^2$ scores. The corresponding shrinkage parameter and learning
 rate values can be found in Table \ref{tab:hyperparameters}.
 
 
@@ -604,7 +604,7 @@ rate values can be found in Table \ref{tab:hyperparameters}.
 	\caption{Table of the best hyperparameters values for shrinkage $\lambda$ and
 	learning rate $\eta$ for the logistic regression (LR) and neural network (NN)
 	models. The parameters were found using 5-fold cross validation. The minibatch
-	size was kept constant at $M=200$. All the results have been modelled using 
+	size was kept constant at $M=200$. All the results have been modelled using
 	these values.}
 	\label{tab:hyperparameters}
   {\setlength{\extrarowheight}{2pt}
@@ -726,7 +726,15 @@ outcomes than default. Both area ratios can be found in Table
 
 
 \section{Discussion}
-The area ratios in table \ref{tab:area_ratios} along with figures
+Hyperparameters:
+* different learning rate nn logreg same data
+* low penalties because no overfit, maybe more relevant with a better optimizer
+than sgd, ADAM?
+* Unsure because only 100 samples
+* maybe different results with vary epochs(?), rtol(?), layers, nodes and batch size
+* activation function impact
+
+The area ratios in Table \ref{tab:area_ratios} along with Figure
 \ref{fig:cumulative_gain_logreg} and \ref{fig:cumulative_gain_NN} align closely
 with the results from the original paper \cite{origarticle}, with the neural
 network being noticeably better at predicting the default of a credit card user.
@@ -737,9 +745,26 @@ false negatives than false positives. As we see no clear signs of overfitting,
 we may also be able find better fit by for instance running a significantly higher
 amount of hyperparameter samples in the randomized search, or by also searching
 for the best batch size, which we have neglected completely because of computational
-cost, as our program runs very slowly for low batch sizes.
+cost, as our program runs very slowly for small batch sizes.
+
+Regression
+%* NN slightly better, but so would OLS be with more data? OLS much better on n=20
+%* NN no polynomial degrees, saves memory, smaller feature matrix
+* NN saves memory and is pretty fast for one run, but must fit many
+hyperparameters, more computationally expensive
+* Overkill for this case most likely
+
 \section{Conclusion}
-fill
+Better model each case:
+Credit card:
+NN, as prediction power very important because serious topic
+
+Franke:
+OLS, only one hyperparameter (poly degree), no fuzz, more memory usage, but still better
+
+Conclusion:
+Powerful models are better at predicting, but are much harder to implement.
+Should carefully consider what to use as to not waste resources.
 %\bibliographystyle{iEEEtran}
 \bibliography{references}
 
