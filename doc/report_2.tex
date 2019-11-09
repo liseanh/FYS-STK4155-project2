@@ -31,7 +31,7 @@
 
 \title{FYS-STK3155/4155 Applied Data Analysis and Machine Learning - Project 2: Classification and Regression }
 
-\author{Lotsberg, Bernhard Nornes \\ Nguyen, Anh-Nguyet Lise \and 
+\author{Lotsberg, Bernhard Nornes \\ Nguyen, Anh-Nguyet Lise \and
 \url{https://github.com/liseanh/FYS-STK4155-project2/}}
 \date{October - November 2019}
 \begin{document}
@@ -414,7 +414,7 @@ the stochasticity reduces the possibility of getting stuck in a local minimum.
 \subsection{Choosing hyperparameters}
 Hyperparameters are not estimated when fitting a model, and therefore must be
 found by other means. A naive approach when you have few hyperparameters could
-be to find them manually by trial and failure. A slightly better approach is to
+be to find them manually by trial and error. A slightly better approach is to
 grid over your hyperparameter space. This can be very computationally expensive,
 however. Studies indicate that a random search is preferable, as it is less
 systematic than a grid search, and therefore is statistically more likely to
@@ -423,8 +423,24 @@ we evaluate the model on the training data, preferably either splitting some of
 the training data into validation data or using cross validation to avoid overfitting.
 The final best model is then evaluated using the test data.
 
-To perform the parameter search we use the RandomizedSearchCV class provided
- by Scikit-Learn \cite{sklearn_api}. 
+For non-penalized logistic regression with stochastic gradient descent,
+the two hyperparameters are learning rate and batch size. We have chosen to use
+a batch size of 200, inspired by the default value of Scikit-Learn. If we had
+more time or more powerful hardware, we would ideally also try different batch sizes.
+The leanring rate is found using a randomized search with cross validation.
+
+Neural networks have very many hyperparameters. The amount of layers, nodes in each
+layer, batch size, learning rate and penalization should all ideally be tested.
+As with LR, we have chosen to use a constant batch size of 200. For the layers
+and nodes, we have chosen to limit ourself to two hidden layers with many nodes,
+as that is suitable for very many types of data \cite{ML_algo}. Our first hidden
+layer has 100 nodes, the second has 50. This leaves the learning rate and
+the regularization parameter which are found using randomized search.
+
+To perform the parameter search we use the \texttt{RandomizedSearchCV} class provided
+by \texttt{Scikit-Learn} \cite{sklearn_api} on hundred samples of hyperparameters,
+with 5-fold cross validation to evaluate each sample. Our evaluation methods are
+explained in the next section.
 
 \section{Model evaluation}
 \subsection{Regression}
@@ -438,6 +454,7 @@ given by
 where $\bm{y}$ is the given data, $\bm{\hat{y}}$ is the model and ${\bar{y}}$ is
 the mean value of $\bm{y}$.
 \subsection{Classification}
+\label{Classification}
 To evaluate the performance of our classification model, we consider the accuracy
 score, given by
 \begin{equation}
