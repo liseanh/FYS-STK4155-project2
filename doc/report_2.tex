@@ -483,19 +483,22 @@ I = \begin{cases}
 \]
 The error rate used in the original article \cite{origarticle} is then defined as
 \begin{equation}
-1 - \text{accuracy}.
+\texttt{error} = 1 - \text{accuracy}.
 \label{error}
 \end{equation}
 
 For the data used in this project, this is not a very good metric however. This is
 because even a model that predicts 0 for all cases would get an accuracy score of
-nearly 0.8. The need for a better model evaluation is clear, and we employ the same
-technique as in the article used for comparison: the area ratio \cite{origarticle}.
-This is the area between the baseline and our model in a cumulative gains plot
-divided by the area between the theoretically best model and the baseline.
-To generate cumulative gains plots, we used the Python library
-\texttt{Scikit-Plot}'s function \texttt{plot\_cumulative\_gain}. How these plots
-are interpreted is explained in the Discussion section.
+nearly 0.8 due to the large ratio of non-default payments to default payments in 
+the credit card data set. The need for a better model evaluation is clear, and 
+we employ the same technique as in the original article by I-Cheng Yeh and Che-hui 
+Lien, which was the area ratio \cite{origarticle} between the baseline and our 
+model in a cumulative gains plot divided by the area between the theoretically 
+best model and the baseline. To generate cumulative gains plots, we used the 
+Python library \texttt{Scikit-Plot}'s function \texttt{plot\_cumulative\_gain}. 
+An area ratio of 1 would simply be the theoretically most optimal fit, whereas 
+lower ratios indicate lower predictive ability of the model. 
+
 \section{Results}
 Figure \ref{fig:logreg_eta_accuracy} shows the accuracy score for LR on the credit
 card training and validation data set for 100 different values of the learning
@@ -564,6 +567,11 @@ of learning rates. Additionally, the shrinkage parameters of order $10^{-3}$ or
 larger drastically reduce the $R^2$ scores, while smaller values seem to result 
 in better scores. 
 
+\noindent The most optimal models for the regression case were the ones that 
+maximized the $R^2$ scores. The corresponding shrinkage parameter and learning 
+rate values can be found in Table \ref{tab:hyperparameters}.
+
+
 \begin{figure}[H]
 	\includegraphics[scale=1]{{figures/nn_learning_rate_lambda_r2_franke_20_20_1.0}.pdf}
 	\caption{$R^2$ score of validation set on the \texttt{franke0} data set using
@@ -590,15 +598,13 @@ in better scores.
 \end{figure}
 
 
-Table \ref{tab:hyperparameters} shows the optimal hyperparameter values we found
-for the learning rate $\eta$ for both LR and the MLP for both classification and
-regression, as well as the shrinkage parameter $\lambda$ for the MLP. All the
-results have been modelled using these values.
+
 \begin{table}[H]
 	\caption{Table of the best hyperparameters values for shrinkage $\lambda$ and
 	learning rate $\eta$ for the logistic regression (LR) and neural network (NN)
 	models. The parameters were found using 5-fold cross validation. The minibatch
-	size was kept constant at $M=200$. }
+	size was kept constant at $M=200$. All the results have been modelled using 
+	these values.}
 	\label{tab:hyperparameters}
   {\setlength{\extrarowheight}{2pt}
 		\resizebox{\columnwidth}{!}{
