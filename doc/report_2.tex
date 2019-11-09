@@ -415,6 +415,7 @@ of the total data set as it might not need to use the entire set. Additionally,
 the stochasticity reduces the possibility of getting stuck in a local minimum.
 
 \subsection{Tuning hyperparameters}
+\label{subsec:tuning_hyperparameters}
 Hyperparameters are not estimated when fitting a model, and must instead be
 found by other means. A naive approach when you have few hyperparameters could
 be to find them manually by trial and error. A slightly better approach is to
@@ -623,11 +624,16 @@ rate values can be found in Table \ref{tab:hyperparameters}.
 
 
 \subsection{Classification}
-
+Figure \ref{fig:logreg_gain} shows the cumulative gains plot for the logistic 
+regression using the learning rate in Table \ref{tab:hyperparameters} and the 
+other hyperparameters as described in \ref{subsec:tuning_hyperparameters}. From 
+the figure, we can see that our LR model performs worse when predicting non-default 
+outcomes than default. Both area ratios can be found in Table 
+\ref{tab:area_ratios}. 
 
 \begin{figure}[H]
 	\includegraphics[scale=1]{figures/cumulative_gain_logreg.pdf}
-	\caption{Cumulative gains plot for LR fit on the credit card data.
+	\caption{Cumulative gains plot for logistic regression fit on the credit card data.
   The closer a curve is to the "best model" curve, the better the model is at
   predicting that given outcome. Our model is much better at predicting default
   than non-default.}
@@ -637,7 +643,7 @@ rate values can be found in Table \ref{tab:hyperparameters}.
 
 \begin{figure}[H]
 	\includegraphics[scale=1]{figures/cumulative_gain_NN.pdf}
-	\caption{Cumulative gains plot for LR fit on the credit card data.
+	\caption{Cumulative gains plot for the MLP fit on the credit card data.
   The closer a curve is to the "best model" curve, the better the model is at
   predicting that given outcome. Our model is much better at predicting default
   than non-default.}
