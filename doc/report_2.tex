@@ -115,8 +115,8 @@ AND PARAMETERS WE USED }
 \begin{table}[H]
 	\caption{Table of the configurations for our generated data sets using
 	Franke's function given in Equation (\ref{eq:Franke}) with added noise $\bm
-	{\varepsilon} \sim N(0,\  \sigma^2) $. $n_x$ and $n_y$  indicate the number
-	of points used to produce the grid in their respective directions. }
+	{\varepsilon} \sim N(0,\  \sigma^2) $. $n_x$ and $n_y$ indicate the number
+	of points used to produce the grid in their respective directions.}
 	\label{tab:franke_dataset}
 	\resizebox{\columnwidth}{!}{
 	\begin{tabular}{|l|l|l|l|c|} \hline
@@ -163,8 +163,6 @@ non-default samples. This was done to improve the model prediction. Note that we
 did not upsample the amount of defaults in the test set.
 
 
-\subsubsection{Categorical variables}
-
 \section{Learning methods}
 \subsection{Logistic Regression (LR)}
 Logistic regression (LR)  is a statistical model that can be used to predict a
@@ -205,7 +203,7 @@ accuracy in this particular classification problem.
 
 An artificial neural network (NN) is a computational model consisting of
 interconnected nodes. The interconnected nodes aim to emulate a simplified
-biological neural network and neuronal firing in a brain , and are therefore
+biological neural network and neuronal firing in a brain, and are therefore
 also commonly referred to as neurons.  The node performs a weighted sum of its
 inputs that is subsequently passed through a mathematical function to determine
 its output. This mathematical function is called an activation function $f(z)$,
@@ -411,15 +409,15 @@ minibatches of size $M$, we have a more efficient way to approximate the gradien
 of the total data set as it might not need to use the entire set. Additionally,
 the stochasticity reduces the possibility of getting stuck in a local minimum.
 
-\subsection{Choosing hyperparameters}
-Hyperparameters are not estimated when fitting a model, and therefore must be
+\subsection{Tuning hyperparameters}
+Hyperparameters are not estimated when fitting a model, and must instead be
 found by other means. A naive approach when you have few hyperparameters could
 be to find them manually by trial and error. A slightly better approach is to
-grid over your hyperparameter space. This can be very computationally expensive,
-however. Studies indicate that a random search is preferable, as it is less
-systematic than a grid search, and therefore is statistically more likely to
-find better hyperparameters  \cite{bergstra2012random}. For each trial parameter,
-we evaluate the model on the training data, preferably either splitting some of
+grid over your hyperparameter space. However, this can be very computationally 
+expensive. Studies indicate that a random search is preferable, as it is less
+systematic than a grid search, and thus more statistically likely to find better 
+hyperparameters  \cite{bergstra2012random}. For each trial parameter, we evaluate 
+the model on the training data, preferably either splitting some of
 the training data into validation data or using cross validation to avoid overfitting.
 The final best model is then evaluated using the test data.
 
@@ -427,9 +425,9 @@ For non-penalized logistic regression with stochastic gradient descent,
 the two hyperparameters are learning rate and batch size. We have chosen to use
 a batch size of 200, inspired by the default value of Scikit-Learn. If we had
 more time or more powerful hardware, we would ideally also try different batch sizes.
-The leanring rate is found using a randomized search with cross validation.
+The learning rate is found using a randomized search with cross validation.
 
-Neural networks have very many hyperparameters. The amount of layers, nodes in each
+Neural networks contain many hyperparameters. The amount of layers, nodes in each
 layer, batch size, learning rate and penalization should all ideally be tested.
 As with LR, we have chosen to use a constant batch size of 200. For the layers
 and nodes, we have chosen to limit ourself to two hidden layers with many nodes.
@@ -438,7 +436,7 @@ layer has 100 nodes, the second has 50. This leaves the learning rate and
 the regularization parameter which are found using randomized search.
 
 To perform the parameter search we use the \texttt{RandomizedSearchCV} class provided
-by \texttt{Scikit-Learn} \cite{sklearn_api} on hundred samples of hyperparameters,
+by \texttt{Scikit-Learn} \cite{sklearn_api} on 100 samples of hyperparameters,
 with 5-fold cross validation to evaluate each sample. Our evaluation methods are
 explained in the next section.
 
