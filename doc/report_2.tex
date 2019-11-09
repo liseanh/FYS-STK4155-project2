@@ -31,7 +31,7 @@
 
 \title{FYS-STK3155/4155 Applied Data Analysis and Machine Learning - Project 2: Classification and Regression }
 
-\author{Lotsberg, Bernhard Nornes \\ Nguyen, Anh-Nguyet Lise \and 
+\author{Lotsberg, Bernhard Nornes \\ Nguyen, Anh-Nguyet Lise \and
 \url{https://github.com/liseanh/FYS-STK4155-project2/}}
 \date{October - November 2019}
 \begin{document}
@@ -129,13 +129,13 @@ AND PARAMETERS WE USED }
 \end{table}
 
 \subsection{Preprocessing}
-We use \texttt{Scikit-learn's}\cite{sklearn_api} library  to split the data 
-sets into test and training sets, and to scale and center the data. 
-For both data sets we used $1/3$rd of the total data as testing data 
+We use \texttt{Scikit-learn's}\cite{sklearn_api} library  to split the data
+sets into test and training sets, and to scale and center the data.
+For both data sets we used $1/3$rd of the total data as testing data
 and the remaining $2/3$rds as training. To center the data, the means of the
-predictors in the test set were subtracted from both the training and the test 
-sets. The data is scaled by normalizing with respect to the variances of the 
-predictors in the training set. 
+predictors in the test set were subtracted from both the training and the test
+sets. The data is scaled by normalizing with respect to the variances of the
+predictors in the training set.
 
 \subsubsection{Categorical variables}
 
@@ -384,7 +384,7 @@ the stochasticity reduces the possibility of getting stuck in a local minimum.
 \subsection{Choosing hyperparameters}
 Hyperparameters are not estimated when fitting a model, and therefore must be
 found by other means. A naive approach when you have few hyperparameters could
-be to find them manually by trial and failure. A slightly better approach is to
+be to find them manually by trial and error. A slightly better approach is to
 grid over your hyperparameter space. This can be very computationally expensive,
 however. Studies indicate that a random search is preferable, as it is less
 systematic than a grid search, and therefore is statistically more likely to
@@ -393,8 +393,23 @@ we evaluate the model on the training data, preferably either splitting some of
 the training data into validation data or using cross validation to avoid overfitting.
 The final best model is then evaluated using the test data.
 
+For non-penalized logistic regression with stochastic gradient descent,
+the two hyperparameters are learning rate and batch size. We have chosen to use
+a batch size of 200, inspired by the default value of Scikit-Learn. If we had
+more time or more powerful hardware, we would ideally also try different batch sizes.
+The leanring rate is found using a randomized search with cross validation.
+
+Neural networks have very many hyperparameters. The amount of layers, nodes in each
+layer, batch size, learning rate and penalization should all ideally be tested.
+As with LR, we have chosen to use a constant batch size of 200. For the layers
+and nodes, we have chosen to limit ourself to two hidden layers with many nodes,
+as that is suitable for very many types of data \cite{ML_algo}. Our first hidden layer has 100
+nodes, the second has 50. This leaves learning rate and the regularization parameter
+which are found using randomized search.
+
 To perform the parameter search we use the RandomizedSearchCV class provided
- by Scikit-Learn \ref{sklearn_api}. 
+by Scikit-Learn \ref{sklearn_api} on hundred samples, with 5-fold cross validation
+to evaluate each sample's accuracy score.
 
 \section{Model evaluation}
 \subsection{Regression}
