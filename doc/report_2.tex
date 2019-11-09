@@ -129,38 +129,38 @@ AND PARAMETERS WE USED }
 \end{table}
 
 \subsection{Preprocessing}
-As the Franke data set is simulated, it does not require as much preprocessing as 
-the real-life credit card data set does. Additionally, the credit card data set 
-contains both categorical and continuous variables, whereas the Franke data set 
-only contains continuous variables. Due to this, we will start by discussing the 
-inital steps in the preprocessing of the credit card data. 
+As the Franke data set is simulated, it does not require as much preprocessing as
+the real-life credit card data set does. Additionally, the credit card data set
+contains both categorical and continuous variables, whereas the Franke data set
+only contains continuous variables. Due to this, we will start by discussing the
+inital steps in the preprocessing of the credit card data.
 
-We first removed feature outliers in the credit data set by looking at the supposed 
-discrete values of $X2-X4$ and $X6-X11$. However, though in the original paper 
-they stated that $X6-X11$ $\in\{-1,\ 1,\ 2,\ 3,\dots,\ 9\}$, the majority of 
-the samples contained the values 0 and 2, which were undefined. Removing these 
-would have reduced the data set down to only approximately four thousand data 
-points, so we have opted to keep them in our analysis as unexplained variables 
-and ended up with a data set of 29603 points, 6606 of which were default payments.  
+We first removed feature outliers in the credit data set by looking at the supposed
+discrete values of $X2-X4$ and $X6-X11$. However, though in the original paper
+they stated that $X6-X11$ $\in\{-1,\ 1,\ 2,\ 3,\dots,\ 9\}$, the majority of
+the samples contained the values 0 and 2, which were undefined. Removing these
+would have reduced the data set down to only approximately four thousand data
+points, so we have opted to keep them in our analysis as unexplained variables
+and ended up with a data set of 29603 points, 6606 of which were default payments.
 
-To ensure that the categorical variables $X2$-$X4$ in the credit card set were 
-considered equal by the classifiers, we incorporated the use of dummy variables 
-and one-hot encoded the variables. 
+To ensure that the categorical variables $X2$-$X4$ in the credit card set were
+considered equal by the classifiers, we incorporated the use of dummy variables
+and one-hot encoded the variables.
 
-We use \texttt{Scikit-learn's}\cite{sklearn_api} library to split both data sets 
-into test and training sets, and to scale and center the data. 
-For both data sets we used $1/3$rd of the total data as testing data 
+We use \texttt{Scikit-learn's}\cite{sklearn_api} library to split both data sets
+into test and training sets, and to scale and center the data.
+For both data sets we used $1/3$rd of the total data as testing data
 and the remaining $2/3$rds as training. To center the data, the means of the
-continuous variables in the training set were subtracted from both the training 
-and the test sets. Each continuous variable in the training and test sets was 
-scaled with respect to its standard deviation in the training set. 
+continuous variables in the training set were subtracted from both the training
+and the test sets. Each continuous variable in the training and test sets was
+scaled with respect to its standard deviation in the training set.
 
-Before scaling the credit card data set, we first opted to upsample the number of 
+Before scaling the credit card data set, we first opted to upsample the number of
 default payment samples in the training set by using \resizebox{!}{6.38pt}{\texttt{imblearn.over\_sampling.RandomOverSampler}}
-from the library \texttt{imbalanced-learn}, which randomly duplicates the default 
-payment samples, until there was an equal amount of default payment samples as 
-non-default samples. This was done to improve the model prediction. Note that we 
-did not upsample the amount of defaults in the test set. 
+from the library \texttt{imbalanced-learn}, which randomly duplicates the default
+payment samples, until there was an equal amount of default payment samples as
+non-default samples. This was done to improve the model prediction. Note that we
+did not upsample the amount of defaults in the test set.
 
 
 \subsubsection{Categorical variables}
@@ -168,9 +168,9 @@ did not upsample the amount of defaults in the test set.
 \section{Learning methods}
 \subsection{Logistic Regression (LR)}
 Logistic regression (LR)  is a statistical model that can be used to predict a
-binary dependent variable, which in our project will be one of the methods used 
-for binary classification of the credit card default/non-default payments. LR 
-outputs the probability of a sample to be in either 1 (default) or non-default (0), 
+binary dependent variable, which in our project will be one of the methods used
+for binary classification of the credit card default/non-default payments. LR
+outputs the probability of a sample to be in either 1 (default) or non-default (0),
 with the probability being given by the logit (Sigmoid) function, such that
 \begin{align}
 p(y=1 | X, \bm{\beta}) &= \frac{1}{1 + e^{-X \beta}} =\frac{e^{X \beta}}{e^{X \beta}+1},\\
@@ -178,23 +178,23 @@ p(y\neq1 | X, \bm{\beta}) &= 1 - p(y=1 | X, \bm{\beta})\ .
 \label{eq:LR_probability}
 \end{align}
 Here $X$ is the feature matrix, and $\beta$ is a vector containing the weights
-assigned to each feature in $X$. It is useful to use another cost function than 
-the mean squared error, as the output from our logistic regression is defined as 
-$\hat{y}=p(X)\in [0, 1]$, where we say that outcome 0 is predicted if 
-$\hat{y}< 0.5$ and outcome 1 else. The cost function most commonly used in this 
+assigned to each feature in $X$. It is useful to use another cost function than
+the mean squared error, as the output from our logistic regression is defined as
+$\hat{y}=p(X)\in [0, 1]$, where we say that outcome 0 is predicted if
+$\hat{y}< 0.5$ and outcome 1 else. The cost function most commonly used in this
 case is called the cross entropy, given by
 defined as
 \begin{align}
 \mathcal{C_\text{ LR}}(\bm{\beta}) =& -\sum_{i=0}^{n-1} \left[\  y_i\log p(y_i|x_i, \bm{\beta}) \right. \nonumber\\
  &\left.+ (1-y_i)\log(1-p(y_i|x_i,\bm{\beta})    \right]
 \end{align}
-We have chosen the cross entropy as our cost function as we are only going to use 
-LR for binary classification. 
+We have chosen the cross entropy as our cost function as we are only going to use
+LR for binary classification.
 
-To optimize the cost function, we find the optimal weights $\bm{\beta}$ by 
-solving $\text{argmin}_{\bm{\beta}}$. Similarly to for LASSO regression, which 
-we used in our previous project, this has no analytical solution and must be 
-estimated using numerical methods, e.g. gradient descent \cite{regpaper}. This 
+To optimize the cost function, we find the optimal weights $\bm{\beta}$ by
+solving $\text{argmin}_{\bm{\beta}}$. Similarly to for LASSO regression, which
+we used in our previous project, this has no analytical solution and must be
+estimated using numerical methods, e.g. gradient descent \cite{regpaper}. This
 along with its stochastic sibling is described in section \ref{SGD}.
 
 In this project we will use LR on the Taiwanese credit card data to try to predict
@@ -432,8 +432,8 @@ The leanring rate is found using a randomized search with cross validation.
 Neural networks have very many hyperparameters. The amount of layers, nodes in each
 layer, batch size, learning rate and penalization should all ideally be tested.
 As with LR, we have chosen to use a constant batch size of 200. For the layers
-and nodes, we have chosen to limit ourself to two hidden layers with many nodes,
-as that is suitable for very many types of data \cite{ML_algo}. Our first hidden
+and nodes, we have chosen to limit ourself to two hidden layers with many nodes.
+A neural network with a single hidden layer with larg \cite{ML_algo}. Our first hidden
 layer has 100 nodes, the second has 50. This leaves the learning rate and
 the regularization parameter which are found using randomized search.
 
