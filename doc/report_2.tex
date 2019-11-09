@@ -116,7 +116,7 @@ AND PARAMETERS WE USED }
 	\caption{Table of the configurations for our generated data sets using
 	Franke's function given in Equation (\ref{eq:Franke}) with added noise $\bm
 	{\varepsilon} \sim N(0,\  \sigma^2) $. $n_x$ and $n_y$  indicate the number
-	of points used to produce the grid in their respective directions. }
+	of points used to produable, as it is lesssystematic than a grid search,  and thereforeis  statistically  more  likely  to  find  better  hy-perparameters [1].  For each trial parameter,we evaluate the model on the training data,preferably either splitting some of the train-ing  data  into  validation  data  or  using  crossvalidation to avoid overfitting. The final bestmodel is then evaluated using the test data.To  perform  the  parameter  search  we  usethe RandomizedSearchCV class provided byScikit-Learn [2].4    Model evaluation4.1    RegressionTo  evaluate  the  performancece the grid in their respective directions. }
 	\label{tab:franke_dataset}
 	\resizebox{\columnwidth}{!}{
 	\begin{tabular}{|l|l|l|l|c|} \hline
@@ -162,8 +162,6 @@ payment samples, until there was an equal amount of default payment samples as
 non-default samples. This was done to improve the model prediction. Note that we 
 did not upsample the amount of defaults in the test set. 
 
-
-\subsubsection{Categorical variables}
 
 \section{Learning methods}
 \subsection{Logistic Regression (LR)}
