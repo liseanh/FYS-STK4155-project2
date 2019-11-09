@@ -109,11 +109,18 @@ project, \textit{Project 1: Regression analysis and resampling methods}
 \texttt{franke1}, \texttt{franke2} as configured in Table \ref{tab:franke_dataset}.
 To generate the points, we grid over $n_x$ points in $x$-direction and $n_y$ points
 in $y$-direction.
-For comparison we will look at the results from our previous regression of
-Franke's function using Ordinary Least Squares, which was the best model in our
-previous project and compare the $R^2$ score. We only have results from OLS on
-\texttt{franke0} and \text{franke1}, however.
-
+In the previous project we used a 4th order two-dimensional polynomial function 
+to model Franke's function. To get an understanding of the performance of our 
+regression model using a neural network compared to a more simple regression 
+method, we will compare the $R^2$ scores of our neural network results with the 
+best model obtained in our prior work, which was found using the ordinary least 
+squares (OLS) method for a 4th order two-dimensional polynomial. The $R^2$ scores 
+from the linear regression can be found in Table \ref{tab:R2_scores} along with 
+our neural network results. From the previous project we however only had 
+results from data sets corresponding to \texttt{franke0} and \text{franke1}. 
+For a more detailed explanation of how the OLS model was obtained, please refer 
+to our previous project \textit{Project 1: Regression analysis and resampling
+methods }\cite{regpaper}.
 
 \begin{table}[H]
 	\caption{Table of the configurations for our generated data sets using
@@ -159,7 +166,8 @@ and the test sets. Each continuous variable in the training and test sets was
 scaled with respect to its standard deviation in the training set.
 
 Before scaling the credit card data set, we first opted to upsample the number of
-default payment samples in the training set by using \resizebox{!}{6.38pt}{\texttt{imblearn.over\_sampling.RandomOverSampler}}
+default payment samples in the training set by using 
+\resizebox{!}{6.38pt}{\texttt{imblearn.over\_sampling.RandomOverSampler}}
 from the library \texttt{imbalanced-learn}, which randomly duplicates the default
 payment samples, until there was an equal amount of default payment samples as
 non-default samples. This was done to improve the model prediction. Note that we
@@ -624,29 +632,35 @@ rate values can be found in Table \ref{tab:hyperparameters}.
 
 
 \subsection{Classification}
-Figure \ref{fig:logreg_gain} shows the cumulative gains plot for the logistic 
-regression using the learning rate in Table \ref{tab:hyperparameters} and the 
-other hyperparameters as described in \ref{subsec:tuning_hyperparameters}. From 
-the figure, we can see that our LR model performs worse when predicting non-default 
-outcomes than default. Both area ratios can be found in Table 
+Figure \ref{fig:logreg_gain} shows the cumulative gains plot for the LR. From 
+the figure, we can see that our LR model performs worse when predicting 
+non-default outcomes than default. Both area ratios can be found in Table 
 \ref{tab:area_ratios}. 
+
+
+Figure \ref{fig:nn_gain} shows the cumulative gains plot for the MLP classifier. 
+From the figure, we can see that similarly to for the LR model, the MLP 
+classifier model's predictive abilities are better for default outcomes than for 
+non-default. Both area ratios can be found in \ref{tab:area_ratios}. 
+
+From Table \ref{tab:area_ratios} containing the area ratios for LR and MLP, we 
+see that the MLP network has a lower error rate than LR, in addition to having 
+higher area ratios for both default and non-default outcomes.
 
 \begin{figure}[H]
 	\includegraphics[scale=1]{figures/cumulative_gain_logreg.pdf}
-	\caption{Cumulative gains plot for logistic regression fit on the credit card data.
-  The closer a curve is to the "best model" curve, the better the model is at
-  predicting that given outcome. Our model is much better at predicting default
-  than non-default.}
+	\caption{Cumulative gains plot for the logistic regression model fit on the 
+	credit card data.}
 	\label{fig:logreg_gain}
 \end{figure}
 
 
+
+
 \begin{figure}[H]
 	\includegraphics[scale=1]{figures/cumulative_gain_NN.pdf}
-	\caption{Cumulative gains plot for the MLP fit on the credit card data.
-  The closer a curve is to the "best model" curve, the better the model is at
-  predicting that given outcome. Our model is much better at predicting default
-  than non-default.}
+	\caption{Cumulative gains plot for the multilayer perceptron model fit on 
+	the credit card data.}
 	\label{fig:nn_gain}
 \end{figure}
 
@@ -668,7 +682,37 @@ outcomes than default. Both area ratios can be found in Table
 \end{table}
 
 \subsection{Regression}
+Table \ref{tab:R2_scores} shows the $R^2$ scores for the \texttt{franke0}, 
+\texttt{franke1} and \texttt{franke2} data sets using the MLP regressor in 
+addition to the scores found using the OLS model. For the \texttt{franke0} set, 
+the MLP and OLS seem to perform similarly, with scores lying in a small interval 
+around zero. For \texttt{franke1} the score for OLS is significantly higher, while 
+the OLS model for \texttt{franke1} and the MLP model for \texttt{franke2} show 
+similar performances. The consistency of the $R^2$ score across training and test 
+sets is better for the MLP model in the cases of \texttt{franke1} and 
+\texttt{franke2}.
 
+Figure \ref{fig:3dplot_400_1.0}, \ref{fig:3dplot_400_0.1} and 
+\ref{fig:nn_eta_lambda_r2_40000_0.1} show the MLP models for the 
+\texttt{franke0}, \texttt{franke1} and \texttt{franke2} data sets plotted with 
+the true values. 
+
+\begin{table}[H]
+	\caption{Table of R2 scores for our neural network (NN) regression models on
+	the three Franke data sets and the ordinary least squares (OLS) model from our
+	previous study \cite{regpaper}. }
+	\label{tab:R2_scores}
+	\resizebox{\columnwidth}{!}{
+ 	\begin{tabular}{|l|r|r|r|r|}
+    \hline
+ 	     {} &$R^2$  & \texttt{franke0} & \texttt{franke1} &	\texttt{franke2} \\	\hline
+    	 \multirow{2}{*}{NN}  &Train   & 0.0052  & 0.59 & 0.84 \\ \cline{2-5}
+    		 				  &Test    & - 0.057 & 0.59 & 0.83 \\ \hline
+    \multirow{2}{*}{OLS}      &Train   & 0.024   & 0.87	& N/A \\ \cline{2-5}
+    		 				  & Test   & - 0.040 & 0.82 & N/A\\ \hline
+    	\end{tabular}
+	}
+\end{table}
 \begin{figure*}
 	\includegraphics[width=\columnwidth]{{figures/3dplot_train_20_20_1.0}.pdf}
 	\includegraphics[width=\columnwidth]{{figures/3dplot_test_20_20_1.0}.pdf}
@@ -705,22 +749,7 @@ outcomes than default. Both area ratios can be found in Table
 	\label{fig:3dplot_40000_0.1}
 \end{figure*}
 
-\begin{table}[H]
-	\caption{Table of R2 scores for our neural network (NN) regression models on
-	the three Franke data sets and the ordinary least squares (OLS) model from our
-	previous study \cite{regpaper}. }
-	\label{tab:R2_scores}
-	\resizebox{\columnwidth}{!}{
- 	\begin{tabular}{|l|r|r|r|r|}
-    \hline
- 	     {} &$R^2$  & \texttt{franke0} & \texttt{franke1} &	\texttt{franke2} \\	\hline
-    	 \multirow{2}{*}{NN}  &Train   & 0.0052  & 0.59 & 0.84 \\ \cline{2-5}
-    		 				  &Test    & - 0.057 & 0.59 & 0.83 \\ \hline
-    \multirow{2}{*}{OLS}      &Train   & 0.024   & 0.87	& N/A \\ \cline{2-5}
-    		 				  & Test   & - 0.040 & 0.82 & N/A\\ \hline
-    	\end{tabular}
-	}
-\end{table}
+
 
 
 
@@ -735,7 +764,7 @@ than sgd, ADAM?
 * activation function impact
 
 The area ratios in Table \ref{tab:area_ratios} along with Figure
-\ref{fig:cumulative_gain_logreg} and \ref{fig:cumulative_gain_NN} align closely
+\ref{fig:logreg_gain} and \ref{fig:nn_gain} align closely
 with the results from the original paper \cite{origarticle}, with the neural
 network being noticeably better at predicting the default of a credit card user.
 While both models can predict the positive outcome with modest success, they are
