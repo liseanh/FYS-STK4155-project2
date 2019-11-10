@@ -109,16 +109,16 @@ project, \textit{Project 1: Regression analysis and resampling methods}
 \texttt{franke1}, \texttt{franke2} as configured in Table \ref{tab:franke_dataset}.
 To generate the points, we grid over $n_x$ points in $x$-direction and $n_y$ points
 in $y$-direction.
-In the previous project we used a 4th order two-dimensional polynomial function 
-to model Franke's function. To get an understanding of the performance of our 
-regression model using a neural network compared to a more simple regression 
-method, we will compare the $R^2$ scores of our neural network results with the 
-best model obtained in our prior work, which was found using the ordinary least 
-squares (OLS) method for a 4th order two-dimensional polynomial. The $R^2$ scores 
-from the linear regression can be found in Table \ref{tab:R2_scores} along with 
-our neural network results. From the previous project we however only had 
-results from data sets corresponding to \texttt{franke0} and \text{franke1}. 
-For a more detailed explanation of how the OLS model was obtained, please refer 
+In the previous project we used a 4th order two-dimensional polynomial function
+to model Franke's function. To get an understanding of the performance of our
+regression model using a neural network compared to a more simple regression
+method, we will compare the $R^2$ scores of our neural network results with the
+best model obtained in our prior work, which was found using the ordinary least
+squares (OLS) method for a 4th order two-dimensional polynomial. The $R^2$ scores
+from the linear regression can be found in Table \ref{tab:R2_scores} along with
+our neural network results. From the previous project we however only had
+results from data sets corresponding to \texttt{franke0} and \text{franke1}.
+For a more detailed explanation of how the OLS model was obtained, please refer
 to our previous project \textit{Project 1: Regression analysis and resampling
 methods }\cite{regpaper}.
 
@@ -166,7 +166,7 @@ and the test sets. Each continuous variable in the training and test sets was
 scaled with respect to its standard deviation in the training set.
 
 Before scaling the credit card data set, we first opted to upsample the number of
-default payment samples in the training set by using 
+default payment samples in the training set by using
 \resizebox{!}{6.38pt}{\texttt{imblearn.over\_sampling.RandomOverSampler}}
 from the library \texttt{imbalanced-learn}, which randomly duplicates the default
 payment samples, until there was an equal amount of default payment samples as
@@ -632,24 +632,24 @@ rate values can be found in Table \ref{tab:hyperparameters}.
 
 
 \subsection{Classification}
-Figure \ref{fig:logreg_gain} shows the cumulative gains plot for the LR. From 
-the figure, we can see that our LR model performs worse when predicting 
-non-default outcomes than default. Both area ratios can be found in Table 
-\ref{tab:area_ratios}. 
+Figure \ref{fig:logreg_gain} shows the cumulative gains plot for the LR. From
+the figure, we can see that our LR model performs worse when predicting
+non-default outcomes than default. Both area ratios can be found in Table
+\ref{tab:area_ratios}.
 
 
-Figure \ref{fig:nn_gain} shows the cumulative gains plot for the MLP classifier. 
-From the figure, we can see that similarly to for the LR model, the MLP 
-classifier model's predictive abilities are better for default outcomes than for 
-non-default. Both area ratios can be found in \ref{tab:area_ratios}. 
+Figure \ref{fig:nn_gain} shows the cumulative gains plot for the MLP classifier.
+From the figure, we can see that similarly to for the LR model, the MLP
+classifier model's predictive abilities are better for default outcomes than for
+non-default. Both area ratios can be found in \ref{tab:area_ratios}.
 
-From Table \ref{tab:area_ratios} containing the area ratios for LR and MLP, we 
-see that the MLP network has a lower error rate than LR, in addition to having 
+From Table \ref{tab:area_ratios} containing the area ratios for LR and MLP, we
+see that the MLP network has a lower error rate than LR, in addition to having
 higher area ratios for both default and non-default outcomes.
 
 \begin{figure}[H]
 	\includegraphics[scale=1]{figures/cumulative_gain_logreg.pdf}
-	\caption{Cumulative gains plot for the logistic regression model fit on the 
+	\caption{Cumulative gains plot for the logistic regression model fit on the
 	credit card data.}
 	\label{fig:logreg_gain}
 \end{figure}
@@ -659,7 +659,7 @@ higher area ratios for both default and non-default outcomes.
 
 \begin{figure}[H]
 	\includegraphics[scale=1]{figures/cumulative_gain_NN.pdf}
-	\caption{Cumulative gains plot for the multilayer perceptron model fit on 
+	\caption{Cumulative gains plot for the multilayer perceptron model fit on
 	the credit card data.}
 	\label{fig:nn_gain}
 \end{figure}
@@ -682,20 +682,20 @@ higher area ratios for both default and non-default outcomes.
 \end{table}
 
 \subsection{Regression}
-Table \ref{tab:R2_scores} shows the $R^2$ scores for the \texttt{franke0}, 
-\texttt{franke1} and \texttt{franke2} data sets using the MLP regressor in 
-addition to the scores found using the OLS model. For the \texttt{franke0} set, 
-the MLP and OLS seem to perform similarly, with scores lying in a small interval 
-around zero. For \texttt{franke1} the score for OLS is significantly higher, while 
-the OLS model for \texttt{franke1} and the MLP model for \texttt{franke2} show 
-similar performances. The consistency of the $R^2$ score across training and test 
-sets is better for the MLP model in the cases of \texttt{franke1} and 
+Table \ref{tab:R2_scores} shows the $R^2$ scores for the \texttt{franke0},
+\texttt{franke1} and \texttt{franke2} data sets using the MLP regressor in
+addition to the scores found using the OLS model. For the \texttt{franke0} set,
+the MLP and OLS seem to perform similarly, with scores lying in a small interval
+around zero. For \texttt{franke1} the score for OLS is significantly higher, while
+the OLS model for \texttt{franke1} and the MLP model for \texttt{franke2} show
+similar performances. The consistency of the $R^2$ score across training and test
+sets is better for the MLP model in the cases of \texttt{franke1} and
 \texttt{franke2}.
 
-Figure \ref{fig:3dplot_400_1.0}, \ref{fig:3dplot_400_0.1} and 
-\ref{fig:nn_eta_lambda_r2_40000_0.1} show the MLP models for the 
-\texttt{franke0}, \texttt{franke1} and \texttt{franke2} data sets plotted with 
-the true values. 
+Figure \ref{fig:3dplot_400_1.0}, \ref{fig:3dplot_400_0.1} and
+\ref{fig:nn_eta_lambda_r2_40000_0.1} show the MLP models for the
+\texttt{franke0}, \texttt{franke1} and \texttt{franke2} data sets plotted with
+the true values.
 
 \begin{table}[H]
 	\caption{Table of R2 scores for our neural network (NN) regression models on
@@ -765,100 +765,113 @@ than sgd, ADAM?
 * activation function impact
 
 \subsection{Classification}
-From Table \ref{tab:hyperparameters}, we see that the learning rate $\eta$ for 
-LR and MLP in the classification case differ by two orders of magnitude. This 
+From Table \ref{tab:hyperparameters}, we see that the learning rate $\eta$ for
+LR and MLP in the classification case differ by two orders of magnitude. This is
+most likely because the MLP is a more advanced model, and therefore the parameter
+space has a more easily achievable minimum, although the parameter space is much
+higher dimensionally than for LR.
 
 
 The area ratios in Table \ref{tab:area_ratios} along with Figure
 \ref{fig:logreg_gain} and \ref{fig:nn_gain} align closely
-with the results from the original paper \cite{origarticle}, with the neural
-network being noticeably better at predicting the default of a credit card user.
+with the results from the original paper \cite{origarticle}, with the MLP being
+noticeably better at predicting the default of a credit card user than LR, with
+area ratios for the positive outcome being $0.55$ and $0.43$ respectively.
 While both models can predict the positive outcome with modest success, they are
 not suited for predicting the negative outcome within any kind of satisfactory
-margin. This is not all bad, though, as it is more important for a lender to avoid
-false negatives than false positives. As we see no clear signs of overfitting,
-we may also be able find better fit by for instance running a significantly higher
-amount of hyperparameter samples in the randomized search, or by also searching
-for the best batch size, which we have neglected completely because of computational
-cost, as our program runs very slowly for small batch sizes.
+margin. This is not all bad, as it is worse for a lender to give out a loan that
+is never repaid than to refuse a loan that would be repaid. With this we argue
+that it is beneficial to implement a MLP classifier in this case in spite of the
+extra computational cost and the extra hyperparameters.
+
+
+
 
 
 
 \subsection{Regression}
-Looking at the shrinkage parameters for the regression models in Table 
-\ref{tab:hyperparameters}, the shrinkage parameter seems to decrease as the 
-signal to noise ratio increases. For $\texttt{franke0}$, the data set is quite 
-noisy with the standard deviation of the added noise at $\sigma=1.0$ and a 
-shrinkage parameter of $\lambda=4.1\cdot 10^{-6}$. However, taking Figure 
-\ref{fig:nn_eta_lambda_r2_400_1.0} into consideration, it is quite clear that the 
-shrinkage parameter does not seem to have a significant effect on the result as 
-opposed to the learning rate $\eta$, and the choice of shrinkage parameter may 
-have been irrelevant as it arbitrarily coincided with the optimal learning rate. 
-This is due to the very low signal to noise ratio, as can be seen in the plot of 
-the model and true values in Figure \ref{fig:3dplot_400_1.0}. It is impossible to 
-identify the original shape of the Franke function, and the model seems to have 
-approximated the mean value of the \texttt{franke0} set. This is also reflected 
-in the $R^2$ scores in Table \ref{tab:R2_scores}, where the scores for both 
-training and test set are close to zero. Due to the noise, the choice of 
-shrinkage parameter does not matter, as Figure \ref{fig:nn_eta_lambda_r2_400_1.0} 
-the MLP models yield an $R^2$ score of around 0 for learning rates of order 
-$10^{-4}-10^{-3}$ regardless of shrinkage. Nevertheless, the mean seems like a 
-decent approximation in this case, as tuning the other hyperparameters such as 
-number of hidden layers and nodes could possibly result in a severe overfit. 
-Comparing with the scores for the corresponding OLS model, the MLP seems to 
-perform on par with the OLS, but at significantly higher computational cost. 
+Looking at the shrinkage parameters for the regression models in Table
+\ref{tab:hyperparameters}, the shrinkage parameter seems to decrease as the
+signal to noise ratio increases. For $\texttt{franke0}$, the data set is quite
+noisy with the standard deviation of the added noise at $\sigma=1.0$ and a
+shrinkage parameter of $\lambda=4.1\cdot 10^{-6}$. However, taking Figure
+\ref{fig:nn_eta_lambda_r2_400_1.0} into consideration, it is quite clear that the
+shrinkage parameter does not seem to have a significant effect on the result as
+opposed to the learning rate $\eta$, and the choice of shrinkage parameter may
+have been irrelevant as it arbitrarily coincided with the optimal learning rate.
+This is due to the very low signal to noise ratio, as can be seen in the plot of
+the model and true values in Figure \ref{fig:3dplot_400_1.0}. It is impossible to
+identify the original shape of the Franke function, and the model seems to have
+approximated the mean value of the \texttt{franke0} set. This is also reflected
+in the $R^2$ scores in Table \ref{tab:R2_scores}, where the scores for both
+training and test set are close to zero. Due to the noise, the choice of
+shrinkage parameter does not matter, as Figure \ref{fig:nn_eta_lambda_r2_400_1.0}
+the MLP models yield an $R^2$ score of around 0 for learning rates of order
+$10^{-4}-10^{-3}$ regardless of shrinkage. Nevertheless, the mean seems like a
+decent approximation in this case, as tuning the other hyperparameters such as
+number of hidden layers and nodes could possibly result in a severe overfit.
+Comparing with the scores for the corresponding OLS model, the MLP seems to
+perform on par with the OLS, but at significantly higher computational cost.
 
-For the \texttt{franke1} set, the shrinkage parameter does seem to impact the 
-performance of our MLP model. From Figure \ref{fig:nn_eta_lambda_r2_400_0.1}, it 
-appears that higher shrinkage has a negative effect on the model performance when 
-the standard deviation of the noise is only at $\sigma=0.1$. The 
-optimal shrinkage parameter is at $\lambda=6.4\cdot 10^{-8]}$, which is higher 
-than for the \texttt{franke0} set. Again, this is likely due to the higher signal 
-to noise ratio in the data set, as we from Figure \ref{fig:3dplot_400_0.1} are 
-able to discern the rough shape of the original Franke function and the model is 
-able to approximate the slope of the function. The $R^2$ scores from Table 
-\ref{tab:R2_scores} show that the MLP model performs far better in this case with 
-a test score of 0.59. Regardless, the OLS model outperforms the MLP in this case 
-as well, and still at a significantly lower computational cost. It is probably 
-still possible for the MLP to approximate a better model by increasing the model 
-complexity. By tuning the other hyperparameters in combination with the learning 
-rate and shrinkage parameter, we would likely be able to achieve a better fit, as 
-the consistency of the $R^2$ scores we achieved for both test and training sets 
-of \texttt{franke1} indicate that we have yet to overfit the data. However, this 
-would again be quite costly and excessive compared to the simplicity of the OLS. 
+For the \texttt{franke1} set, the shrinkage parameter does seem to impact the
+performance of our MLP model. From Figure \ref{fig:nn_eta_lambda_r2_400_0.1}, it
+appears that higher shrinkage has a negative effect on the model performance when
+the standard deviation of the noise is only at $\sigma=0.1$. The
+optimal shrinkage parameter is at $\lambda=6.4\cdot 10^{-8]}$, which is higher
+than for the \texttt{franke0} set. Again, this is likely due to the higher signal
+to noise ratio in the data set, as we from Figure \ref{fig:3dplot_400_0.1} are
+able to discern the rough shape of the original Franke function and the model is
+able to approximate the slope of the function. The $R^2$ scores from Table
+\ref{tab:R2_scores} show that the MLP model performs far better in this case with
+a test score of 0.59. Regardless, the OLS model outperforms the MLP in this case
+as well, and still at a significantly lower computational cost. It is probably
+still possible for the MLP to approximate a better model by increasing the model
+complexity. By tuning the other hyperparameters in combination with the learning
+rate and shrinkage parameter, we would likely be able to achieve a better fit, as
+the consistency of the $R^2$ scores we achieved for both test and training sets
+of \texttt{franke1} indicate that we have yet to overfit the data. However, this
+would again be quite costly and excessive compared to the simplicity of the OLS.
 
-The optimal shrinkage parameter for \texttt{franke2} is the smallest of the three 
-at $\lambda=3.6\cdot 10^{-10}$, and is likely because the amount of data points 
-in this set is 100 times larger than for \texttt{franke0} and \texttt{franke1}. 
-It is interesting to note that the shrinkage parameter is smaller than for 
-\texttt{franke1} when the added noise is still of the same order, but the number 
-of available data points is much higher. Due to the larger amount of data, the 
-MLP is less likely to overfit and requires a smaller shrinkage. Looking at Figure 
-\ref{fig:3dplot_40000_0.1} of the model and data plot, it does appear that the 
-MLP is able to model a relatively good fit. The corresponding $R^2$ scores in 
-Table \ref{tab:R2_scores} are quite satisfactory and consistent in comparison to 
-the OLS model for \texttt{franke1}. However, the OLS would likely perform as well 
-or possibly better at 40 000 available data points instead of only 400. The MLP 
-regressor proves to be quite costly and excessive in this case compared to the 
-OLS, as it in this case needs a hundred times more data points and tuning of 
+The optimal shrinkage parameter for \texttt{franke2} is the smallest of the three
+at $\lambda=3.6\cdot 10^{-10}$, and is likely because the amount of data points
+in this set is 100 times larger than for \texttt{franke0} and \texttt{franke1}.
+It is interesting to note that the shrinkage parameter is smaller than for
+\texttt{franke1} when the added noise is still of the same order, but the number
+of available data points is much higher. Due to the larger amount of data, the
+MLP is less likely to overfit and requires a smaller shrinkage. Looking at Figure
+\ref{fig:3dplot_40000_0.1} of the model and data plot, it does appear that the
+MLP is able to model a relatively good fit. The corresponding $R^2$ scores in
+Table \ref{tab:R2_scores} are quite satisfactory and consistent in comparison to
+the OLS model for \texttt{franke1}. However, the OLS would likely perform as well
+or possibly better at 40 000 available data points instead of only 400. The MLP
+regressor proves to be quite costly and excessive in this case compared to the
+OLS, as it in this case needs a hundred times more data points and tuning of
 several hyperparameters to perform on par with the OLS. \\
 
-In summary, there seems to be very few benefits of using neural networks for 
-regression of simple, well behaved functions, especially considering the amount 
+In summary, there seems to be very few benefits of using neural networks for
+regression of simple, well behaved functions, especially considering the amount
 of hyperparameters to tune using NN instead of a simple linear regression model.
-One benefit of neural networks versus linear regression is the simplicity of the 
-feature matrix. To implement the OLS in this case, we needed to create a large 
-feature matrix to encompass the fourth order two-dimensional polynomial fit, 
-which can for large datasets be memory costly. Regardless, in the case of the 
-Franke function this was insignificant,  as the extra amount of data and 
-hyperparameter tuning needed for the MLP to perform equally to OLS far surpasses 
-the cost of implementing the OLS. 
+One benefit of neural networks versus linear regression is the simplicity of the
+feature matrix. To implement the OLS in this case, we needed to create a large
+feature matrix to encompass the fourth order two-dimensional polynomial fit,
+which can for large datasets be memory costly. Regardless, in the case of the
+Franke function this was insignificant,  as the extra amount of data and
+hyperparameter tuning needed for the MLP to perform equally to OLS far surpasses
+the cost of implementing the OLS.
 
-For all three cases, the choice of learning rates had a more significant impact 
-on model performance than the shrinkage parameter. This implies that we could 
-likely increase the MLP model complexity to achieve more optimal fits, although as 
-argued above this would be computationally expensive compared to the OLS. 
+For all three cases, the choice of learning rates had a more significant impact
+on model performance than the shrinkage parameter. This implies that we could
+likely increase the MLP model complexity to achieve more optimal fits, although as
+argued above this would be computationally expensive compared to the OLS.
 
+
+As we see no clear signs of overfitting,
+higher complexity models and more advanced minimization algorithms should be
+explored. We may also be able find better fits by for instance running a
+significantly higher amount of hyperparameter samples in the randomized search,
+or by also searching for the best batch size, which we have neglected completely
+because of computational cost as our program runs very slowly for small batch
+sizes. This holds true for both regression and classification.
 
 \section{Conclusion}
 Better model each case:
