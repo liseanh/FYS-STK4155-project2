@@ -755,6 +755,7 @@ the true values.
 
 
 \section{Discussion}
+
 Hyperparameters:
 * different learning rate nn logreg same data
 * low penalties because no overfit, maybe more relevant with a better optimizer
@@ -762,6 +763,11 @@ than sgd, ADAM?
 * Unsure because only 100 samples
 * maybe different results with vary epochs(?), rtol(?), layers, nodes and batch size
 * activation function impact
+
+\subsection{Classification}
+From Table \ref{tab:hyperparameters}, we see that the learning rate $\eta$ for 
+LR and MLP in the classification case differ by two orders of magnitude. This 
+
 
 The area ratios in Table \ref{tab:area_ratios} along with Figure
 \ref{fig:logreg_gain} and \ref{fig:nn_gain} align closely
@@ -776,12 +782,83 @@ amount of hyperparameter samples in the randomized search, or by also searching
 for the best batch size, which we have neglected completely because of computational
 cost, as our program runs very slowly for small batch sizes.
 
-Regression
-%* NN slightly better, but so would OLS be with more data? OLS much better on n=20
-%* NN no polynomial degrees, saves memory, smaller feature matrix
-* NN saves memory and is pretty fast for one run, but must fit many
-hyperparameters, more computationally expensive
-* Overkill for this case most likely
+
+
+\subsection{Regression}
+Looking at the shrinkage parameters for the regression models in Table 
+\ref{tab:hyperparameters}, the shrinkage parameter seems to decrease as the 
+signal to noise ratio increases. For $\texttt{franke0}$, the data set is quite 
+noisy with the standard deviation of the added noise at $\sigma=1.0$ and a 
+shrinkage parameter of $\lambda=4.1\cdot 10^{-6}$. However, taking Figure 
+\ref{fig:nn_eta_lambda_r2_400_1.0} into consideration, it is quite clear that the 
+shrinkage parameter does not seem to have a significant effect on the result as 
+opposed to the learning rate $\eta$, and the choice of shrinkage parameter may 
+have been irrelevant as it arbitrarily coincided with the optimal learning rate. 
+This is due to the very low signal to noise ratio, as can be seen in the plot of 
+the model and true values in Figure \ref{fig:3dplot_400_1.0}. It is impossible to 
+identify the original shape of the Franke function, and the model seems to have 
+approximated the mean value of the \texttt{franke0} set. This is also reflected 
+in the $R^2$ scores in Table \ref{tab:R2_scores}, where the scores for both 
+training and test set are close to zero. Due to the noise, the choice of 
+shrinkage parameter does not matter, as Figure \ref{fig:nn_eta_lambda_r2_400_1.0} 
+the MLP models yield an $R^2$ score of around 0 for learning rates of order 
+$10^{-4}-10^{-3}$ regardless of shrinkage. Nevertheless, the mean seems like a 
+decent approximation in this case, as tuning the other hyperparameters such as 
+number of hidden layers and nodes could possibly result in a severe overfit. 
+Comparing with the scores for the corresponding OLS model, the MLP seems to 
+perform on par with the OLS, but at significantly higher computational cost. 
+
+For the \texttt{franke1} set, the shrinkage parameter does seem to impact the 
+performance of our MLP model. From Figure \ref{fig:nn_eta_lambda_r2_400_0.1}, it 
+appears that higher shrinkage has a negative effect on the model performance when 
+the standard deviation of the noise is only at $\sigma=0.1$. The 
+optimal shrinkage parameter is at $\lambda=6.4\cdot 10^{-8]}$, which is higher 
+than for the \texttt{franke0} set. Again, this is likely due to the higher signal 
+to noise ratio in the data set, as we from Figure \ref{fig:3dplot_400_0.1} are 
+able to discern the rough shape of the original Franke function and the model is 
+able to approximate the slope of the function. The $R^2$ scores from Table 
+\ref{tab:R2_scores} show that the MLP model performs far better in this case with 
+a test score of 0.59. Regardless, the OLS model outperforms the MLP in this case 
+as well, and still at a significantly lower computational cost. It is probably 
+still possible for the MLP to approximate a better model by increasing the model 
+complexity. By tuning the other hyperparameters in combination with the learning 
+rate and shrinkage parameter, we would likely be able to achieve a better fit, as 
+the consistency of the $R^2$ scores we achieved for both test and training sets 
+of \texttt{franke1} indicate that we have yet to overfit the data. However, this 
+would again be quite costly and excessive compared to the simplicity of the OLS. 
+
+The optimal shrinkage parameter for \texttt{franke2} is the smallest of the three 
+at $\lambda=3.6\cdot 10^{-10}$, and is likely because the amount of data points 
+in this set is 100 times larger than for \texttt{franke0} and \texttt{franke1}. 
+It is interesting to note that the shrinkage parameter is smaller than for 
+\texttt{franke1} when the added noise is still of the same order, but the number 
+of available data points is much higher. Due to the larger amount of data, the 
+MLP is less likely to overfit and requires a smaller shrinkage. Looking at Figure 
+\ref{fig:3dplot_40000_0.1} of the model and data plot, it does appear that the 
+MLP is able to model a relatively good fit. The corresponding $R^2$ scores in 
+Table \ref{tab:R2_scores} are quite satisfactory and consistent in comparison to 
+the OLS model for \texttt{franke1}. However, the OLS would likely perform as well 
+or possibly better at 40 000 available data points instead of only 400. The MLP 
+regressor proves to be quite costly and excessive in this case compared to the 
+OLS, as it in this case needs a hundred times more data points and tuning of 
+several hyperparameters to perform on par with the OLS. \\
+
+In summary, there seems to be very few benefits of using neural networks for 
+regression of simple, well behaved functions, especially considering the amount 
+of hyperparameters to tune using NN instead of a simple linear regression model.
+One benefit of neural networks versus linear regression is the simplicity of the 
+feature matrix. To implement the OLS in this case, we needed to create a large 
+feature matrix to encompass the fourth order two-dimensional polynomial fit, 
+which can for large datasets be memory costly. Regardless, in the case of the 
+Franke function this was insignificant,  as the extra amount of data and 
+hyperparameter tuning needed for the MLP to perform equally to OLS far surpasses 
+the cost of implementing the OLS. 
+
+For all three cases, the choice of learning rates had a more significant impact 
+on model performance than the shrinkage parameter. This implies that we could 
+likely increase the MLP model complexity to achieve more optimal fits, although as 
+argued above this would be computationally expensive compared to the OLS. 
+
 
 \section{Conclusion}
 Better model each case:
