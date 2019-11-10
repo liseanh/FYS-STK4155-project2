@@ -46,14 +46,17 @@
 
 \section{Introduction}
 Classification in statistical analysis is a useful tool, e.g. for predicting
-outcomes of various situations or classifying and sorting large amounts of data.
-
+outcomes of various situations or classifying and sorting large amounts of data. 
+There are several common methods to achieve classification models, such as 
+boosting, logistic regression, $k$-nearest neighbour etc., each with their own 
+disadvantages and strengths. 
 The aim of this project is  to study classification and regression problems
 through our own implementation of logistic regression and a multilayer perceptron
 (MLP) in Python. The particular data set we will be studying for classification
 has been used in a prior research paper by Yeh, I. C. and Che-hui Lien about
 data mining techniques \cite{origarticle}, which we will compare some of our
-results with.  The full data set can be downloaded from the \href{https://archive.ics.uci.edu/ml/datasets/default+of+credit+card+clients}{UCI Machine
+results with.  The full data set can be downloaded from the 
+\href{https://archive.ics.uci.edu/ml/datasets/default+of+credit+card+clients}{UCI Machine
 Learning Repository} \cite{UCI}. The data set contains certain features of
 credit card clients' default payment from a Taiwanese bank.
 For the regression problem we will use the MLP to approximate Franke's function
@@ -754,18 +757,7 @@ the true values.
 
 
 
-
-
-
 \section{Discussion}
-
-Hyperparameters:
-* different learning rate nn logreg same data
-* low penalties because no overfit, maybe more relevant with a better optimizer
-than sgd, ADAM?
-* Unsure because only 100 samples
-* maybe different results with vary epochs(?), rtol(?), layers, nodes and batch size
-* activation function impact
 
 \subsection{Classification}
 From Table \ref{tab:hyperparameters}, we see that the learning rate $\eta$ for
@@ -782,15 +774,18 @@ noticeably better at predicting the default of a credit card user than LR, with
 area ratios for the positive outcome being $0.55$ and $0.43$ respectively.
 While both models can predict the positive outcome with modest success, they are
 not suited for predicting the negative outcome within any kind of satisfactory
-margin. This is not all bad, as it is worse for a lender to give out a loan that
-is never repaid than to refuse a loan that would be repaid. With this we argue
-that it is beneficial to implement a MLP classifier in this case in spite of the
-extra computational cost and the extra hyperparameters.
+margin. In spite of this, in the context of banking, it is better to refuse a 
+loan that would likely be repaid than to lend to a client that might not be able 
+to repay the debt. With this we argue that it is beneficial to implement a MLP 
+classifier in this case in spite of the extra computational cost and the extra 
+hyperparameters.
 
-
-
-
-
+Comparing our results to the ones in the original paper in the Table 
+\ref{tab:area_ratios}, we see that we were not able to achieve as good error rates 
+as the original authors, whilst our area ratio for the default NN payment is only 
+slightly better. It is not clear why, as the paper only explains in general terms
+which methods were implemented without detailing tuning of hyperparameters and 
+initializations of e.g. weights and biases. 
 
 \subsection{Regression}
 Looking at the shrinkage parameters for the regression models in Table
@@ -868,13 +863,15 @@ likely increase the MLP model complexity to achieve more optimal fits, although 
 argued above this would be computationally expensive compared to the OLS.
 
 
-As we see no clear signs of overfitting,
-higher complexity models and more advanced minimization algorithms should be
-explored. We may also be able find better fits by for instance running a
-significantly higher amount of hyperparameter samples in the randomized search,
-or by also searching for the best batch size, which we have neglected completely
-because of computational cost as our program runs very slowly for small batch
-sizes. This holds true for both regression and classification.
+As we see no clear signs of overfitting, higher complexity models and more 
+advanced minimization algorithms should be explored. We may also be able find 
+better fits by for instance running a significantly higher amount of 
+hyperparameter samples in the randomized search, or by also searching for the 
+best batch size, which we have neglected completely because of computational 
+cost as our program runs very slowly for small batch sizes. This holds true for 
+both regression and classification. Additionally, neural networks are not easily 
+interpretable and do not return a simple polynomial function as opposed to linear
+regression methods.
 
 \section{Conclusion}
 Better model each case:
@@ -887,6 +884,24 @@ OLS, only one hyperparameter (poly degree), no fuzz, more memory usage, but stil
 Conclusion:
 Powerful models are better at predicting, but are much harder to implement.
 Should carefully consider what to use as to not waste resources.
+
+
+
+\section*{Acknowledgements}
+\addcontentsline{toc}{section}{Acknowledgement}
+
+We are grateful to the developers of the libraries Scikit-learn, TensorFlow and 
+Keras, as we used their functions to extensively test our own implementation of 
+the multilayer perceptron during the developmental 
+stage of the code. 
+
+Additionally, we would like to thank Morten Hjorth-Jensen for his lectures and 
+invaluable help in this project, and the group teachers in the course FYS-STK4155 
+for their help and guidance. 
+
+Lasty, we sincerely thank fellow student Steinn Hauser Magnússon for insightful 
+and challenging discussions regarding this project. 
+
 %\bibliographystyle{iEEEtran}
 \bibliography{references}
 
