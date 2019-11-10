@@ -672,7 +672,7 @@ higher area ratios for both default and non-default outcomes.
 \begin{table}[H]
 	\caption{Table of the error rates and area ratios for classification of the
 	credit card data using our logistic regression (LR) and multilayer
-	perceptron (MLP) neural network (NN). The results from the original paper are 
+	perceptron (MLP) neural network (NN). The results from the original paper are
 	also included, indicated with subscript O in the table \cite{origarticle}. }
 	\label{tab:area_ratios}
 	\resizebox{\columnwidth}{!}{
@@ -874,17 +874,27 @@ interpretable and do not return a simple polynomial function as opposed to linea
 regression methods.
 
 \section{Conclusion}
-Better model each case:
-Credit card:
-NN, as prediction power very important because serious topic
+We have shown that neural networks are better suited for classification than
+logistic regressions in cases where the prediction power is of outmost importance.
+One should however always consider if the extra resources needed to properly
+fit such an advanced model is worth the gain. For regression, for instance, it
+is likely more beneficial to use linear regression models because of their
+simplicity and interperetability.
 
-Franke:
-OLS, only one hyperparameter (poly degree), no fuzz, more memory usage, but still better
-
-Conclusion:
-Powerful models are better at predicting, but are much harder to implement.
-Should carefully consider what to use as to not waste resources.
-
+As the results for MLP are not very reliable for the credit data, different
+classification methods should be explored in the future. An interesting case
+could be testing ensemble methods such as Gradient Boosting, as they were
+not tested in the original article either \cite{origarticle} and could very well
+yield better results. Gradient Boosting could be especially interesting, as it
+has proved to be a very effective classification algorithm in recent years.
+Alternatively, we could attempt to improve our MLP model by tuning more
+hyperparameters, such as hidden layer size, nodes, batch size and number of
+epochs, all of which we kept constant throughout the project. Additionally,
+using another solver instead of stochastic gradient descent could also result in
+better results. Lastly, for the hyperparameters that we did tune in this project,
+we could have performed a randomized search for more than 100 combinations of the
+shrinkage parameter and learning rate, as using more combinations would be result
+in a more statistically significant result. 
 
 
 \section*{Acknowledgements}
