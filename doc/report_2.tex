@@ -888,8 +888,16 @@ As the results for MLP are not very reliable for the credit data, different
 classification methods should be explored in the future. An interesting case
 could be testing ensemble methods such as Gradient Boosting, as they were
 not tested in the original article either \cite{origarticle} and could very well
-yield better results. Especially Gradient Boosting, which has proved to be a very
-effective classification algorithm.
+yield better results. Gradient Boosting could be especially interesting, as it
+has proved to be a very effective classification algorithm in recent years.
+Alternatively, we could attempt to improve our MLP model by tuning more
+hyperparameters, such as hidden layer size, nodes, batch size and number of
+epochs, all of which we kept constant throughout the project. Additionally,
+using another solver instead of stochastic gradient descent could also result in
+better results. Lastly, for the hyperparameters that we did tune in this project,
+we could have performed a randomized search for more than 100 combinations of the
+shrinkage parameter and learning rate, as using more combinations would be result
+in a more statistically significant result. 
 
 %\bibliographystyle{iEEEtran}
 \bibliography{references}
