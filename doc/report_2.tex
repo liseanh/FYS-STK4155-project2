@@ -41,9 +41,9 @@
 		classification case, and with linear regression of a two-variable scalar
 		function. For classification, we found the neural network to produce
 		results superior to those of the logistic regression, with area ratios of
-		$0.55$ and $0.43$ respectively, while we for regression found that the 
-		neural network is excessively costly in comparison to more standard linear 
-		regression methods with respect to performance and tuning, with OLS 
+		$0.55$ and $0.43$ respectively, while we for regression found that the
+		neural network is excessively costly in comparison to more standard linear
+		regression methods with respect to performance and tuning, with OLS
 		giving $R^2=0.82$ and MLP giving $R^2=0.59$ for 400 data points.
 	\end{abstract}
   \end{@twocolumnfalse}
@@ -71,7 +71,7 @@ squares, ridge and lasso regression to approximate it. \cite{regpaper}.
 
 \section{Data}
 \subsection{Classification - Credit card client data}
-For the classification part of this project,  we are using credit card payment
+For the classification part of this project, we will use credit card payment
 data from a Taiwanese bank downloaded from the \href{https://archive.ics.uci.edu/ml/datasets/default+of+credit+card+clients}{UCI Machine Learning Repository}. The
 response variable is a binary variable of default payment with Yes = 1, No = 0.
 The original data set consists of 30 000 observations, with 6636 amount of
@@ -178,8 +178,9 @@ default payment samples in the training set by using
 \resizebox{!}{6.38pt}{\texttt{imblearn.over\_sampling.RandomOverSampler}}
 from the library \texttt{imbalanced-learn}, which randomly duplicates the default
 payment samples, until there was an equal amount of default payment samples as
-non-default samples. This was done to improve the model prediction. Note that we
-did not upsample the amount of defaults in the test set.
+non-default samples. This was done to avoid our optimizer favoring a model that
+predicts the non-default outcome in all cases. Note that we did not upsample the
+amount of defaults in the test set.
 
 
 \section{Learning methods}
@@ -542,8 +543,8 @@ lower ratios indicate lower predictive ability of the model.
 \begin{figure}
 	\includegraphics[scale=1]{figures/logreg_learning_rate_accuracy.pdf}
 	\caption{Accuracy score of validation set of the credit data using  logistic
-	regression for various values of the shrinkage parameter
-	chosen using randomized search.}
+	regression for various values of the learning rate $\eta$ chosen using
+  randomized search.}
 	\label{fig:logreg_eta_accuracy}
 \end{figure}
 
