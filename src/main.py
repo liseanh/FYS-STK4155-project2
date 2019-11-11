@@ -517,6 +517,16 @@ class MultilayerPerceptronClassifier(RegressionClass):
         """
         Runs backpropagation. Iterates through all epochs or until a given
         tolerance is reached
+
+        Parameters:
+        
+        X: numpy ndarray
+            Feature matrix 
+
+        y: numpy array
+            True binary output
+
+
         """
         a_i, z_i = self.feed_forward(X)
         delta = np.zeros(self.n_hidden_layers + 1, dtype=np.ndarray)
