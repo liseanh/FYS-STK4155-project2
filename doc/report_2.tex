@@ -477,7 +477,7 @@ given by
 \end{equation}
 where $\bm{y}$ is the given data, $\bm{\hat{y}}$ is the model and ${\bar{y}}$ is
 the mean value of $\bm{y}$. The $R^2$ score evaluates how well your model
-$\bm{\hat{y}}$ fits the true values $\hat{y}$, with a value of 1 indicating a
+$\bm{\hat{y}}$ fits the true values $\bm{y}$, with a value of 1 indicating a
 perfect fit. An $R^2$ score of 0 indicates that the model is as good of an
 estimator as the mean value ${\bar{y}}$, and a lower value means that the mean
 value is a better estimator than the model.
@@ -691,12 +691,13 @@ higher area ratios for both default and non-default outcomes.
 	\resizebox{\columnwidth}{!}{
  	\begin{tabular}{|l|l|l|l|}
     \hline
- 	   Method & \makecell[l]{Error \\rate} & \makecell[l]{Area ratio \\default} & \makecell[l]{Area ratio \\non-default} \\ 			\hline
-    		LR 			  & 0.31 & 0.43 & 0.12 \\ \hline
-			NN 			  & 0.22 & 0.55 & 0.16 \\ \hline
-			LR$_\text{O}$ & 0.18 & 0.44 & N/A\\ \hline
-			NN$_\text{O}$ & 0.17 & 0.54 & N/A \\ \hline
-    	\end{tabular}
+		Method & \makecell[l]{Error \\rate} & \makecell[l]{Area ratio \\default} 
+		& \makecell[l]{Area ratio \\non-default} \\ \hline
+    	LR 			  & 0.31 & 0.43 & 0.12 \\ \hline
+		NN 			  & 0.22 & 0.55 & 0.16 \\ \hline
+		LR$_\text{O}$ & 0.18 & 0.44 & N/A\\ \hline
+		NN$_\text{O}$ & 0.17 & 0.54 & N/A \\ \hline
+    \end{tabular}
 	}
 \end{table}
 
